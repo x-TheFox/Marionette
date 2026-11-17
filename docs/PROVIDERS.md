@@ -4,7 +4,13 @@ All facts below verified live on 2026-11-17 from this sandbox. Base URLs and mod
 
 ## Chain (in order)
 
-### 1. Kilo gateway — primary
+### 0. Groq — primary when `GROQ_API_KEY` is set
+- Base URL: `https://api.groq.com/openai/v1` (OpenAI-compatible). Default model: `llama-3.3-70b-versatile` (override with `MARIONETTE_LLM_MODEL_GROQ`).
+- **Blocked from this sandbox**: every request (even unauthenticated `GET /models`) returns HTTP 403 `{"error":{"message":"Forbidden"}}` — Groq's edge rejects this datacenter IP range. Not a key problem (invalid keys return 401 with `Invalid API Key`); verified identical via curl and Node `fetch`, with and without browser-like headers.
+- Consequence: with `GROQ_API_KEY` set, each fresh chain burns ~1 s on a fast 403 before failing over to Kilo (breaker then skips it for 5 min). From unblocked networks (residential/office, CI runners elsewhere) Groq serves in sub-10 s and is the best choice for mid-game replans.
+- When present it is placed FIRST so its speed dominates; the plan cache re-keys on its model automatically.
+
+### 1. Kilo gateway — anonymous fallback (primary without Groq)
 - Base URL: `https://ai-gateway.kilo.ai/api/v1` (OpenAI-compatible; from Kilo's gateway docs).
 - Free tier works **anonymously** (no key). Anonymous rate limit: 200 requests/hour per IP.
 - Router model: `kilo-auto/free` (deterministic affinity across available free candidates). Observed routing: `nvidia/nemotron-3.5-super-vl:free` (provider: Nvidia). Direct `:free` model IDs also exist (e.g. `openrouter/free`, `baidu/ernie-5.5-flash-preview:free`, ...).

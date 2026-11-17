@@ -150,13 +150,27 @@ export class LlmChain {
   /** Builds the default chain from environment variables. */
   static fromEnv(env: NodeJS.ProcessEnv = process.env): LlmChain {
     const providers: ProviderConfig[] = [];
+    // 0. Groq — fastest and most reliable when reachable; requires a key.
+    //    FIRST when present: sub-10s compiles and replans. (Note: the dev
+    //    sandbox's IP range is edge-blocked by Groq with 403 — provider
+    //    failover skips it in ~1s; works from unblocked networks.)
+    if (env.GROQ_API_KEY) {
+      providers.push({
+        name: 'groq',
+        baseUrl: env.MARIONETTE_GROQ_BASE_URL ?? 'https://api.groq.com/openai/v1',
+        model: env.MARIONETTE_LLM_MODEL_GROQ ?? 'llama-3.3-70b-versatile',
+        apiKey: env.GROQ_API_KEY,
+        timeoutMs: num(env.MARIONETTE_GROQ_TIMEOUT_MS, 60_000),
+        maxRetries: 1,
+      });
+    }
     // 1. Kilo gateway — anonymous free tier works without a key.
     providers.push({
       name: 'kilo',
       baseUrl: env.MARIONETTE_KILO_BASE_URL ?? 'https://ai-gateway.kilo.ai/api/v1',
       model: env.MARIONETTE_LLM_MODEL ?? 'kilo-auto/free',
       apiKey: env.KILO_API_KEY || undefined,
-      timeoutMs: num(env.MARIONETTE_KILO_TIMEOUT_MS, 90_000),
+      timeoutMs: num(env.MARIONETTE_KILO_TIMEOUT_MS, 150_000),
       maxRetries: 2,
     });
     // 2. LLM7.io — keyless fallback (placeholder key).
