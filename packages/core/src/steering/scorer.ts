@@ -173,7 +173,15 @@ export function lambdaFor(sc: Pick<ScoreContext, 'milestone' | 'plan'>, ctxNow: 
   // lambda 0.6 - shedding crawled and blew the 80-ply move budget one capture
   // short of K+Q).
   if (shedding) λ = Math.min(λ, LAMBDA_BY_TOLERANCE.loose);
-  if (winningTarget && selfEval < -150 && !shedding) λ = Math.max(λ, 1.2); // behind: stop the bleeding
+  // Behind-raise ("must win but losing: stop the bleeding") only overrides the
+  // milestone's declared tolerance when the TERMINAL is what we are steering
+  // for - terminal-first plans, or no milestone left to steer. For an active
+  // milestone the tolerance IS the plan's declared eval-damage budget, and
+  // D1's promote phase is always deep behind by construction (we just gave
+  // away the whole army); raising lambda there priced out every pawn march
+  // and the milestone stalled at partial 0.00 (D1/2000 smoke).
+  const terminalSteering = t.priority === 'terminal_first' || sc.milestone == null;
+  if (winningTarget && selfEval < -150 && !shedding && terminalSteering) λ = Math.max(λ, 1.2);
   if (t.kind === 'lose' || t.kind === 'draw') λ = Math.min(λ, 0.6); // losing/drawing terminal: eval damage is not the enemy
   if (t.priority === 'terminal_first') λ *= 1.6;
   return λ;

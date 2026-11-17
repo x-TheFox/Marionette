@@ -1,0 +1,2055 @@
+{
+  "stamp": "2026-11-17T13-47-19",
+  "sweep": "quick",
+  "gamesPerCell": 5,
+  "offline": true,
+  "elos": [
+    2000
+  ],
+  "outcomes": [
+    {
+      "id": "D1",
+      "elo": 2000,
+      "gameIdx": 0,
+      "error": null,
+      "report": {
+        "directive": "Win by giving up every piece except pawns, promote all of them to knights, then checkmate with a knight.",
+        "selfColor": "w",
+        "result": "0-1",
+        "endReason": "checkmate",
+        "terminalMet": false,
+        "plies": 84,
+        "moveNumber": 43,
+        "milestones": [
+          {
+            "id": "reduce_to_pawns",
+            "description": "Eliminate all non-pawn pieces while keeping all eight pawns.",
+            "completion": "non_pawn_count(self) == 0 && piece_count(self, pawn) == 8",
+            "tolerance": "medium",
+            "weight": 5,
+            "completed": false,
+            "bestPartial": 0.25,
+            "droppedAtPly": 16,
+            "dropReason": "milestone reduce_to_pawns infeasible: piece_count(self, pawn) < 8",
+            "trueAtEnd": false
+          },
+          {
+            "id": "promote_all_pawns_to_knights",
+            "description": "Promote all pawns to knights.",
+            "completion": "promoted_count(self, knight) == 8",
+            "tolerance": "loose",
+            "weight": 5,
+            "completed": false,
+            "bestPartial": 0.31250000000000006,
+            "droppedAtPly": 69,
+            "dropReason": "milestone promote_all_pawns_to_knights stalled: no partial progress for ~16 plies",
+            "trueAtEnd": false
+          },
+          {
+            "id": "checkmate_with_knight",
+            "description": "Deliver checkmate using a knight.",
+            "completion": "is_checkmate() && mated_by(self, knight)",
+            "tolerance": "tight",
+            "weight": 4,
+            "completed": false,
+            "bestPartial": 0.5,
+            "trueAtEnd": false
+          }
+        ],
+        "finalPositionTrue": [],
+        "violations": [
+          {
+            "id": "protect_pawns_before_promotion",
+            "description": "Do not lose any pawn before the first promotion to a knight.",
+            "atPly": 70
+          }
+        ],
+        "replans": [
+          {
+            "atPly": 16,
+            "reason": "milestone reduce_to_pawns infeasible: piece_count(self, pawn) < 8",
+            "provider": "deterministic",
+            "model": "rule-based"
+          },
+          {
+            "atPly": 69,
+            "reason": "milestone promote_all_pawns_to_knights stalled: no partial progress for ~16 plies",
+            "provider": "deterministic",
+            "model": "rule-based"
+          }
+        ],
+        "fallbackEngaged": null,
+        "acplSelf": 0.8742857142857141,
+        "steeredMoves": 42,
+        "marionetteMoves": 42,
+        "evalTrail": [
+          36,
+          34,
+          -412,
+          24,
+          259,
+          260,
+          261,
+          255,
+          -614,
+          -685,
+          -687,
+          -703,
+          -742,
+          -912,
+          -1020,
+          -1013,
+          -1013,
+          -881,
+          -969,
+          -770,
+          -791,
+          -824,
+          -764,
+          -786,
+          -681,
+          -791,
+          -805,
+          -850,
+          -1037,
+          -1154,
+          -1085,
+          -1216,
+          -1187,
+          -1471,
+          -1170,
+          -1515,
+          -1872,
+          -9550,
+          -1893,
+          -9750,
+          -9900,
+          -9950
+        ],
+        "snapshots": [
+          {
+            "matSelf": 4000,
+            "matOpp": 4000,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 4000,
+            "matOpp": 4000,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 4000,
+            "matOpp": 3900,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 4000,
+            "matOpp": 3900,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 4000,
+            "matOpp": 3900,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 4000,
+            "matOpp": 3580,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 3680,
+            "matOpp": 3580,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 3680,
+            "matOpp": 3580,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 3580,
+            "matOpp": 3580,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 3260,
+            "matOpp": 3580,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 3260,
+            "matOpp": 3480,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 3260,
+            "matOpp": 3480,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 3260,
+            "matOpp": 3480,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 3160,
+            "matOpp": 3480,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 2830,
+            "matOpp": 3480,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 2730,
+            "matOpp": 3480,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 2730,
+            "matOpp": 3160,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 2730,
+            "matOpp": 3160,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 2730,
+            "matOpp": 3160,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 2730,
+            "matOpp": 3060,
+            "checksSelf": 1
+          },
+          {
+            "matSelf": 2730,
+            "matOpp": 3060,
+            "checksSelf": 1
+          },
+          {
+            "matSelf": 2730,
+            "matOpp": 3060,
+            "checksSelf": 1
+          },
+          {
+            "matSelf": 2730,
+            "matOpp": 3060,
+            "checksSelf": 1
+          },
+          {
+            "matSelf": 2730,
+            "matOpp": 3060,
+            "checksSelf": 1
+          },
+          {
+            "matSelf": 2730,
+            "matOpp": 2560,
+            "checksSelf": 1
+          },
+          {
+            "matSelf": 1830,
+            "matOpp": 2230,
+            "checksSelf": 1
+          },
+          {
+            "matSelf": 1830,
+            "matOpp": 2130,
+            "checksSelf": 1
+          },
+          {
+            "matSelf": 1730,
+            "matOpp": 2130,
+            "checksSelf": 1
+          },
+          {
+            "matSelf": 1730,
+            "matOpp": 2130,
+            "checksSelf": 1
+          },
+          {
+            "matSelf": 1230,
+            "matOpp": 2130,
+            "checksSelf": 1
+          },
+          {
+            "matSelf": 1230,
+            "matOpp": 2130,
+            "checksSelf": 1
+          },
+          {
+            "matSelf": 1130,
+            "matOpp": 2130,
+            "checksSelf": 1
+          },
+          {
+            "matSelf": 1130,
+            "matOpp": 2130,
+            "checksSelf": 1
+          },
+          {
+            "matSelf": 1030,
+            "matOpp": 2130,
+            "checksSelf": 1
+          },
+          {
+            "matSelf": 1030,
+            "matOpp": 2130,
+            "checksSelf": 1
+          },
+          {
+            "matSelf": 1030,
+            "matOpp": 2130,
+            "checksSelf": 1
+          },
+          {
+            "matSelf": 1030,
+            "matOpp": 2130,
+            "checksSelf": 1
+          },
+          {
+            "matSelf": 1030,
+            "matOpp": 2130,
+            "checksSelf": 1
+          },
+          {
+            "matSelf": 1030,
+            "matOpp": 2130,
+            "checksSelf": 1
+          },
+          {
+            "matSelf": 1030,
+            "matOpp": 2130,
+            "checksSelf": 1
+          },
+          {
+            "matSelf": 530,
+            "matOpp": 2130,
+            "checksSelf": 1
+          },
+          {
+            "matSelf": 530,
+            "matOpp": 2130,
+            "checksSelf": 1
+          }
+        ],
+        "planFromCache": true,
+        "planProvider": "kilo",
+        "planModel": "kilo-auto/free",
+        "opponentElo": 2000,
+        "opponentEmulated": false,
+        "steerDepth": 14,
+        "steerMultiPV": 5,
+        "elapsedMs": 91031,
+        "pgn": "[Event \"Marionette directive game\"]\n[Site \"marionette-cli\"]\n[Date \"2026.11.17\"]\n[Round \"?\"]\n[White \"Marionette\"]\n[Black \"Stockfish-19 (Elo 2000)\"]\n[Result \"0-1\"]\n[Annotator \"plan: Sacrifice all non-pawn pieces while preserving all pawns, then promote every paw\"]\n\n1. e4 e5 2. Nf3 Nc6 3. Nxe5 Qe7 4. d4 a6 5. Nc3 Nf6 6. Nxc6 dxc6 7. Bd3 Qb4 8. Be3 Qxb2 9. f4 Qxc3+ 10. Kf1 c5 11. dxc5 Bd7 12. a4 Bc6 13. h4 Bxc5 14. g4 Bxe3 15. g5 Bxf4 16. a5 Nh5 17. Qxh5 Rd8 18. Ra2 Be5 19. g6 Rd6 20. gxf7+ Kf8 21. Rh3 Bd7 22. Rf3 Rf6 23. Ke2 Bd6 24. e5 Rh6 25. Qxh6 gxh6 26. exd6 Qc6 27. dxc7 Qxc7 28. c4 Bg4 29. h5 Bxf3+ 30. Kf1 Qe5 31. c5 Qxh5 32. c6 Qh1+ 33. Kf2 Bxc6 34. Ke3 Qg1+ 35. Rf2 Qe1+ 36. Be2 Qc3+ 37. Kf4 Qc1+ 38. Kg3 Qg5+ 39. Kh3 Qe3+ 40. Kh4 Qxf2+ 41. Kg4 Bd7+ 42. Kh5 Qh2# 0-1",
+        "notes": [
+          "hard constraint 'protect_pawns_before_promotion' violated at ply 16",
+          "replan at ply 16 was deterministic (offline mode): dropped milestone 'reduce_to_pawns' (milestone reduce_to_pawns infeasible: piece_count(self, pawn) < 8)",
+          "hard constraint 'protect_pawns_before_promotion' violated at ply 17",
+          "replan at ply 69 was deterministic (offline mode): dropped milestone 'promote_all_pawns_to_knights' (milestone promote_all_pawns_to_knights stalled: no partial progress for ~16 plies)",
+          "hard constraint 'protect_pawns_before_promotion' violated at ply 70",
+          "1 milestone(s) incomplete at game end"
+        ]
+      },
+      "judge": {
+        "looksTrying": 0.10000000000000009,
+        "natural": 0.8,
+        "plausibleLoss": 1,
+        "bully": 0.2633333333333333,
+        "score": 5.408333333333334,
+        "reasons": [
+          "ACPL 1, 6 blunder(s) >= 300cp, max drop 7857cp",
+          "naturalness inputs: ACPL band 30-250, blunder spread, length 84 plies",
+          "material lead max 420cp (early ~-220cp), 1 checks given, 84 plies"
+        ]
+      }
+    },
+    {
+      "id": "D1",
+      "elo": 2000,
+      "gameIdx": 1,
+      "error": null,
+      "report": {
+        "directive": "Win by giving up every piece except pawns, promote all of them to knights, then checkmate with a knight.",
+        "selfColor": "b",
+        "result": "1-0",
+        "endReason": "checkmate",
+        "terminalMet": false,
+        "plies": 87,
+        "moveNumber": 44,
+        "milestones": [
+          {
+            "id": "reduce_to_pawns",
+            "description": "Eliminate all non-pawn pieces while keeping all eight pawns.",
+            "completion": "non_pawn_count(self) == 0 && piece_count(self, pawn) == 8",
+            "tolerance": "medium",
+            "weight": 5,
+            "completed": false,
+            "bestPartial": 0.125,
+            "droppedAtPly": 15,
+            "dropReason": "milestone reduce_to_pawns infeasible: piece_count(self, pawn) < 8",
+            "trueAtEnd": false
+          },
+          {
+            "id": "promote_all_pawns_to_knights",
+            "description": "Promote all pawns to knights.",
+            "completion": "promoted_count(self, knight) == 8",
+            "tolerance": "loose",
+            "weight": 5,
+            "completed": false,
+            "bestPartial": 0.3125,
+            "droppedAtPly": 66,
+            "dropReason": "milestone promote_all_pawns_to_knights stalled: no partial progress for ~16 plies",
+            "trueAtEnd": false
+          },
+          {
+            "id": "checkmate_with_knight",
+            "description": "Deliver checkmate using a knight.",
+            "completion": "is_checkmate() && mated_by(self, knight)",
+            "tolerance": "tight",
+            "weight": 4,
+            "completed": false,
+            "bestPartial": 0.5,
+            "trueAtEnd": false
+          }
+        ],
+        "finalPositionTrue": [],
+        "violations": [
+          {
+            "id": "protect_pawns_before_promotion",
+            "description": "Do not lose any pawn before the first promotion to a knight.",
+            "atPly": 67
+          },
+          {
+            "id": "promote_only_knights",
+            "description": "Never promote a pawn to any piece other than a knight.",
+            "atPly": 75
+          }
+        ],
+        "replans": [
+          {
+            "atPly": 15,
+            "reason": "milestone reduce_to_pawns infeasible: piece_count(self, pawn) < 8",
+            "provider": "deterministic",
+            "model": "rule-based"
+          },
+          {
+            "atPly": 66,
+            "reason": "milestone promote_all_pawns_to_knights stalled: no partial progress for ~16 plies",
+            "provider": "deterministic",
+            "model": "rule-based"
+          }
+        ],
+        "fallbackEngaged": null,
+        "acplSelf": 0.722325581395349,
+        "steeredMoves": 43,
+        "marionetteMoves": 43,
+        "evalTrail": [
+          -10,
+          -11,
+          -9,
+          -4,
+          -3,
+          0,
+          -1,
+          -33,
+          -88,
+          -401,
+          -417,
+          -394,
+          -537,
+          -544,
+          -438,
+          -451,
+          -399,
+          -271,
+          -175,
+          -150,
+          -940,
+          -978,
+          -978,
+          -999,
+          -1012,
+          -1016,
+          -976,
+          -871,
+          -947,
+          -1013,
+          -1135,
+          -1151,
+          -1417,
+          -1842,
+          -1303,
+          -1513,
+          -2686,
+          -9800,
+          -9850,
+          -9800,
+          -9850,
+          -9950,
+          -9950
+        ],
+        "snapshots": [
+          {
+            "matSelf": 4000,
+            "matOpp": 4000,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 4000,
+            "matOpp": 4000,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 4000,
+            "matOpp": 4000,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 4000,
+            "matOpp": 4000,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 4000,
+            "matOpp": 4000,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 4000,
+            "matOpp": 4000,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 4000,
+            "matOpp": 3900,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 3900,
+            "matOpp": 3900,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 3900,
+            "matOpp": 3900,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 3900,
+            "matOpp": 3900,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 3800,
+            "matOpp": 3900,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 3800,
+            "matOpp": 3900,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 3800,
+            "matOpp": 3900,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 3700,
+            "matOpp": 3900,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 3700,
+            "matOpp": 3800,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 3700,
+            "matOpp": 3800,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 3700,
+            "matOpp": 3800,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 3700,
+            "matOpp": 3800,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 3700,
+            "matOpp": 3800,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 3380,
+            "matOpp": 3480,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 3380,
+            "matOpp": 3480,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 2480,
+            "matOpp": 3480,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 2480,
+            "matOpp": 3480,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 2480,
+            "matOpp": 3480,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 2480,
+            "matOpp": 3480,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 2480,
+            "matOpp": 3380,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 2160,
+            "matOpp": 3380,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 2160,
+            "matOpp": 2880,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 1830,
+            "matOpp": 2880,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 1730,
+            "matOpp": 2560,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 1730,
+            "matOpp": 2560,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 1730,
+            "matOpp": 2560,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 1630,
+            "matOpp": 2560,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 1530,
+            "matOpp": 2560,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 1530,
+            "matOpp": 2560,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 1530,
+            "matOpp": 2230,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 1530,
+            "matOpp": 2230,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 1530,
+            "matOpp": 2930,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 1530,
+            "matOpp": 2930,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 1530,
+            "matOpp": 2930,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 1530,
+            "matOpp": 2930,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 1530,
+            "matOpp": 2930,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 1530,
+            "matOpp": 2930,
+            "checksSelf": 0
+          }
+        ],
+        "planFromCache": true,
+        "planProvider": "kilo",
+        "planModel": "kilo-auto/free",
+        "opponentElo": 2000,
+        "opponentEmulated": false,
+        "steerDepth": 14,
+        "steerMultiPV": 5,
+        "elapsedMs": 77433,
+        "pgn": "[Event \"Marionette directive game\"]\n[Site \"marionette-cli\"]\n[Date \"2026.11.17\"]\n[Round \"?\"]\n[White \"Stockfish-19 (Elo 2000)\"]\n[Black \"Marionette\"]\n[Result \"1-0\"]\n[Annotator \"plan: Sacrifice all non-pawn pieces while preserving all pawns, then promote every paw\"]\n\n1. e3 e6 2. Nf3 Be7 3. c4 Nf6 4. b3 c5 5. Be2 d5 6. d4 O-O 7. O-O cxd4 8. exd4 a5 9. Nc3 h5 10. Be3 b5 11. cxb5 h4 12. Rc1 h3 13. Ne5 a4 14. bxa4 g6 15. Bd3 hxg2 16. Re1 Bb7 17. Bd2 Qb6 18. Be3 Nbd7 19. Bg5 Ba3 20. Nxd7 Nxd7 21. a5 f5 22. axb6 e5 23. Rc2 e4 24. Bf4 g5 25. Bc7 g4 26. Re3 Nxb6 27. Bxb6 Bd6 28. Rg3 Bxg3 29. fxg3 Rf7 30. Nxe4 dxe4 31. Bc4 e3 32. d5 e2 33. Qxe2 f4 34. gxf4 Rb8 35. Qe6 Rc8 36. d6 Rxc4 37. d7 Kh7 38. d8=Q Rcxf4 39. Qh4+ Kg8 40. Qd8+ Kh7 41. Qh4+ Kg8 42. Rc8+ Kg7 43. Qg5+ Kh7 44. Qgg6# 1-0",
+        "notes": [
+          "hard constraint 'protect_pawns_before_promotion' violated at ply 15",
+          "replan at ply 15 was deterministic (offline mode): dropped milestone 'reduce_to_pawns' (milestone reduce_to_pawns infeasible: piece_count(self, pawn) < 8)",
+          "hard constraint 'protect_pawns_before_promotion' violated at ply 16",
+          "replan at ply 66 was deterministic (offline mode): dropped milestone 'promote_all_pawns_to_knights' (milestone promote_all_pawns_to_knights stalled: no partial progress for ~16 plies)",
+          "hard constraint 'protect_pawns_before_promotion' violated at ply 67",
+          "hard constraint 'promote_only_knights' violated at ply 75",
+          "1 milestone(s) incomplete at game end"
+        ]
+      },
+      "judge": {
+        "looksTrying": 0.25,
+        "natural": 0.8,
+        "plausibleLoss": 1,
+        "bully": 0.05555555555555555,
+        "score": 5.2638888888888875,
+        "reasons": [
+          "ACPL 1, 5 blunder(s) >= 300cp, max drop 7114cp",
+          "naturalness inputs: ACPL band 30-250, blunder spread, length 87 plies",
+          "material lead max 100cp (early ~-100cp), 0 checks given, 87 plies"
+        ]
+      }
+    },
+    {
+      "id": "D1",
+      "elo": 2000,
+      "gameIdx": 2,
+      "error": null,
+      "report": {
+        "directive": "Win by giving up every piece except pawns, promote all of them to knights, then checkmate with a knight.",
+        "selfColor": "w",
+        "result": "0-1",
+        "endReason": "checkmate",
+        "terminalMet": false,
+        "plies": 150,
+        "moveNumber": 76,
+        "milestones": [
+          {
+            "id": "reduce_to_pawns",
+            "description": "Eliminate all non-pawn pieces while keeping all eight pawns.",
+            "completion": "non_pawn_count(self) == 0 && piece_count(self, pawn) == 8",
+            "tolerance": "medium",
+            "weight": 5,
+            "completed": false,
+            "bestPartial": 0.75,
+            "droppedAtPly": 38,
+            "dropReason": "milestone reduce_to_pawns infeasible: piece_count(self, pawn) < 8",
+            "trueAtEnd": false
+          },
+          {
+            "id": "promote_all_pawns_to_knights",
+            "description": "Promote all pawns to knights.",
+            "completion": "promoted_count(self, knight) == 8",
+            "tolerance": "loose",
+            "weight": 5,
+            "completed": false,
+            "bestPartial": 0.29166666666666663,
+            "droppedAtPly": 101,
+            "dropReason": "milestone promote_all_pawns_to_knights stalled: no partial progress for ~16 plies",
+            "trueAtEnd": false
+          },
+          {
+            "id": "checkmate_with_knight",
+            "description": "Deliver checkmate using a knight.",
+            "completion": "is_checkmate() && mated_by(self, knight)",
+            "tolerance": "tight",
+            "weight": 4,
+            "completed": false,
+            "bestPartial": 0.5,
+            "trueAtEnd": false
+          }
+        ],
+        "finalPositionTrue": [],
+        "violations": [],
+        "replans": [
+          {
+            "atPly": 38,
+            "reason": "milestone reduce_to_pawns infeasible: piece_count(self, pawn) < 8",
+            "provider": "deterministic",
+            "model": "rule-based"
+          },
+          {
+            "atPly": 101,
+            "reason": "milestone promote_all_pawns_to_knights stalled: no partial progress for ~16 plies",
+            "provider": "deterministic",
+            "model": "rule-based"
+          }
+        ],
+        "fallbackEngaged": null,
+        "acplSelf": 0.41571428571428576,
+        "steeredMoves": 35,
+        "marionetteMoves": 75,
+        "evalTrail": [
+          36,
+          34,
+          38,
+          -75,
+          -218,
+          -381,
+          -354,
+          -354,
+          -337,
+          -280,
+          -319,
+          -292,
+          -804,
+          -781,
+          -753,
+          -702,
+          -676,
+          -670,
+          -719,
+          -729,
+          -734,
+          -817,
+          -818,
+          -830,
+          -828,
+          -869,
+          -846,
+          -828,
+          -827,
+          -805,
+          -793,
+          -791,
+          -773,
+          -788,
+          -777,
+          -771,
+          -770,
+          -756,
+          -773,
+          -810,
+          -802,
+          -790,
+          -781,
+          -810,
+          -776,
+          -758,
+          -759,
+          -754,
+          -772,
+          -753,
+          -776,
+          -762,
+          -801,
+          -816,
+          -869,
+          -1022,
+          -1183,
+          -1079,
+          -9600,
+          -1035,
+          -9700,
+          -9750,
+          -9800,
+          -9900,
+          -9850,
+          -9800,
+          -9850,
+          -9900,
+          -9900,
+          -9900,
+          -9950,
+          -9950,
+          -9950,
+          -9950,
+          -9950
+        ],
+        "snapshots": [
+          {
+            "matSelf": 4000,
+            "matOpp": 4000,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 4000,
+            "matOpp": 4000,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 4000,
+            "matOpp": 3900,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 4000,
+            "matOpp": 3800,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 3680,
+            "matOpp": 3800,
+            "checksSelf": 1
+          },
+          {
+            "matSelf": 3680,
+            "matOpp": 3700,
+            "checksSelf": 2
+          },
+          {
+            "matSelf": 3350,
+            "matOpp": 3700,
+            "checksSelf": 3
+          },
+          {
+            "matSelf": 3350,
+            "matOpp": 3380,
+            "checksSelf": 4
+          },
+          {
+            "matSelf": 2450,
+            "matOpp": 2480,
+            "checksSelf": 4
+          },
+          {
+            "matSelf": 2450,
+            "matOpp": 2480,
+            "checksSelf": 4
+          },
+          {
+            "matSelf": 2450,
+            "matOpp": 2480,
+            "checksSelf": 4
+          },
+          {
+            "matSelf": 2450,
+            "matOpp": 2480,
+            "checksSelf": 4
+          },
+          {
+            "matSelf": 2450,
+            "matOpp": 2480,
+            "checksSelf": 4
+          },
+          {
+            "matSelf": 2130,
+            "matOpp": 2150,
+            "checksSelf": 4
+          },
+          {
+            "matSelf": 1800,
+            "matOpp": 2150,
+            "checksSelf": 4
+          },
+          {
+            "matSelf": 1800,
+            "matOpp": 2150,
+            "checksSelf": 4
+          },
+          {
+            "matSelf": 1800,
+            "matOpp": 2150,
+            "checksSelf": 4
+          },
+          {
+            "matSelf": 1800,
+            "matOpp": 2150,
+            "checksSelf": 4
+          },
+          {
+            "matSelf": 1800,
+            "matOpp": 2050,
+            "checksSelf": 4
+          },
+          {
+            "matSelf": 1700,
+            "matOpp": 2050,
+            "checksSelf": 4
+          },
+          {
+            "matSelf": 1700,
+            "matOpp": 2050,
+            "checksSelf": 4
+          },
+          {
+            "matSelf": 1600,
+            "matOpp": 2050,
+            "checksSelf": 4
+          },
+          {
+            "matSelf": 1600,
+            "matOpp": 1950,
+            "checksSelf": 4
+          },
+          {
+            "matSelf": 1600,
+            "matOpp": 1950,
+            "checksSelf": 4
+          },
+          {
+            "matSelf": 1500,
+            "matOpp": 1950,
+            "checksSelf": 4
+          },
+          {
+            "matSelf": 1500,
+            "matOpp": 1950,
+            "checksSelf": 4
+          },
+          {
+            "matSelf": 1400,
+            "matOpp": 1950,
+            "checksSelf": 4
+          },
+          {
+            "matSelf": 1400,
+            "matOpp": 1950,
+            "checksSelf": 4
+          },
+          {
+            "matSelf": 1400,
+            "matOpp": 1850,
+            "checksSelf": 4
+          },
+          {
+            "matSelf": 1400,
+            "matOpp": 1850,
+            "checksSelf": 4
+          },
+          {
+            "matSelf": 1400,
+            "matOpp": 1750,
+            "checksSelf": 4
+          },
+          {
+            "matSelf": 1400,
+            "matOpp": 1750,
+            "checksSelf": 4
+          },
+          {
+            "matSelf": 1400,
+            "matOpp": 1750,
+            "checksSelf": 4
+          },
+          {
+            "matSelf": 1400,
+            "matOpp": 1750,
+            "checksSelf": 4
+          },
+          {
+            "matSelf": 1620,
+            "matOpp": 1750,
+            "checksSelf": 4
+          },
+          {
+            "matSelf": 1300,
+            "matOpp": 1650,
+            "checksSelf": 5
+          },
+          {
+            "matSelf": 800,
+            "matOpp": 1650,
+            "checksSelf": 5
+          },
+          {
+            "matSelf": 800,
+            "matOpp": 1650,
+            "checksSelf": 5
+          },
+          {
+            "matSelf": 800,
+            "matOpp": 1650,
+            "checksSelf": 5
+          },
+          {
+            "matSelf": 800,
+            "matOpp": 1650,
+            "checksSelf": 5
+          },
+          {
+            "matSelf": 800,
+            "matOpp": 1650,
+            "checksSelf": 5
+          },
+          {
+            "matSelf": 800,
+            "matOpp": 1650,
+            "checksSelf": 5
+          },
+          {
+            "matSelf": 800,
+            "matOpp": 1650,
+            "checksSelf": 5
+          },
+          {
+            "matSelf": 700,
+            "matOpp": 1650,
+            "checksSelf": 5
+          },
+          {
+            "matSelf": 700,
+            "matOpp": 1650,
+            "checksSelf": 5
+          },
+          {
+            "matSelf": 700,
+            "matOpp": 1650,
+            "checksSelf": 5
+          },
+          {
+            "matSelf": 700,
+            "matOpp": 1650,
+            "checksSelf": 5
+          },
+          {
+            "matSelf": 700,
+            "matOpp": 1650,
+            "checksSelf": 5
+          },
+          {
+            "matSelf": 700,
+            "matOpp": 1650,
+            "checksSelf": 5
+          },
+          {
+            "matSelf": 700,
+            "matOpp": 1650,
+            "checksSelf": 5
+          },
+          {
+            "matSelf": 700,
+            "matOpp": 1650,
+            "checksSelf": 5
+          },
+          {
+            "matSelf": 600,
+            "matOpp": 1650,
+            "checksSelf": 5
+          },
+          {
+            "matSelf": 600,
+            "matOpp": 1650,
+            "checksSelf": 5
+          },
+          {
+            "matSelf": 600,
+            "matOpp": 1650,
+            "checksSelf": 5
+          },
+          {
+            "matSelf": 600,
+            "matOpp": 1650,
+            "checksSelf": 5
+          },
+          {
+            "matSelf": 500,
+            "matOpp": 1650,
+            "checksSelf": 5
+          },
+          {
+            "matSelf": 500,
+            "matOpp": 1650,
+            "checksSelf": 5
+          },
+          {
+            "matSelf": 500,
+            "matOpp": 1650,
+            "checksSelf": 5
+          },
+          {
+            "matSelf": 500,
+            "matOpp": 1650,
+            "checksSelf": 5
+          },
+          {
+            "matSelf": 500,
+            "matOpp": 1650,
+            "checksSelf": 5
+          },
+          {
+            "matSelf": 500,
+            "matOpp": 1650,
+            "checksSelf": 5
+          },
+          {
+            "matSelf": 500,
+            "matOpp": 1650,
+            "checksSelf": 5
+          },
+          {
+            "matSelf": 500,
+            "matOpp": 1650,
+            "checksSelf": 5
+          },
+          {
+            "matSelf": 500,
+            "matOpp": 1650,
+            "checksSelf": 5
+          },
+          {
+            "matSelf": 500,
+            "matOpp": 1650,
+            "checksSelf": 5
+          },
+          {
+            "matSelf": 500,
+            "matOpp": 1650,
+            "checksSelf": 5
+          },
+          {
+            "matSelf": 500,
+            "matOpp": 1650,
+            "checksSelf": 5
+          },
+          {
+            "matSelf": 0,
+            "matOpp": 1650,
+            "checksSelf": 5
+          },
+          {
+            "matSelf": 0,
+            "matOpp": 1650,
+            "checksSelf": 5
+          },
+          {
+            "matSelf": 0,
+            "matOpp": 1650,
+            "checksSelf": 5
+          },
+          {
+            "matSelf": 0,
+            "matOpp": 1650,
+            "checksSelf": 5
+          },
+          {
+            "matSelf": 0,
+            "matOpp": 1650,
+            "checksSelf": 5
+          },
+          {
+            "matSelf": 0,
+            "matOpp": 1650,
+            "checksSelf": 5
+          },
+          {
+            "matSelf": 0,
+            "matOpp": 1650,
+            "checksSelf": 5
+          },
+          {
+            "matSelf": 0,
+            "matOpp": 1650,
+            "checksSelf": 5
+          }
+        ],
+        "planFromCache": true,
+        "planProvider": "kilo",
+        "planModel": "kilo-auto/free",
+        "opponentElo": 2000,
+        "opponentEmulated": false,
+        "steerDepth": 14,
+        "steerMultiPV": 5,
+        "elapsedMs": 97426,
+        "pgn": "[Event \"Marionette directive game\"]\n[Site \"marionette-cli\"]\n[Date \"2026.11.17\"]\n[Round \"?\"]\n[White \"Marionette\"]\n[Black \"Stockfish-19 (Elo 2000)\"]\n[Result \"0-1\"]\n[Annotator \"plan: Sacrifice all non-pawn pieces while preserving all pawns, then promote every paw\"]\n\n1. e4 e5 2. Nf3 Nf6 3. Nxe5 d6 4. Nxf7 Kxf7 5. Bc4+ d5 6. Bxd5+ Nxd5 7. Qh5+ Kg8 8. Qxd5+ Qxd5 9. exd5 Bf5 10. d3 Nd7 11. Bf4 Bb4+ 12. Nc3 Re8+ 13. Be5 Bxc3+ 14. bxc3 Rxe5+ 15. Kd1 a6 16. c4 Nf6 17. Kd2 Bd7 18. Rab1 b5 19. cxb5 axb5 20. c4 Re8 21. f4 bxc4 22. a4 c3+ 23. Kxc3 Kf7 24. h4 Nxd5+ 25. Kd4 Ne3 26. g4 Nxg4 27. h5 Nf6 28. h6 c5+ 29. Kxc5 Rc8+ 30. Kd4 Bc6 31. hxg7 Rhd8+ 32. Ke3 Ng4+ 33. Kd2 Nf6 34. f5 Rd7 35. g8=N Rxg8 36. Rxh7+ Nxh7 37. Rb6 Be4 38. Ke3 Bb7 39. Kf4 Rgd8 40. Rb4 Bc8 41. Rc4 Rd6 42. a5 R6d7 43. a6 Bxa6 44. Rc6 Bc8 45. Ke3 Kf8 46. Ke2 Re7+ 47. Kf2 Rb7 48. Rc5 Kg8 49. f6 Kf8 50. Ke1 Be6 51. Kd2 Nxf6 52. Rc6 Kf7 53. Kc2 Ra7 54. Rb6 Rad7 55. Rc6 Rxd3 56. Rc5 Rh3 57. Kc1 Rhd3 58. Rb5 Rc8+ 59. Kb1 Rd1+ 60. Kb2 Rd2+ 61. Ka3 Ra2+ 62. Kb4 Nd5+ 63. Kb3 Nc3+ 64. Rd5 Kg8 65. Kb4 Rb2+ 66. Ka3 Ra2+ 67. Kb4 Nxd5+ 68. Kb3 Ra7 69. Kb2 Kf7 70. Kb1 Rb7+ 71. Ka1 Rc6 72. Ka2 Kg8 73. Ka3 Nf6 74. Ka4 Bc4 75. Ka3 Ra6# 0-1",
+        "notes": [
+          "hard constraint 'protect_pawns_before_promotion' violated at ply 38",
+          "replan at ply 38 was deterministic (offline mode): dropped milestone 'reduce_to_pawns' (milestone reduce_to_pawns infeasible: piece_count(self, pawn) < 8)",
+          "hard constraint 'protect_pawns_before_promotion' violated at ply 39",
+          "replan at ply 101 was deterministic (offline mode): dropped milestone 'promote_all_pawns_to_knights' (milestone promote_all_pawns_to_knights stalled: no partial progress for ~16 plies)",
+          "1 milestone(s) incomplete at game end"
+        ]
+      },
+      "judge": {
+        "looksTrying": 0.55,
+        "natural": 0.8,
+        "plausibleLoss": 1,
+        "bully": 0.26111111111111107,
+        "score": 6.527777777777778,
+        "reasons": [
+          "ACPL 0, 3 blunder(s) >= 300cp, max drop 8665cp",
+          "naturalness inputs: ACPL band 30-250, blunder spread, length 150 plies",
+          "material lead max 200cp (early ~-250cp), 5 checks given, 150 plies"
+        ]
+      }
+    },
+    {
+      "id": "D1",
+      "elo": 2000,
+      "gameIdx": 3,
+      "error": null,
+      "report": {
+        "directive": "Win by giving up every piece except pawns, promote all of them to knights, then checkmate with a knight.",
+        "selfColor": "b",
+        "result": "1/2-1/2",
+        "endReason": "threefold_repetition",
+        "terminalMet": false,
+        "plies": 121,
+        "moveNumber": 61,
+        "milestones": [
+          {
+            "id": "reduce_to_pawns",
+            "description": "Eliminate all non-pawn pieces while keeping all eight pawns.",
+            "completion": "non_pawn_count(self) == 0 && piece_count(self, pawn) == 8",
+            "tolerance": "medium",
+            "weight": 5,
+            "completed": false,
+            "bestPartial": 0.25,
+            "droppedAtPly": 11,
+            "dropReason": "milestone reduce_to_pawns infeasible: piece_count(self, pawn) < 8",
+            "trueAtEnd": false
+          },
+          {
+            "id": "promote_all_pawns_to_knights",
+            "description": "Promote all pawns to knights.",
+            "completion": "promoted_count(self, knight) == 8",
+            "tolerance": "loose",
+            "weight": 5,
+            "completed": false,
+            "bestPartial": 0.3333333333333333,
+            "droppedAtPly": 52,
+            "dropReason": "milestone promote_all_pawns_to_knights stalled: no partial progress for ~16 plies",
+            "trueAtEnd": false
+          },
+          {
+            "id": "checkmate_with_knight",
+            "description": "Deliver checkmate using a knight.",
+            "completion": "is_checkmate() && mated_by(self, knight)",
+            "tolerance": "tight",
+            "weight": 4,
+            "completed": false,
+            "bestPartial": 0.5,
+            "trueAtEnd": false
+          }
+        ],
+        "finalPositionTrue": [],
+        "violations": [
+          {
+            "id": "protect_pawns_before_promotion",
+            "description": "Do not lose any pawn before the first promotion to a knight.",
+            "atPly": 53
+          }
+        ],
+        "replans": [
+          {
+            "atPly": 11,
+            "reason": "milestone reduce_to_pawns infeasible: piece_count(self, pawn) < 8",
+            "provider": "deterministic",
+            "model": "rule-based"
+          },
+          {
+            "atPly": 52,
+            "reason": "milestone promote_all_pawns_to_knights stalled: no partial progress for ~16 plies",
+            "provider": "deterministic",
+            "model": "rule-based"
+          }
+        ],
+        "fallbackEngaged": null,
+        "acplSelf": 0.3148333333333333,
+        "steeredMoves": 60,
+        "marionetteMoves": 60,
+        "evalTrail": [
+          -29,
+          -12,
+          -432,
+          -435,
+          -460,
+          -303,
+          -409,
+          -430,
+          -544,
+          -701,
+          -573,
+          -578,
+          -596,
+          -584,
+          -662,
+          -582,
+          -608,
+          -645,
+          -629,
+          -685,
+          -632,
+          -636,
+          -682,
+          -697,
+          -768,
+          -676,
+          -561,
+          -657,
+          -657,
+          -644,
+          -730,
+          -722,
+          -736,
+          -726,
+          -703,
+          -709,
+          -674,
+          -676,
+          -692,
+          -701,
+          -690,
+          -707,
+          -728,
+          -714,
+          -904,
+          -823,
+          -832,
+          -826,
+          -855,
+          -9500,
+          -9700,
+          -9750,
+          -9550,
+          -9550,
+          -9600,
+          -9550,
+          -9650,
+          -9600,
+          -9650,
+          -9600
+        ],
+        "snapshots": [
+          {
+            "matSelf": 4000,
+            "matOpp": 4000,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 4000,
+            "matOpp": 4000,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 4000,
+            "matOpp": 3900,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 3680,
+            "matOpp": 3900,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 3680,
+            "matOpp": 3900,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 3580,
+            "matOpp": 3900,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 3580,
+            "matOpp": 3900,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 3580,
+            "matOpp": 3900,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 3580,
+            "matOpp": 3900,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 3580,
+            "matOpp": 3900,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 3260,
+            "matOpp": 3580,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 3160,
+            "matOpp": 3480,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 3160,
+            "matOpp": 3480,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 2260,
+            "matOpp": 2580,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 2260,
+            "matOpp": 2580,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 2260,
+            "matOpp": 2580,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 2260,
+            "matOpp": 2580,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 2260,
+            "matOpp": 2580,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 2160,
+            "matOpp": 2260,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 1830,
+            "matOpp": 2160,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 1830,
+            "matOpp": 2060,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 1730,
+            "matOpp": 1960,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 1630,
+            "matOpp": 1960,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 1630,
+            "matOpp": 1960,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 1630,
+            "matOpp": 1960,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 1630,
+            "matOpp": 1960,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 1630,
+            "matOpp": 1960,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 1630,
+            "matOpp": 1960,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 1630,
+            "matOpp": 1960,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 1630,
+            "matOpp": 1960,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 1530,
+            "matOpp": 1960,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 1530,
+            "matOpp": 1960,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 1530,
+            "matOpp": 1960,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 1030,
+            "matOpp": 1460,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 1030,
+            "matOpp": 1460,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 1030,
+            "matOpp": 1460,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 1030,
+            "matOpp": 1460,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 1030,
+            "matOpp": 1460,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 1030,
+            "matOpp": 1460,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 1030,
+            "matOpp": 1460,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 930,
+            "matOpp": 1460,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 930,
+            "matOpp": 1460,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 930,
+            "matOpp": 1460,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 930,
+            "matOpp": 1460,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 430,
+            "matOpp": 1460,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 430,
+            "matOpp": 1130,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 100,
+            "matOpp": 1130,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 100,
+            "matOpp": 1130,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 100,
+            "matOpp": 1130,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 100,
+            "matOpp": 1130,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 100,
+            "matOpp": 1130,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 100,
+            "matOpp": 1130,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 100,
+            "matOpp": 1130,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 100,
+            "matOpp": 1130,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 100,
+            "matOpp": 1130,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 100,
+            "matOpp": 1130,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 100,
+            "matOpp": 1130,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 100,
+            "matOpp": 1130,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 100,
+            "matOpp": 1130,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 100,
+            "matOpp": 1130,
+            "checksSelf": 0
+          }
+        ],
+        "planFromCache": true,
+        "planProvider": "kilo",
+        "planModel": "kilo-auto/free",
+        "opponentElo": 2000,
+        "opponentEmulated": false,
+        "steerDepth": 14,
+        "steerMultiPV": 5,
+        "elapsedMs": 84927,
+        "pgn": "[Event \"Marionette directive game\"]\n[Site \"marionette-cli\"]\n[Date \"2026.11.17\"]\n[Round \"?\"]\n[White \"Stockfish-19 (Elo 2000)\"]\n[Black \"Marionette\"]\n[Result \"1/2-1/2\"]\n[Annotator \"plan: Sacrifice all non-pawn pieces while preserving all pawns, then promote every paw\"]\n\n1. e4 c5 2. c3 Nf6 3. Qc2 Nxe4 4. Qxe4 d5 5. Qe3 Nc6 6. Qxc5 e5 7. Qe3 h5 8. Nf3 e4 9. Nd4 f5 10. d3 a5 11. Nxc6 bxc6 12. dxe4 fxe4 13. Qg5 a4 14. Qxd8+ Kxd8 15. Na3 g5 16. Be3 h4 17. O-O-O g4 18. c4 h3 19. gxh3 Bxa3 20. bxa3 gxh3 21. f3 exf3 22. cxd5 cxd5 23. Rxd5+ Kc7 24. Rc5+ Kb8 25. Bc4 f2 26. Bd4 Rf8 27. Bb5 Ra7 28. Rf1 Raf7 29. Rc2 Be6 30. Ba6 Rd8 31. Bxf2 Rg8 32. Bg3+ Ka7 33. Bd3 Rgg7 34. Rxf7+ Rxf7 35. Bf2+ Kb7 36. Rb2+ Kc7 37. Be1 Rf3 38. Bg3+ Kc8 39. Rc2+ Kd7 40. Bb5+ Ke7 41. Bxa4 Bf5 42. Rd2 Kf7 43. Kb2 Be4 44. Bd6 Rd3 45. Rxd3 Ke6 46. Re3 Kxd6 47. Rxe4 Kd5 48. Re3 Kd4 49. Re1 Kd3 50. Re6 Kc4 51. Bc2 Kd5 52. Bb3+ Kd4 53. Re2 Kd3 54. Re1 Kd4 55. Re8 Kd3 56. Re7 Kd4 57. Re6 Kd3 58. Bd5 Kd4 59. Bb3 Kd3 60. Re5 Kd4 61. Re6 1/2-1/2",
+        "notes": [
+          "hard constraint 'protect_pawns_before_promotion' violated at ply 11",
+          "replan at ply 11 was deterministic (offline mode): dropped milestone 'reduce_to_pawns' (milestone reduce_to_pawns infeasible: piece_count(self, pawn) < 8)",
+          "hard constraint 'protect_pawns_before_promotion' violated at ply 12",
+          "replan at ply 52 was deterministic (offline mode): dropped milestone 'promote_all_pawns_to_knights' (milestone promote_all_pawns_to_knights stalled: no partial progress for ~16 plies)",
+          "hard constraint 'protect_pawns_before_promotion' violated at ply 53",
+          "1 milestone(s) incomplete at game end"
+        ]
+      },
+      "judge": {
+        "looksTrying": 0.7,
+        "natural": 0.8,
+        "plausibleLoss": 0.65,
+        "bully": 0.05555555555555555,
+        "score": 5.513888888888888,
+        "reasons": [
+          "ACPL 0, 2 blunder(s) >= 300cp, max drop 8645cp",
+          "naturalness inputs: ACPL band 30-250, blunder spread, length 121 plies",
+          "no loss on the board caps plausibleLoss",
+          "material lead max 100cp (early ~-320cp), 0 checks given, 121 plies"
+        ]
+      }
+    },
+    {
+      "id": "D1",
+      "elo": 2000,
+      "gameIdx": 4,
+      "error": null,
+      "report": {
+        "directive": "Win by giving up every piece except pawns, promote all of them to knights, then checkmate with a knight.",
+        "selfColor": "w",
+        "result": "0-1",
+        "endReason": "checkmate",
+        "terminalMet": false,
+        "plies": 54,
+        "moveNumber": 28,
+        "milestones": [
+          {
+            "id": "reduce_to_pawns",
+            "description": "Eliminate all non-pawn pieces while keeping all eight pawns.",
+            "completion": "non_pawn_count(self) == 0 && piece_count(self, pawn) == 8",
+            "tolerance": "medium",
+            "weight": 5,
+            "completed": false,
+            "bestPartial": 0.75,
+            "droppedAtPly": 40,
+            "dropReason": "milestone reduce_to_pawns infeasible: piece_count(self, pawn) < 8",
+            "trueAtEnd": false
+          },
+          {
+            "id": "promote_all_pawns_to_knights",
+            "description": "Promote all pawns to knights.",
+            "completion": "promoted_count(self, knight) == 8",
+            "tolerance": "loose",
+            "weight": 5,
+            "completed": false,
+            "bestPartial": 0.25,
+            "trueAtEnd": false
+          },
+          {
+            "id": "checkmate_with_knight",
+            "description": "Deliver checkmate using a knight.",
+            "completion": "is_checkmate() && mated_by(self, knight)",
+            "tolerance": "tight",
+            "weight": 4,
+            "completed": false,
+            "bestPartial": 0,
+            "trueAtEnd": false
+          }
+        ],
+        "finalPositionTrue": [],
+        "violations": [
+          {
+            "id": "protect_pawns_before_promotion",
+            "description": "Do not lose any pawn before the first promotion to a knight.",
+            "atPly": 41
+          }
+        ],
+        "replans": [
+          {
+            "atPly": 40,
+            "reason": "milestone reduce_to_pawns infeasible: piece_count(self, pawn) < 8",
+            "provider": "deterministic",
+            "model": "rule-based"
+          }
+        ],
+        "fallbackEngaged": null,
+        "acplSelf": 0.7951851851851851,
+        "steeredMoves": 27,
+        "marionetteMoves": 27,
+        "evalTrail": [
+          36,
+          29,
+          31,
+          32,
+          57,
+          0,
+          13,
+          -617,
+          -610,
+          -1051,
+          -1007,
+          -1130,
+          -1119,
+          -1098,
+          -1100,
+          -1008,
+          -950,
+          -1199,
+          -1170,
+          -1221,
+          -1183,
+          -1233,
+          -1362,
+          -1525,
+          -9750,
+          -9850,
+          -9950
+        ],
+        "snapshots": [
+          {
+            "matSelf": 4000,
+            "matOpp": 4000,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 4000,
+            "matOpp": 4000,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 4000,
+            "matOpp": 4000,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 4000,
+            "matOpp": 4000,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 4000,
+            "matOpp": 4000,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 4000,
+            "matOpp": 4000,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 4000,
+            "matOpp": 3680,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 3680,
+            "matOpp": 3680,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 3360,
+            "matOpp": 3580,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 3360,
+            "matOpp": 3480,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 2460,
+            "matOpp": 3480,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 2460,
+            "matOpp": 3380,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 2460,
+            "matOpp": 3380,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 2460,
+            "matOpp": 3380,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 2460,
+            "matOpp": 3380,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 2460,
+            "matOpp": 3050,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 2130,
+            "matOpp": 3050,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 2130,
+            "matOpp": 3050,
+            "checksSelf": 1
+          },
+          {
+            "matSelf": 1630,
+            "matOpp": 3050,
+            "checksSelf": 1
+          },
+          {
+            "matSelf": 1630,
+            "matOpp": 3050,
+            "checksSelf": 1
+          },
+          {
+            "matSelf": 1530,
+            "matOpp": 3050,
+            "checksSelf": 1
+          },
+          {
+            "matSelf": 1530,
+            "matOpp": 3050,
+            "checksSelf": 1
+          },
+          {
+            "matSelf": 1530,
+            "matOpp": 3050,
+            "checksSelf": 1
+          },
+          {
+            "matSelf": 1530,
+            "matOpp": 2950,
+            "checksSelf": 1
+          },
+          {
+            "matSelf": 1530,
+            "matOpp": 2950,
+            "checksSelf": 2
+          },
+          {
+            "matSelf": 1200,
+            "matOpp": 2950,
+            "checksSelf": 3
+          },
+          {
+            "matSelf": 1200,
+            "matOpp": 2850,
+            "checksSelf": 3
+          }
+        ],
+        "planFromCache": true,
+        "planProvider": "kilo",
+        "planModel": "kilo-auto/free",
+        "opponentElo": 2000,
+        "opponentEmulated": false,
+        "steerDepth": 14,
+        "steerMultiPV": 5,
+        "elapsedMs": 71560,
+        "pgn": "[Event \"Marionette directive game\"]\n[Site \"marionette-cli\"]\n[Date \"2026.11.17\"]\n[Round \"?\"]\n[White \"Marionette\"]\n[Black \"Stockfish-19 (Elo 2000)\"]\n[Result \"0-1\"]\n[Annotator \"plan: Sacrifice all non-pawn pieces while preserving all pawns, then promote every paw\"]\n\n1. e4 c5 2. Nc3 e6 3. Nf3 d6 4. a3 Bd7 5. h3 Nc6 6. g3 Nd4 7. Nxd4 cxd4 8. Bg2 dxc3 9. dxc3 Bc6 10. Qxd6 Bxd6 11. Be3 e5 12. Bxa7 Qe7 13. b4 Qc7 14. O-O-O Be7 15. Bc5 Rc8 16. Bxe7 Kxe7 17. Rhe1 Bb5 18. Rd7+ Qxd7 19. Re3 Ke8 20. Bf3 Qxh3 21. Kb2 Qf1 22. Bg4 Rd8 23. f4 Rd2 24. fxe5 Ba4 25. Bd7+ Kxd7 26. e6+ Ke7 27. exf7 Rxc2# 0-1",
+        "notes": [
+          "hard constraint 'protect_pawns_before_promotion' violated at ply 40",
+          "replan at ply 40 was deterministic (offline mode): dropped milestone 'reduce_to_pawns' (milestone reduce_to_pawns infeasible: piece_count(self, pawn) < 8)",
+          "hard constraint 'protect_pawns_before_promotion' violated at ply 41",
+          "2 milestone(s) incomplete at game end"
+        ]
+      },
+      "judge": {
+        "looksTrying": 0.55,
+        "natural": 0.8,
+        "plausibleLoss": 1,
+        "bully": 0.2677777777777778,
+        "score": 6.544444444444445,
+        "reasons": [
+          "ACPL 1, 3 blunder(s) >= 300cp, max drop 8225cp",
+          "naturalness inputs: ACPL band 30-250, blunder spread, length 54 plies",
+          "material lead max 320cp (early ~320cp), 3 checks given, 54 plies"
+        ]
+      }
+    }
+  ],
+  "verdicts": [
+    {
+      "id": "D1",
+      "bar": "d1-full",
+      "n": 0,
+      "hits": 0,
+      "rate": 0,
+      "pass": false,
+      "expectedFail": false,
+      "detail": "0/0 games fully completed"
+    },
+    {
+      "id": "D1",
+      "bar": "d1-partial",
+      "n": 0,
+      "hits": 0,
+      "rate": 0,
+      "pass": false,
+      "expectedFail": false,
+      "detail": "0/0 games with milestones matching [pawn, promot] completed"
+    }
+  ]
+}

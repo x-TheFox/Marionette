@@ -48,8 +48,8 @@ describe('lambda mapping', () => {
     expect(λ).toBeLessThanOrEqual(0.6);
   });
 
-  it('losing position with a win target raises lambda', () => {
-    const compiled = plan(WIN_PLAN);
+  it('losing position with a win target raises lambda (terminal-first plans)', () => {
+    const compiled = plan({ ...WIN_PLAN, terminal: { kind: 'win', priority: 'terminal_first' } });
     const behind = ctx(['e4', 'e5'], 'w', -600);
     const ahead = ctx(['e4', 'e5'], 'w', 600);
     const λBehind = lambdaFor({ milestone: { ...compiled.milestones[0]!, spec: { ...compiled.milestones[0]!.spec, tolerance: 'loose' } }, plan: compiled }, behind);
@@ -366,11 +366,18 @@ describe('D6 steering iteration: lambda shedding exemption', () => {
     expect(λ).toBeCloseTo(0.12, 5); // shedding caps lambda at loose, NOT the 1.2 behind-raise
   });
 
-  it('a non-shedding milestone still raises lambda when behind (protect the terminal)', () => {
-    const compiled = plan(WIN_PLAN);
+  it('a non-shedding milestone still raises lambda when behind IF the plan is terminal-first (protect the terminal)', () => {
+    const compiled = plan({ ...WIN_PLAN, terminal: { kind: 'win', priority: 'terminal_first' } });
     const behind = ctx(['e4', 'e5'], 'w', -600);
     const λ = lambdaFor({ milestone: compiled.milestones[0]!, plan: compiled }, behind);
     expect(λ).toBeGreaterThanOrEqual(1.2);
+  });
+
+  it('a milestones_first plan trusts the active milestone tolerance when behind (D1 promote phase is behind by construction)', () => {
+    const compiled = plan(WIN_PLAN); // milestones_first, medium tolerance milestone
+    const behind = ctx(['e4', 'e5'], 'w', -600);
+    const λ = lambdaFor({ milestone: compiled.milestones[0]!, plan: compiled }, behind);
+    expect(λ).toBeCloseTo(0.6, 5); // medium tolerance, no behind-raise
   });
 });
 
