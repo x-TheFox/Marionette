@@ -343,7 +343,9 @@ async function main(): Promise<void> {
             const judge = heuristicJudge(report);
             writeFileSync(join(dir, 'metrics.json'), JSON.stringify({ report, judge }, null, 2));
             const res = `${report.result} (${report.endReason})`;
-            const ms = `${report.milestones.filter((m) => m.completed).length}/${report.milestones.length} ms`;
+            const done = report.milestones.filter((m) => m.completed).length;
+            const droppedN = report.milestones.filter((m) => m.droppedAtPly != null).length;
+            const ms = `${done}/${report.milestones.length}${droppedN > 0 ? ` (${droppedN} dropped)` : ''} ms`;
             console.log(
               `[done] ${label}: ${res}, terminal ${report.terminalMet ? 'MET' : 'no'}, ${ms}, ACPL ${report.acplSelf?.toFixed(0) ?? '-'}, ${((Date.now() - t0) / 1000).toFixed(0)}s`,
             );
@@ -372,7 +374,7 @@ async function main(): Promise<void> {
   lines.push(`# Marionette ${args.sweep} sweep — ${new Date().toISOString().slice(0, 10)}`);
   lines.push('');
   lines.push(
-    `- ${specs.length} directives x ${args.elos.join('/')} Elo x ${gamesPerCell} game(s); Marionette steering depth 14, MultiPV 5; opponent = Stockfish 19 (below 1320 emulated).`,
+    `- ${specs.length} directives x ${args.elos.join('/')} Elo x ${gamesPerCell} game(s); Marionette steering depth 14, MultiPV 5; opponent = Stockfish 19 (below 1320 emulated); max ${args.maxPlies} plies/game.`,
   );
   lines.push(
     `- Mode: ${offline ? 'offline — cached plans, deterministic replans, heuristic judge v1 (no LLM calls)' : 'online (LLM compiles/replans)'}.`,

@@ -1,6 +1,8 @@
 import { describe, it, expect } from 'vitest';
 import { compilePlan } from '../src/plan/schema.js';
 import { deterministicReplan } from '../src/game/deterministic.js';
+import { buildReportMilestones } from '../src/game/runner.js';
+import { PlanTracker } from '../src/game/tracker.js';
 import { heuristicJudge, blunderStats, JUDGE_THRESHOLDS } from '../src/game/judge.js';
 import type { GameReport } from '../src/game/runner.js';
 import type { ProgressReport } from '../src/compiler/prompt.js';
@@ -61,6 +63,52 @@ describe('deterministicReplan', () => {
       milestones: [D6_LIKE.milestones[0]],
     });
     expect(deterministicReplan(single, progress('reduce_to_kq'), 'stalled')).toBeNull();
+  });
+});
+
+describe('report milestones survive replans (dropped work stays visible)', () => {
+  it('a dropped milestone is reported incomplete with its drop reason, not forgotten', () => {
+    const original = compilePlan(D6_LIKE);
+    const revised = deterministicReplan(original, progress('reduce_to_kq', 'reduce_to_kq'), 'stalled')!;
+    // Game continued on the revised plan; deliver_mate completed later.
+    const tracker = new PlanTracker(revised.compiled, 'w');
+    const dropped = [
+      {
+        id: 'reduce_to_kq',
+        description: 'reduce to K+Q',
+        completion: 'piece_count(self, queen) == 1 && non_pawn_count(self) == 1',
+        tolerance: 'loose',
+        weight: 5,
+        completed: false,
+        bestPartial: 0.7,
+        droppedAtPly: 44,
+        reason: 'milestone reduce_to_kq stalled',
+      },
+    ];
+    const ms = buildReportMilestones(tracker, revised.compiled, original.milestones, dropped);
+    expect(ms.map((m) => m.id)).toEqual(['reduce_to_kq', 'deliver_mate']);
+    const reduce = ms[0]!;
+    expect(reduce.completed).toBe(false);
+    expect(reduce.droppedAtPly).toBe(44);
+    expect(reduce.dropReason).toContain('stalled');
+    // Full completion over this list must be FALSE even though the final
+    // plan's only milestone completed — the honesty invariant.
+    expect(ms.every((m) => m.completed)).toBe(false);
+  });
+
+  it('milestones introduced by a replan are appended and flagged', () => {
+    const original = compilePlan(D6_LIKE);
+    const revisedPlan = compilePlan({
+      ...D6_LIKE,
+      milestones: [
+        ...D6_LIKE.milestones,
+        { id: 'extra_goal', description: 'added later', completion: 'move_number() >= 30', tolerance: 'medium', weight: 1 },
+      ],
+    });
+    const tracker = new PlanTracker(revisedPlan, 'w');
+    const ms = buildReportMilestones(tracker, revisedPlan, original.milestones, []);
+    const extra = ms.find((m) => m.id === 'extra_goal')!;
+    expect(extra.addedByReplan).toBe(true);
   });
 });
 

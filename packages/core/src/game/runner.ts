@@ -73,6 +73,11 @@ export interface GameReport {
     completed: boolean;
     completedAtPly?: number;
     bestPartial: number;
+    /** Set when a replan removed this milestone before completion. */
+    droppedAtPly?: number;
+    dropReason?: string;
+    /** Set when a replan introduced this milestone (not in the original plan). */
+    addedByReplan?: boolean;
   }[];
   violations: ConstraintViolation[];
   replans: { atPly: number; reason: string; provider: string; model: string }[];
@@ -101,6 +106,20 @@ interface FallbackMode {
   action: string;
   /** 'steer' keeps normal steering; others replace move selection. */
   mode: 'steer' | 'best' | 'natural' | 'lose';
+}
+
+/** A milestone removed by a replan — kept in the report, never silently forgotten. */
+interface DroppedMilestone {
+  id: string;
+  description: string;
+  completion: string;
+  tolerance: string;
+  weight: number;
+  completed: boolean;
+  completedAtPly?: number;
+  bestPartial: number;
+  droppedAtPly: number;
+  reason: string;
 }
 
 export async function runDirectiveGame(opts: RunnerOptions): Promise<GameReport> {
@@ -136,6 +155,9 @@ export async function runDirectiveGame(opts: RunnerOptions): Promise<GameReport>
     marionetteMoves: number;
     evalTrail: (number | null)[];
     snapshots: { matSelf: number; matOpp: number; checksSelf: number }[];
+    /** Milestone specs of the ORIGINAL plan (report anchor across replans). */
+    originalMilestones: CompiledPlan['milestones'];
+    dropped: DroppedMilestone[];
     compileFromCache: boolean;
     compileProvider: string;
     compileModel: string;
@@ -152,6 +174,8 @@ export async function runDirectiveGame(opts: RunnerOptions): Promise<GameReport>
     marionetteMoves: 0,
     evalTrail: [],
     snapshots: [],
+    originalMilestones: [],
+    dropped: [],
     compileFromCache: false,
     compileProvider: '',
     compileModel: '',
@@ -186,6 +210,7 @@ export async function runDirectiveGame(opts: RunnerOptions): Promise<GameReport>
       fromCacheOnly: opts.planFromCacheOnly,
     });
     state.compiled = compileResult.compiled;
+    state.originalMilestones = compileResult.compiled.milestones;
     state.compileFromCache = compileResult.fromCache;
     state.compileProvider = compileResult.provider;
     state.compileModel = compileResult.model;
@@ -374,16 +399,7 @@ export async function runDirectiveGame(opts: RunnerOptions): Promise<GameReport>
       terminalMet: terminal,
       plies: finalPly,
       moveNumber: finalCtx.moveNumber,
-      milestones: compiled.milestones.map((ms, i) => ({
-        id: ms.spec.id,
-        description: ms.spec.description,
-        completion: ms.spec.completion,
-        tolerance: ms.spec.tolerance,
-        weight: ms.spec.weight,
-        completed: tracker.states[i]!.completed,
-        completedAtPly: tracker.states[i]!.completedAtPly,
-        bestPartial: tracker.states[i]!.bestPartial,
-      })),
+      milestones: buildReportMilestones(tracker, compiled, state.originalMilestones, state.dropped),
       violations: tracker.violations(),
       replans: [...state.replans],
       fallbackEngaged: state.fallback?.action ?? null,
@@ -429,6 +445,7 @@ export async function runDirectiveGame(opts: RunnerOptions): Promise<GameReport>
     const tryDeterministic = (why: string): boolean => {
       const r = deterministicReplan(state.compiled!, progress, reason);
       if (!r) return false;
+      recordDroppedMilestones(r.compiled, ply, reason);
       state.compiled = r.compiled;
       state.tracker = new PlanTracker(r.compiled, self, ply);
       state.tracker.rederive(ctx, ply);
@@ -455,6 +472,7 @@ export async function runDirectiveGame(opts: RunnerOptions): Promise<GameReport>
         replanReason: reason,
         noCache: true,
       });
+      recordDroppedMilestones(r.compiled, ply, reason);
       state.compiled = r.compiled;
       state.tracker = new PlanTracker(r.compiled, self, ply);
       state.tracker.rederive(ctx, ply);
@@ -476,6 +494,31 @@ export async function runDirectiveGame(opts: RunnerOptions): Promise<GameReport>
       engageFallback(`replan failed: ${reason}`, ply);
       return false;
     }
+  }
+
+  /** Snapshot milestones the new plan no longer contains: they stay in the
+   *  report as dropped/incomplete (or as completed achievements) — a replan
+   *  must never make unfinished work disappear. */
+  function recordDroppedMilestones(next: CompiledPlan, ply: number, reason: string): void {
+    const nextIds = new Set(next.plan.milestones.map((m) => m.id));
+    const oldCompiled = state.compiled!;
+    const oldTracker = state.tracker!;
+    oldCompiled.milestones.forEach((ms, i) => {
+      if (nextIds.has(ms.spec.id) || state.dropped.some((d) => d.id === ms.spec.id)) return;
+      const st = oldTracker.states[i]!;
+      state.dropped.push({
+        id: ms.spec.id,
+        description: ms.spec.description,
+        completion: ms.spec.completion,
+        tolerance: ms.spec.tolerance,
+        weight: ms.spec.weight,
+        completed: st.completed,
+        completedAtPly: st.completedAtPly,
+        bestPartial: st.completed ? 1 : st.bestPartial,
+        droppedAtPly: ply,
+        reason,
+      });
+    });
   }
 
   function engageFallback(reason: string, ply: number): void {
@@ -516,6 +559,75 @@ export async function runDirectiveGame(opts: RunnerOptions): Promise<GameReport>
 
 // ---------------------------------------------------------------------------
 // pure helpers
+
+/**
+ * Report milestone list anchored to the ORIGINAL plan: dropped milestones stay
+ * visible (incomplete, with the ply/reason they were dropped), milestones a
+ * replan introduced are appended and flagged. Without this, a replan that
+ * drops unfinished work would fake a "all milestones completed" report.
+ */
+export function buildReportMilestones(
+  tracker: PlanTracker,
+  finalCompiled: CompiledPlan,
+  originalMilestones: CompiledPlan['milestones'],
+  dropped: DroppedMilestone[],
+): GameReport['milestones'] {
+  const out: GameReport['milestones'] = [];
+  const seen = new Set<string>();
+  const stateOf = (ms: (typeof finalCompiled.milestones)[number], i: number) => {
+    const st = tracker.states[i]!;
+    return {
+      id: ms.spec.id,
+      description: ms.spec.description,
+      completion: ms.spec.completion,
+      tolerance: ms.spec.tolerance,
+      weight: ms.spec.weight,
+      completed: st.completed,
+      completedAtPly: st.completedAtPly,
+      bestPartial: st.bestPartial,
+    };
+  };
+  const original = originalMilestones;
+  original.forEach((ms) => {
+    seen.add(ms.spec.id);
+    const drop = dropped.find((d) => d.id === ms.spec.id);
+    const finalIdx = finalCompiled.milestones.findIndex((m) => m.spec.id === ms.spec.id);
+    if (finalIdx >= 0) {
+      out.push(stateOf(finalCompiled.milestones[finalIdx]!, finalIdx));
+    } else if (drop) {
+      out.push({
+        id: drop.id,
+        description: drop.description,
+        completion: drop.completion,
+        tolerance: drop.tolerance,
+        weight: drop.weight,
+        completed: drop.completed,
+        completedAtPly: drop.completedAtPly,
+        bestPartial: drop.bestPartial,
+        droppedAtPly: drop.droppedAtPly,
+        dropReason: drop.reason,
+      });
+    } else {
+      // Milestone from the original plan that no replan explicitly dropped but
+      // that is absent from the final plan (defensive): report as incomplete.
+      out.push({
+        id: ms.spec.id,
+        description: ms.spec.description,
+        completion: ms.spec.completion,
+        tolerance: ms.spec.tolerance,
+        weight: ms.spec.weight,
+        completed: false,
+        bestPartial: 0,
+        dropReason: 'removed by replan',
+      });
+    }
+  });
+  finalCompiled.milestones.forEach((ms, i) => {
+    if (seen.has(ms.spec.id)) return;
+    out.push({ ...stateOf(ms, i), addedByReplan: true });
+  });
+  return out;
+}
 
 async function opponentMove(
   eng: UciEngine,
@@ -655,10 +767,16 @@ export function renderReport(r: GameReport): string {
   lines.push('## Milestones');
   for (const m of r.milestones) {
     const box = m.completed ? 'x' : ' ';
-    const detail = m.completed
-      ? `completed at ply ${m.completedAtPly}`
-      : `incomplete, partial ${Math.round(m.bestPartial * 100)}%`;
-    lines.push(`- [${box}] ${m.id} (w=${m.weight}, tol=${m.tolerance}) — ${detail}: ${m.description}`);
+    let detail: string;
+    if (m.completed) {
+      detail = `completed at ply ${m.completedAtPly}`;
+    } else if (m.droppedAtPly != null) {
+      detail = `DROPPED at ply ${m.droppedAtPly} (${m.dropReason ?? 'replan'}), partial ${Math.round(m.bestPartial * 100)}%`;
+    } else {
+      detail = `incomplete, partial ${Math.round(m.bestPartial * 100)}%`;
+    }
+    const tag = m.addedByReplan ? ' [added by replan]' : '';
+    lines.push(`- [${box}] ${m.id} (w=${m.weight}, tol=${m.tolerance})${tag} — ${detail}: ${m.description}`);
     lines.push(`  - predicate: \`${m.completion}\``);
   }
   if (r.replans.length > 0) {
