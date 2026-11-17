@@ -15,6 +15,48 @@ import type { CompiledPlan, Milestone } from '../plan/schema.js';
 
 export const LAMBDA_BY_TOLERANCE = { loose: 0.12, medium: 0.6, tight: 2.4 } as const;
 
+/**
+ * Steering progress semantics for multi-conjunct milestones (D1/D6 lesson):
+ *
+ * `partialCredit` (AND = min) is the FACT the tracker reports, but steering on
+ * the min alone is blind in two ways:
+ *  1. When one conjunct binds (e.g. piece_count(self,pawn)==0 at 0.2), work on
+ *     the others never moves the min — real shedding looks like a stall.
+ *  2. A conjunct that is exactly satisfied (piece_count(self,queen)==1 at 1.0)
+ *     costs only its tiny symmetric falloff when broken — the engine happily
+ *     trades the queen away (D6) or lets pawns fall (D1).
+ *
+ * So the steering value of a milestone in a position is the MEAN of its
+ * top-level conjunct credits, minus a large guard penalty for every conjunct
+ * that was satisfied before the move and is broken in that position:
+ *
+ *   V(ctx) = mean(conjunct partials) − γ · #{i: before[i] ≥ 1−ε ∧ ctx[i] < 1−ε}
+ *
+ * γ=0.5 makes breaking a satisfied exact-count conjunct cost like losing half
+ * the milestone — it dominates any eval saving the trade could buy.
+ */
+export const GUARD_GAMMA = 0.5;
+export const SATISFIED_EPS = 1e-3;
+
+/** Blend weights for the two reply models used in the lookahead. */
+export const PV_REPLY_BLEND = 0.55;
+/** Weight of the "greedy capture" reply model (see steer.ts). */
+export const GREEDY_REPLY_BLEND = 0.35;
+
+/** Steering value of a milestone's conjunct partials relative to `before`. */
+export function guardedValue(partials: number[], before: number[]): number {
+  if (partials.length === 0) return 0;
+  let sum = 0;
+  let drops = 0;
+  for (let i = 0; i < partials.length; i++) {
+    sum += partials[i]!;
+    if (before[i] != null && before[i]! >= 1 - SATISFIED_EPS && partials[i]! < 1 - SATISFIED_EPS) {
+      drops++;
+    }
+  }
+  return sum / partials.length - GUARD_GAMMA * drops;
+}
+
 /** Progress weight scaled by the milestone's importance (weight 1..5). */
 export function progressWeight(m: Milestone): number {
   return 40 + m.weight * 8;

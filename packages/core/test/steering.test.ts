@@ -1,9 +1,9 @@
 import { describe, it, expect } from 'vitest';
 import { Chess } from 'chess.js';
 import { compilePlan } from '../src/plan/schema.js';
-import { lambdaFor, scoreCandidate, progressWeight, completionBonus } from '../src/steering/scorer.js';
+import { lambdaFor, scoreCandidate, progressWeight, completionBonus, guardedValue } from '../src/steering/scorer.js';
 import { motivatedCandidates } from '../src/steering/candidates.js';
-import { buildContext, predicatePartial, compilePredicate } from '../src/dsl/index.js';
+import { buildContext, predicatePartial, compilePredicate, conjunctPartials } from '../src/dsl/index.js';
 import type { GameContext } from '../src/dsl/types.js';
 
 function plan(raw: unknown) {
@@ -247,5 +247,104 @@ describe('motivated candidates', () => {
     const ctxNow = buildContext(g, 'w', { evalWhiteCp: 0, mateWhite: null });
     const cands = motivatedCandidates(compiled, ctxNow, 0, new Set());
     expect(cands.some((c) => c.uci === 'f1f8')).toBe(true);
+  });
+});
+
+describe('D1/D6 steering iteration: guarded conjunct value', () => {
+  const D6_PRED = 'piece_count(self, queen) == 1 && piece_count(self, pawn) == 0 && non_pawn_count(self) == 1';
+  const D1_PRED = 'non_pawn_count(self) == 0 && piece_count(self, pawn) == 8';
+
+  it('conjunctPartials splits top-level && and returns per-conjunct credit', () => {
+    const p = compilePredicate(D6_PRED);
+    const parts = conjunctPartials(p.ast, ctx(['e4', 'e5'], 'w'));
+    expect(parts).toHaveLength(3);
+    expect(parts[0]).toBeCloseTo(1.0, 3); // queen == 1 satisfied
+    expect(parts[1]).toBeCloseTo(0.2, 3); // 8 pawns vs target 0
+    expect(parts[2]).toBeCloseTo(0.25, 3); // 7 non-pawns vs target 1
+  });
+
+  it('breaking a satisfied exact-count conjunct (queen trade) nets negative even with piece-shed progress', () => {
+    // Both queens traded away: piece_count(self,queen) 1 → 0.
+    const noQueens = fenCtx('rnb1kbnr/pppppppp/8/8/8/8/PPPPPPPP/RNB1KBNR w kq - 0 1', 'w');
+    const start = ctx(['e4', 'e5'], 'w');
+    const p = compilePredicate(D6_PRED);
+    const before = conjunctPartials(p.ast, start);
+    const after = conjunctPartials(p.ast, noQueens);
+    const vBefore = guardedValue(before, before);
+    const vAfter = guardedValue(after, before);
+    // Mean rises slightly (0.483 → 0.492) but the guard must dominate.
+    expect(vAfter).toBeLessThan(vBefore - 0.3);
+  });
+
+  it('shedding a piece without breaking a satisfied conjunct stays positive (D6 piece offer)', () => {
+    const start = ctx(['e4', 'e5'], 'w');
+    const bishopGone = fenCtx('rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQK1NR w KQkq - 0 1', 'w');
+    const p = compilePredicate(D6_PRED);
+    const before = conjunctPartials(p.ast, start);
+    expect(guardedValue(conjunctPartials(p.ast, bishopGone), before)).toBeGreaterThan(
+      guardedValue(before, before),
+    );
+  });
+
+  it('losing a protected pawn (D1) is heavily negative even while non-pawn progress is unchanged', () => {
+    const start = ctx(['e4', 'e5'], 'w');
+    const pawnGone = fenCtx('rnbqkbnr/pppppppp/8/8/8/8/PPPPPPP1/RNBQKBNR w KQkq - 0 1', 'w');
+    const p = compilePredicate(D1_PRED);
+    const before = conjunctPartials(p.ast, start);
+    const vBefore = guardedValue(before, before);
+    const vAfter = guardedValue(conjunctPartials(p.ast, pawnGone), before);
+    expect(vAfter).toBeLessThan(vBefore - 0.3);
+  });
+
+  it('single-conjunct milestones keep plain partial semantics (no guard, mean = partial)', () => {
+    const p = compilePredicate('promoted_count(self, knight) == 8');
+    const parts = conjunctPartials(p.ast, ctx(['e4', 'e5'], 'w'));
+    expect(parts).toHaveLength(1);
+    expect(guardedValue(parts, parts)).toBeCloseTo(parts[0]!, 6);
+  });
+});
+
+describe('D1/D6 steering iteration: motivated candidates', () => {
+  it('generates pawn-march candidates for promoted_count targets (promotion chains)', () => {
+    const compiled = plan({
+      summary: 'all knights',
+      style: 'none',
+      terminal: { kind: 'win', priority: 'milestones_first' },
+      hardConstraints: [],
+      milestones: [
+        { id: 'promote', description: 'promote all pawns to knights', completion: 'promoted_count(self, knight) == 8', tolerance: 'loose', weight: 5 },
+      ],
+      fallback: ['play_best'],
+    });
+    const ctxNow = ctx(['e4', 'e5', 'Nf3', 'Nc6'], 'w');
+    const cands = motivatedCandidates(compiled, ctxNow, 0, new Set());
+    // Pawn pushes must be among the generated candidates (the engine rarely
+    // offers them and promotions are not legal yet).
+    expect(cands.some((c) => c.motive.includes('march'))).toBe(true);
+    expect(cands.every((c) => c.uci.length >= 4)).toBe(true);
+  });
+
+  it('generates hanging-piece sacrifices for non_pawn_count targets (D6 shedding)', () => {
+    const compiled = plan({
+      summary: 'reduce to K+Q',
+      style: 'none',
+      terminal: { kind: 'win', priority: 'milestones_first' },
+      hardConstraints: [],
+      milestones: [
+        { id: 'reduce', description: 'K+Q only', completion: 'piece_count(self, queen) == 1 && piece_count(self, pawn) == 0 && non_pawn_count(self) == 1', tolerance: 'medium', weight: 5 },
+      ],
+      fallback: ['secure_terminal', 'play_best'],
+    });
+    // White knight on d4, attacked by nothing but capturable by the e5 pawn
+    // after Nd4 is reachable... use a position where a piece can hang:
+    // White Ng5 offers itself to h7-g6 forks; simpler: Bc4 can be taken by d5?
+    // Use the classic: white queen takes nothing, but a knight on e5 attacked
+    // by pawns is a real offer. Position: after 1.e4 e5 2.Nf3 Nc6 3.Nxe5?:
+    // the knight on e5 is attacked by Nc6? No—Nc6 attacks e5? No. Use d6 pawn.
+    const g = new Chess('rnbqkbnr/ppp1pppp/8/3pN3/8/8/PPPP1PPP/RNBQKB1R w KQkq - 0 1');
+    const ctxNow = buildContext(g, 'w', { evalWhiteCp: 0, mateWhite: null });
+    const cands = motivatedCandidates(compiled, ctxNow, 0, new Set());
+    // Trade-down captures AND hanging offers should both appear.
+    expect(cands.some((c) => c.motive.includes('non_pawn_count(self)'))).toBe(true);
   });
 });

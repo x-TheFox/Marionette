@@ -187,3 +187,40 @@ describe('PlanTracker', () => {
     expect(t.states[0]!.startedAtPly).toBe(20);
   });
 });
+
+describe('D1/D6 steering iteration: stall detection sees conjunct-mean progress', () => {
+  const kqPlan = {
+    summary: 'reduce to K+Q',
+    style: 'none',
+    terminal: { kind: 'win', priority: 'milestones_first' },
+    hardConstraints: [],
+    milestones: [
+      {
+        id: 'reduce',
+        description: 'K+Q only',
+        completion: 'piece_count(self, queen) == 1 && piece_count(self, pawn) == 0 && non_pawn_count(self) == 1',
+        tolerance: 'medium',
+        weight: 5,
+      },
+    ],
+    fallback: ['secure_terminal', 'play_best'],
+  };
+
+  it('is NOT stalled when the min is frozen but the conjunct mean is rising (mid-shed)', () => {
+    const compiled = plan(kqPlan);
+    const t = new PlanTracker(compiled, 'w');
+    // Start: conjuncts [1.0, 0.2, 0.25] — min 0.2 (pawns bind), mean 0.483.
+    t.update(ctxAfter(['e4', 'e5'], 'w'), 2);
+    // Ply 18: two non-pawn pieces shed (min still 0.2 — pawns bind — mean up).
+    const shedTwo = buildContext(
+      new Chess('rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RN2K2R w KQkq - 0 1'),
+      'w',
+      { evalWhiteCp: 0, mateWhite: null },
+    );
+    t.update(shedTwo, 18);
+    // Ply 30: min frozen since ply 2, but mean moved at ply 18 (< 16+18=34 window from 18... 30-18=12 < 16).
+    expect(t.stalled(30, 16)).toBe(false);
+    // Ply 40: 40-18 = 22 >= 16 since the last mean move AND min frozen since ply 2 → stalled.
+    expect(t.stalled(40, 16)).toBe(true);
+  });
+});

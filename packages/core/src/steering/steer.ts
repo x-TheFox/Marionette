@@ -1,10 +1,10 @@
 import { Chess } from 'chess.js';
 import type { UciEngine, Analysis, PvLine } from '@marionette/uci';
-import { buildContext, evalPredicate, predicatePartial } from '../dsl/index.js';
-import type { GameContext, Side } from '../dsl/types.js';
+import { buildContext, evalPredicate, conjunctPartials } from '../dsl/index.js';
+import type { GameContext, PieceType, Side } from '../dsl/types.js';
 import { constraintsInForce, type CompiledPlan } from '../plan/schema.js';
-import { scoreCandidate, lambdaFor } from './scorer.js';
-import { motivatedCandidates, type Candidate } from './candidates.js';
+import { scoreCandidate, lambdaFor, guardedValue, PV_REPLY_BLEND, GREEDY_REPLY_BLEND } from './scorer.js';
+import { motivatedCandidates, PIECE_VAL, type Candidate } from './candidates.js';
 import type { PlanTracker } from '../game/tracker.js';
 
 /**
@@ -219,18 +219,28 @@ export async function steerMove(opts: SteerOptions): Promise<SteerDecision> {
     let delta = 0;
     let completes = false;
     if (active) {
-      const before = predicatePartial(active.completion, ctxNow);
-      const after = predicatePartial(active.completion, e.ctxAfter);
-      delta = after - before;
       completes = evalPredicate(active.completion, e.ctxAfter);
-      // Shallow PV lookahead: progress should survive the engine's expected
-      // reply. Milestone COMPLETIONS judged at ctxAfter only — a milestone is
-      // a game moment, not a durable invariant (tracker snapshots it there).
+      // D1/D6 semantics: progress = guarded MEAN conjunct movement, blended
+      // over two reply models — the engine's expected (best-defense) reply and
+      // a greedy-capture reply. A single best-defense reply undervalues offers
+      // whenever the engine prefers defending over grabbing (D6: we were
+      // attacking so hard the opponent would not take our hanging pieces);
+      // the greedy model mirrors the weak opponents we actually face and the
+      // isHangingOffer generator that produced the candidate.
+      const ast = active.completion.ast;
+      const before = conjunctPartials(ast, ctxNow);
+      const vNow = guardedValue(before, before);
+      const vAfter = guardedValue(conjunctPartials(ast, e.ctxAfter), before);
+      delta = vAfter - vNow;
       const ctx2 = lookaheadContext(e, fen, checkFlags, self);
       if (ctx2) {
-        const afterReply = predicatePartial(active.completion, ctx2);
-        // Blend: half the (possibly negative) reply-credit movement.
-        delta = delta + 0.75 * (afterReply - after);
+        const vPv = guardedValue(conjunctPartials(ast, ctx2), before);
+        delta += PV_REPLY_BLEND * (vPv - vAfter);
+      }
+      const ctxG = greedyCaptureContext(e, checkFlags, self);
+      if (ctxG) {
+        const vG = guardedValue(conjunctPartials(ast, ctxG), before);
+        delta += GREEDY_REPLY_BLEND * (vG - vAfter);
       }
     }
 
@@ -389,6 +399,55 @@ function lookaheadContext(
   }
   const givesCheck = g.inCheck();
   return buildContext(g, self, { evalWhiteCp: e.evalWhiteCp, mateWhite: e.mateWhite }, [...checkFlags, e.givesCheck, givesCheck]);
+}
+
+interface VerboseMoveLite {
+  from: string;
+  to: string;
+  promotion?: string;
+  captured?: string;
+  piece: string;
+}
+
+/**
+ * Context after the opponent's most greedy material capture (deterministic,
+ * chess.js-only, no engine cost). "Greedy" mirrors the isHangingOffer
+ * generator: a capture that wins material (victim − capturer ≥ 100) or grabs
+ * big loot (victim ≥ 500); among those, the highest net gain wins. Models the
+ * weak opponents the directive games actually run against.
+ */
+function greedyCaptureContext(
+  e: EvaluatedCandidate,
+  checkFlags: boolean[],
+  self: Side,
+): GameContext | null {
+  const g = new Chess(e.fenAfter);
+  const replies = g.moves({ verbose: true }) as VerboseMoveLite[];
+  let best: VerboseMoveLite | null = null;
+  let bestNet = 0;
+  for (const r of replies) {
+    if (!r.captured) continue;
+    const victim = PIECE_VAL[r.captured as PieceType] ?? 0;
+    const capturer = PIECE_VAL[(r.promotion ?? r.piece) as PieceType] ?? 0;
+    const net = victim - capturer;
+    const takes = net >= 100 || victim >= 500;
+    if (takes && net > bestNet) {
+      bestNet = net;
+      best = r;
+    }
+  }
+  if (!best) return null;
+  try {
+    g.move({ from: best.from, to: best.to, promotion: best.promotion });
+  } catch {
+    return null;
+  }
+  return buildContext(
+    g,
+    self,
+    { evalWhiteCp: e.evalWhiteCp, mateWhite: e.mateWhite },
+    [...checkFlags, e.givesCheck, g.inCheck()],
+  );
 }
 
 

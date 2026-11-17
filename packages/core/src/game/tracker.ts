@@ -1,6 +1,6 @@
 import type { CompiledPlan } from '../plan/schema.js';
 import { constraintsInForce } from '../plan/schema.js';
-import { evalPredicate, predicatePartial } from '../dsl/index.js';
+import { evalPredicate, predicatePartial, conjunctPartials } from '../dsl/index.js';
 import type { GameContext, Side } from '../dsl/types.js';
 import type { ProgressReport } from '../compiler/prompt.js';
 
@@ -17,6 +17,9 @@ export interface MilestoneState {
   startedAtPly: number;
   bestPartial: number;
   bestPartialAtPly: number;
+  /** Best MEAN of top-level conjunct partials (stall detection only). */
+  bestMean: number;
+  bestMeanAtPly: number;
 }
 
 export interface ConstraintViolation {
@@ -48,6 +51,8 @@ export class PlanTracker {
       startedAtPly: startPly,
       bestPartial: 0,
       bestPartialAtPly: startPly,
+      bestMean: 0,
+      bestMeanAtPly: startPly,
     }));
     // First milestone is active from the start; the rest activate in order.
     for (let i = 1; i < this.states.length; i++) this.states[i]!.startedAtPly = -1;
@@ -81,10 +86,15 @@ export class PlanTracker {
         this.states[i]!.completedAtPly = ply;
         this.states[i]!.startedAtPly = ply;
         this.states[i]!.bestPartial = 1;
+        this.states[i]!.bestMean = 1;
+        this.states[i]!.bestMeanAtPly = ply;
       } else {
         this.states[i]!.startedAtPly = ply;
         this.states[i]!.bestPartial = predicatePartial(ms.completion, ctx);
         this.states[i]!.bestPartialAtPly = ply;
+        const parts = conjunctPartials(ms.completion.ast, ctx);
+        this.states[i]!.bestMean = parts.length === 0 ? 0 : parts.reduce((a, b) => a + b, 0) / parts.length;
+        this.states[i]!.bestMeanAtPly = ply;
         break;
       }
     }
@@ -112,6 +122,15 @@ export class PlanTracker {
         if (partial > st.bestPartial) {
           st.bestPartial = partial;
           st.bestPartialAtPly = ply;
+        }
+        // Mean of conjunct partials: real work on a NON-binding conjunct
+        // (e.g. shedding pieces while the pawn conjunct binds the min) must
+        // not read as a stall — the D6 lesson. Stall needs BOTH frozen.
+        const parts = conjunctPartials(ms.completion.ast, ctx);
+        const mean = parts.length === 0 ? 0 : parts.reduce((a, b) => a + b, 0) / parts.length;
+        if (mean > st.bestMean) {
+          st.bestMean = mean;
+          st.bestMeanAtPly = ply;
         }
         if (ms.infeasible && evalPredicate(ms.infeasible, ctx)) {
           update.infeasible = {
@@ -152,12 +171,19 @@ export class PlanTracker {
     return started < 0 ? 0 : ply - started;
   }
 
-  /** True when the active milestone has made no partial progress for `window` plies. */
+  /**
+   * True when the active milestone has made no partial progress for `window`
+   * plies. Progress means EITHER the min-based partial OR the conjunct mean
+   * moved — a milestone whose binding conjunct is frozen while another makes
+   * real progress is not stalled (it is mid-shed, not stuck).
+   */
   stalled(ply: number, window = 16): boolean {
     const ai = this.activeIndex();
     if (ai == null) return false;
     const st = this.states[ai]!;
-    return ply - st.bestPartialAtPly >= window && st.bestPartial < 1;
+    const minFrozen = ply - st.bestPartialAtPly >= window;
+    const meanFrozen = ply - st.bestMeanAtPly >= window;
+    return minFrozen && meanFrozen && st.bestPartial < 1;
   }
 
   /** Move budget of the active milestone exceeded? */

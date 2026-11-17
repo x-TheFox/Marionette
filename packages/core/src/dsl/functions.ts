@@ -366,6 +366,30 @@ export function partialCredit(ast: Node, ctx: GameContext): number {
   return Math.max(0, Math.min(1, fuzzyCredit(ast, ctx)));
 }
 
+/**
+ * Split an AST into its top-level && conjuncts (the whole AST when there is
+ * no top-level &&) and return each conjunct's partial credit. Steering uses
+ * this for two things min()-based credit cannot express:
+ *  - MEAN progress: with `a && b`, real work on the non-binding conjunct
+ *    moves the mean even while the min stays frozen (D6: shedding pieces
+ *    while the pawn conjunct binds);
+ *  - exact-count guards: a conjunct currently at 1.0 (e.g.
+ *    piece_count(self, queen) == 1) that a candidate line would break.
+ */
+export function conjunctPartials(ast: Node, ctx: GameContext): number[] {
+  const conjuncts: Node[] = [];
+  const visit = (n: Node): void => {
+    if (n.k === 'and') {
+      visit(n.l);
+      visit(n.r);
+    } else {
+      conjuncts.push(n);
+    }
+  };
+  visit(ast);
+  return conjuncts.map((c) => partialCredit(c, ctx));
+}
+
 const TRANSIENT_BOOLEANS = new Set([
   'is_check',
   'last_move_was_capture',

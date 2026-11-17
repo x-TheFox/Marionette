@@ -35,7 +35,7 @@ interface VerboseMove {
   flags: string;
 }
 
-const PIECE_VAL: Record<PieceType, number> = { pawn: 100, knight: 320, bishop: 330, rook: 500, queen: 900, king: 0 };
+export const PIECE_VAL: Record<PieceType, number> = { pawn: 100, knight: 320, bishop: 330, rook: 500, queen: 900, king: 0 };
 
 /** Map a DSL side name ('self'|'opp'|'white'|'black') to a concrete color. */
 function resolveSideName(name: string, self: Side): Side {
@@ -43,6 +43,13 @@ function resolveSideName(name: string, self: Side): Side {
   if (name === 'opp') return self === 'w' ? 'b' : 'w';
   if (name === 'white') return 'w';
   return 'b';
+}
+
+/** Rank progress toward promotion for a pawn move (2 for double pushes). */
+function pawnAdvanceGain(m: VerboseMove): number {
+  const fromRank = Number(m.from[1]);
+  const toRank = Number(m.to[1]);
+  return m.color === 'w' ? toRank - fromRank : fromRank - toRank;
 }
 
 /** True if, after `m`, an opponent capture wins material (victim > capturer − 100). */
@@ -158,6 +165,14 @@ export function motivatedCandidates(
               if (victimVal <= moverVal) push(m, `non_pawn_count(self): trade ${m.san}`);
             }
           }
+          // Trades need the opponent to trade back; offers widen the choice.
+          // (D6 lesson: once the opponent's army is gone there is nothing left
+          // to trade with — hanging offers are the only way to keep shedding.)
+          for (const m of legal) {
+            if (!m.captured && m.piece !== 'k' && m.piece !== 'p' && m.promotion == null && isHangingOffer(game, m, oppSide)) {
+              push(m, `non_pawn_count(self): sacrifice ${m.san}`);
+            }
+          }
         }
         break;
       }
@@ -207,6 +222,20 @@ export function motivatedCandidates(
             if (wantsMore || wantsExactMore) {
               // Acquire: promote to this piece.
               for (const m of legal) if (m.promotion === letter) push(m, `${atom.fn}(self, ${piece}): promote ${m.san}`);
+              // Promotion CHAIN (D1 lesson): a promotion only becomes legal on
+              // the last ply of a long pawn march, and the engine's MultiPV
+              // lines rarely contain quiet pawn pushes. Without generated
+              // pushes the promoted_count gradient (which credits advancement)
+              // is never exploited by any candidate and the milestone stalls.
+              // Generate pawn moves that advance toward promotion, biggest
+              // rank gain first (double pushes, then single steps).
+              const advancing = legal
+                .filter((m) => m.piece === 'p')
+                .sort((a, b) => pawnAdvanceGain(b) - pawnAdvanceGain(a));
+              for (const m of advancing) {
+                push(m, `${atom.fn}(self, ${piece}): march ${m.san}`);
+                if (out.length >= MAX_MOTIVATED) break;
+              }
             } else if (wantsFewer) {
               // Shed: trade down this piece type or offer it.
               for (const m of legal) {
