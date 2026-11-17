@@ -3,7 +3,7 @@
   "schemaVersion": "3",
   "model": "kilo-auto/free",
   "provider": "kilo",
-  "compiledAt": "2026-11-17T10:12:53.556Z",
+  "compiledAt": "2026-11-17T15:55:22.354Z",
   "plan": {
     "summary": "Trade or sacrifice everything except king and queen, then win the K+Q endgame",
     "style": "none",
@@ -27,7 +27,7 @@
         "infeasible": "piece_count(self, queen) == 0 && piece_count(self, pawn) == 0",
         "tolerance": "loose",
         "weight": 5,
-        "moveBudget": 80
+        "moveBudget": 170
       },
       {
         "id": "deliver_mate",
