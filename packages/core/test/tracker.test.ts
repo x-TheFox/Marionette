@@ -224,3 +224,34 @@ describe('D1/D6 steering iteration: stall detection sees conjunct-mean progress'
     expect(t.stalled(40, 16)).toBe(true);
   });
 });
+
+describe('D1/D6 steering iteration: stall clock anchors to activation', () => {
+  it('a milestone that just activated is NOT stalled on its first plies (stale constructor bestPartialAtPly)', () => {
+    const compiled = plan({
+      summary: 'shed then march',
+      style: 'none',
+      terminal: { kind: 'win', priority: 'milestones_first' },
+      hardConstraints: [],
+      milestones: [
+        { id: 'shed', description: 'non-pawns gone', completion: 'non_pawn_count(self) == 0', tolerance: 'medium', weight: 5 },
+        { id: 'march', description: 'promote pawns', completion: 'promoted_count(self, knight) == 8', tolerance: 'loose', weight: 5 },
+      ],
+      fallback: ['complete_remaining_milestones', 'play_best'],
+    });
+    const t = new PlanTracker(compiled, 'w');
+    // Ply 40: White (self) reaches non_pawn_count 0 -> shed completes, march activates.
+    const shedDone = buildContext(
+      new Chess('4k3/pppppppp/8/8/8/8/PPPPPPPP/4K3 w - - 0 21'),
+      'w',
+      { evalWhiteCp: 0, mateWhite: null },
+    );
+    t.update(shedDone, 40);
+    expect(t.states[0]!.completed).toBe(true);
+    expect(t.activeIndex()).toBe(1);
+    // March has bestPartialAtPly 0 (never updated) but startedAtPly 40:
+    // at ply 41-55 it must NOT read as stalled-for-41-plies.
+    expect(t.stalled(41, 16)).toBe(false);
+    expect(t.stalled(55, 16)).toBe(false);
+    expect(t.stalled(57, 16)).toBe(true); // 57 - 40 = 17 >= 16 with no partial at all
+  });
+});

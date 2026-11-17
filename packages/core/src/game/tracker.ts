@@ -175,14 +175,19 @@ export class PlanTracker {
    * True when the active milestone has made no partial progress for `window`
    * plies. Progress means EITHER the min-based partial OR the conjunct mean
    * moved — a milestone whose binding conjunct is frozen while another makes
-   * real progress is not stalled (it is mid-shed, not stuck).
+   * real progress is not stalled (it is mid-shed, not stuck). The clock is
+   * anchored to the ACTIVATION ply: a milestone that just became active has a
+   * stale constructor-era bestPartialAtPly of 0 and must not read as "no
+   * progress for the whole game so far" on its first ply (D1: promote was
+   * dropped one ply after reduce_to_pawns completed).
    */
   stalled(ply: number, window = 16): boolean {
     const ai = this.activeIndex();
     if (ai == null) return false;
     const st = this.states[ai]!;
-    const minFrozen = ply - st.bestPartialAtPly >= window;
-    const meanFrozen = ply - st.bestMeanAtPly >= window;
+    const anchor = Math.max(st.startedAtPly, 0);
+    const minFrozen = ply - Math.max(st.bestPartialAtPly, anchor) >= window;
+    const meanFrozen = ply - Math.max(st.bestMeanAtPly, anchor) >= window;
     return minFrozen && meanFrozen && st.bestPartial < 1;
   }
 
