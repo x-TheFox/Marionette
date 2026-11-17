@@ -3,7 +3,7 @@ import { createHash } from 'node:crypto';
 import { mkdtempSync, writeFileSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import { compileDirectivePlan, PlanCacheMissError } from '../src/compiler/compile.js';
+import { compileDirectivePlan, planCachePath, PlanCacheMissError } from '../src/compiler/compile.js';
 import { PLAN_SCHEMA_VERSION } from '../src/plan/schema.js';
 
 const VALID_PLAN = {
@@ -27,7 +27,7 @@ describe('offline (cache-only) compile', () => {
 
   it('returns the cached plan without any LLM chain', async () => {
     writeFileSync(
-      join(dir, `${cacheKey(directive)}.json`),
+      planCachePath(directive, dir),
       JSON.stringify({ directive, schemaVersion: PLAN_SCHEMA_VERSION, provider: 'kilo', model: 'test', plan: VALID_PLAN }),
     );
     const r = await compileDirectivePlan({
@@ -56,12 +56,11 @@ describe('offline (cache-only) compile', () => {
     ).rejects.toBeInstanceOf(PlanCacheMissError);
   });
 
-  it('stale v1-era entries (keyed without the v2 schema version) are not found', async () => {
-    // Old cache files were keyed by hash(directive, model, '1'); their names
-    // cannot collide with v2 keys, so they are naturally orphaned.
-    const v1Key = createHash('sha256').update(`v1 directive\u0000some-model\u00001`).digest('hex').slice(0, 32);
+  it('old hash-only filenames (pre slug-key scheme) are not found', async () => {
+    // Cache files from before the slug+short-key naming are naturally orphaned.
+    const oldKey = cacheKey('v1 directive');
     writeFileSync(
-      join(dir, `${v1Key}.json`),
+      join(dir, `${oldKey}.json`),
       JSON.stringify({ directive: 'v1 directive', model: 'some-model', plan: VALID_PLAN }),
     );
     await expect(

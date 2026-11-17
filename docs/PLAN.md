@@ -21,9 +21,10 @@ Deliverables:
 Done when: two showcase directives run end-to-end headless against ELO-capped Stockfish and produce honest milestone reports.
 
 ### Phase 2 — benchmark harness + iteration
-- `apps/harness`: directives × opponent ELO {800, 1200, 1600, 2000} × N games (quick sweep = 1 game/cell for dev iteration; full sweep = 5 for the regression gate). Per-run metrics: milestone completion %, terminal condition Y/N, moves taken, ACPL, judge score.
+- `apps/harness`: directives × opponent ELO {800, 1200, 1600, 2000} × N games (quick sweep = 3 games/cell so rates mean something; full sweep = 5 for the regression gate; `--games n` overrides). Per-run metrics: milestone completion %, terminal condition Y/N, moves taken, ACPL, judge score.
+- **Ordered vs final-position truth (reported separately):** "Ordered" = milestones completed in plan order during play (tracker verdict). "FinalPos" = milestone predicates that hold in the final position (facts, including milestones a replan dropped and transient facts the ordered tracker legitimately recorded earlier). The frozen bars are evaluated on **Ordered** semantics only; final-position truth is shown next to it for honest context, never counted toward bars.
 - Judge v1 is heuristic (looksTrying / natural / plausibleLoss / bully over eval+material trails, declared thresholds in `JUDGE_THRESHOLDS`) — zero LLM calls, so sweeps are quota-independent. An LLM judge with rubric remains an opt-in refinement.
-- **Offline replay mode**: sweeps run with cached plans + deterministic (rule-based) replans + heuristic judge — no provider dependency. `--prepare` compiles and caches plans once.
+- **Offline replay mode**: sweeps run with cached plans + deterministic (rule-based) replans + heuristic judge — no provider dependency. `--prepare` compiles and caches plans once. The plan store lives in `plans/v<schema>/` and is **committed to git** (human-readable slugs, one JSON per directive): a fresh clone can run offline sweeps without any LLM quota. Replans are never cached (position-dependent).
 - Success thresholds are **frozen** (table below); the harness reports actual rates and never tunes bars. Results tables live in `bench/summary/` (committed); raw per-game artifacts in `bench/raw/` (gitignored). A few showcase games are committed under `games/`.
 - **D6 status: known failing regression.** Phase 1 closed with D6 reaching only partial completion on `reduce_to_kq`; its bar stays in the spec as expected-fail and must never be reported as passed until steering achieves it.
 - Iterate on steering until thresholds are met at reasonable rates.
@@ -50,11 +51,11 @@ Success is defined **before** runs:
 | D5 | bully | win | material won early; opponent harassed (tempo/captures); toying phase | ≥ 60% wins vs ≤1600; bully-style heuristic score ≥ threshold |
 | D6 | win with only Q+K left | win | material == {Q, K}; mate with Q | ≥ 40% vs ≤1600 — **KNOWN FAILING (expected-fail, kept visible)** |
 
-These bars are frozen in `apps/harness/src/spec.ts` (with v1 operationalizations: D2 plausible = judge axis ≥ 0.6; D3 ACPL band = mean ≤ 100; D5 bully = judge axis ≥ 0.5). The harness reports actual rates against them; passing/failing is computed, never adjusted.
+These bars are frozen in `apps/harness/src/spec.ts` (with v1 operationalizations: D2 plausible = judge axis ≥ 0.6; D3 ACPL band = mean ≤ 100; D5 bully = judge axis ≥ 0.5). The harness reports actual rates against them; passing/failing is computed, never adjusted. `full_completion` = all milestones completed **in order** during play AND terminal met (final-position truth alone does not count).
 
-Metrics per game: milestone completion %, terminal condition Y/N, moves, ACPL, judge/heuristic style score. Quick sweep = 1 game/directive/ELO (dev iteration); full sweep = 5 (regression gate).
+Metrics per game: milestone completion % (ordered and final-position, reported separately), terminal condition Y/N, moves, ACPL, judge/heuristic style score. Quick sweep = 3 games/directive/ELO (dev iteration); full sweep = 5 (regression gate).
 
 ## Budget notes (2-core sandbox)
 
 - 1 engine thread per instance; ≤ 2 concurrent games; steering analysis at MultiPV ≤ 5, depth budget ~12–18; opponent depth capped by emulated level.
-- LLM calls: plan cache keyed (directive hash, model, schema version) — benchmarks re-run without compiler calls; replans budgeted (≤ 2/game default); judge 1 call/game.
+- LLM calls: plan store committed under `plans/v<schema>/` (keyed by directive + schema version) — fresh clones and benchmark re-runs need zero compiler calls; replans budgeted (≤ 2/game default, deterministic in offline mode); judge is heuristic (0 LLM calls).

@@ -28,6 +28,7 @@ import { DIRECTIVES, ELOS, directiveById, type Bar, type DirectiveSpec } from '.
 
 interface Args {
   sweep: 'quick' | 'full';
+  games: number | null; // explicit --games override
   elos: number[];
   directives: string[]; // ids or 'all'
   prepare: boolean;
@@ -46,12 +47,13 @@ Marionette benchmark harness.
 
 Usage:
   tsx apps/harness/src/main.ts --prepare            compile + cache plans for all directives (LLM)
-  tsx apps/harness/src/main.ts                      quick sweep: 1 game / directive / ELO (offline)
+  tsx apps/harness/src/main.ts                      quick sweep: 3 games / directive / ELO (offline)
   tsx apps/harness/src/main.ts --sweep full         5 games per cell
   tsx apps/harness/src/main.ts --check              exit non-zero on unexpected bar verdicts
 
 Options:
-  --sweep <quick|full>   Games per cell: quick=1 (dev iteration), full=5 (regression gate). Default quick.
+  --sweep <quick|full>   Games per cell: quick=3 (dev iteration with meaningful rates), full=5 (regression gate). Default quick.
+  --games <n>            Explicit games per cell (1..10); overrides --sweep's default.
   --elos <a,b,c>         Opponent ELOs. Default 800,1200,1600,2000 (below 1320 is emulated, labeled).
   --directives <ids>     'all' or a subset like D1,D6. Default all.
   --prepare              Compile and cache plans via the LLM chain, then exit.
@@ -96,6 +98,14 @@ function parseArgs(argv: string[]): Args {
   };
   return {
     sweep: str('sweep', 'quick') === 'full' ? 'full' : 'quick',
+    games: ((): number | null => {
+      const v = named.get('games');
+      if (v == null) return null;
+      if (v === true) throw new Error('--games expects a number (1..10)');
+      const n = Number(v);
+      if (!Number.isInteger(n) || n < 1 || n > 10) throw new Error(`--games expects 1..10, got '${v}'`);
+      return n;
+    })(),
     elos: str('elos', [...ELOS].join(',')).split(',').map((s) => Number(s.trim())).filter((n) => Number.isFinite(n)),
     directives: str('directives', 'all') === 'all' ? DIRECTIVES.map((d) => d.id) : str('directives', 'all').split(',').map((s) => s.trim().toUpperCase()),
     prepare: named.has('prepare'),
@@ -286,7 +296,7 @@ async function main(): Promise<void> {
   }
 
   // --- sweep ---------------------------------------------------------------
-  const gamesPerCell = args.sweep === 'quick' ? 1 : 5;
+  const gamesPerCell = args.games ?? (args.sweep === 'quick' ? 3 : 5);
   const offline = !args.online;
   const chain = args.online ? LlmChain.fromEnv() : null;
   if (args.online && chain!.providers.length === 0) {
@@ -384,19 +394,49 @@ async function main(): Promise<void> {
   lines.push('');
   lines.push('## Per-game results');
   lines.push('');
-  lines.push('| Dir | Elo | Result | Terminal | Milestones | ACPL | Trying | Natural | PlausLoss | Bully | Replans |');
-  lines.push('| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |');
+  lines.push('| Dir | Elo | Result | Terminal | Ordered | FinalPos | ACPL | Trying | Natural | PlausLoss | Bully | Replans |');
+  lines.push('| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |');
   for (const o of outcomes) {
     if (!o.report || !o.judge) {
-      lines.push(`| ${o.spec.id} | ${o.elo} | FAILED: ${(o.error ?? '').slice(0, 60)} | - | - | - | - | - | - | - | - |`);
+      lines.push(`| ${o.spec.id} | ${o.elo} | FAILED: ${(o.error ?? '').slice(0, 60)} | - | - | - | - | - | - | - | - | - |`);
       continue;
     }
     const r = o.report;
     const j = o.judge;
-    const ms = `${r.milestones.filter((m) => m.completed).length}/${r.milestones.length}`;
+    const ordered = `${r.milestones.filter((m) => m.completed).length}/${r.milestones.length}`;
+    const finalTrue = r.finalPositionTrue ?? [];
+    const finalPos = `${finalTrue.length}/${r.milestones.length}`;
     lines.push(
-      `| ${o.spec.id} | ${o.elo}${r.opponentEmulated ? ' (emu)' : ''} | ${r.result} (${r.endReason}) | ${r.terminalMet ? 'MET' : 'no'} | ${ms} | ${r.acplSelf?.toFixed(0) ?? '-'} | ${j.looksTrying.toFixed(2)} | ${j.natural.toFixed(2)} | ${j.plausibleLoss.toFixed(2)} | ${j.bully.toFixed(2)} | ${r.replans.length} |`,
+      `| ${o.spec.id} | ${o.elo}${r.opponentEmulated ? ' (emu)' : ''} | ${r.result} (${r.endReason}) | ${r.terminalMet ? 'MET' : 'no'} | ${ordered} | ${finalPos} | ${r.acplSelf?.toFixed(0) ?? '-'} | ${j.looksTrying.toFixed(2)} | ${j.natural.toFixed(2)} | ${j.plausibleLoss.toFixed(2)} | ${j.bully.toFixed(2)} | ${r.replans.length} |`,
     );
+  }
+  lines.push('');
+  lines.push('`Ordered` = milestones completed in plan order during play (tracker verdict). `FinalPos` = milestone predicates true in the final position (facts, incl. dropped milestones). Separate semantics; the frozen bars use Ordered.');
+  lines.push('');
+
+  // --- per-cell rollup: ordered vs final-position ----------------------------
+  lines.push('## Per-cell rollup — ordered completion vs final-position truth');
+  lines.push('');
+  lines.push('| Dir | Elo | Games | W-L-D | Terminal | Ordered full | FinalPos full |');
+  lines.push('| --- | --- | --- | --- | --- | --- | --- |');
+  for (const spec of specs) {
+    for (const elo of args.elos) {
+      const cell = outcomes.filter((o) => o.spec.id === spec.id && o.elo === elo && o.report != null);
+      if (cell.length === 0) continue;
+      const n = cell.length;
+      const w = cell.filter((o) => gameWon(o.report!)).length;
+      const l = cell.filter((o) => gameLost(o.report!)).length;
+      const d = n - w - l;
+      const term = cell.filter((o) => o.report!.terminalMet).length;
+      const ordFull = cell.filter((o) => gameFullCompletion(o.report!)).length;
+      const finalFull = cell.filter(
+        (o) => (o.report!.finalPositionTrue ?? []).length >= o.report!.milestones.length && o.report!.milestones.length > 0,
+      ).length;
+      const pct = (x: number): string => `${Math.round((x / n) * 100)}% (${x}/${n})`;
+      lines.push(
+        `| ${spec.id} | ${elo}${cell.some((o) => o.report!.opponentEmulated) ? ' (emu)' : ''} | ${n} | ${w}-${l}-${d} | ${pct(term)} | ${pct(ordFull)} | ${pct(finalFull)} |`,
+      );
+    }
   }
   lines.push('');
   lines.push('## Pre-declared bars (frozen) — actual rates');

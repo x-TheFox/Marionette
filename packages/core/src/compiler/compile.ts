@@ -2,7 +2,7 @@ import { createHash } from 'node:crypto';
 import { mkdirSync, readFileSync, writeFileSync, existsSync } from 'node:fs';
 import { join } from 'node:path';
 import type { LlmChain } from '@marionette/llm';
-import { extractJson } from '@marionette/llm';
+import { extractJson, findRepoRoot } from '@marionette/llm';
 import { compilePlan, PLAN_SCHEMA_VERSION, type CompiledPlan } from '../plan/schema.js';
 import {
   GOAL_COMPILER_SYSTEM,
@@ -38,7 +38,8 @@ export interface CompileOptions {
   fen: string;
   /** LLM chain used for live compiles; may be null when fromCacheOnly is set. */
   llm?: LlmChain | null;
-  /** Cache directory; defaults to <cwd>/.cache/plans. */
+  /** Cache directory; defaults to <repoRoot>/plans/v<schema> (COMMITTED to git so
+   *  sandbox resets do not force recompiles); override with MARIONETTE_PLAN_CACHE. */
   cacheDir?: string;
   /** Skip the cache (both read and write). */
   noCache?: boolean;
@@ -50,24 +51,40 @@ export interface CompileOptions {
   maxTokens?: number;
 }
 
+/** Deterministic cache file path for a directive (slug + short key hash). */
+export function planCachePath(directive: string, cacheDir: string): string {
+  const key = createHash('sha256')
+    .update(`${directive}\u0000${PLAN_SCHEMA_VERSION}`)
+    .digest('hex')
+    .slice(0, 32);
+  const slug =
+    directive
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/^-+|-+$/g, '')
+      .slice(0, 48) || 'directive';
+  return join(cacheDir, `${slug}-${key.slice(0, 8)}.json`);
+}
+
 /**
  * Compile (or fetch from cache) a validated plan for a directive.
  * Failover, retries and JSON-extraction are handled by the LlmChain; on
  * success the plan is Zod- and predicate-validated before being returned.
  */
 export async function compileDirectivePlan(opts: CompileOptions): Promise<CompileResult> {
-  const cacheDir = opts.cacheDir ?? join(process.cwd(), '.cache', 'plans');
+  const cacheDir =
+    opts.cacheDir ??
+    process.env.MARIONETTE_PLAN_CACHE ??
+    join(findRepoRoot(process.cwd()), 'plans', `v${PLAN_SCHEMA_VERSION}`);
   const model = opts.llm?.providers[0]?.model ?? 'offline';
   // Plans are color-agnostic (predicates use self/opp), so the cache key
   // excludes color. Keyed by (directive, schema version) — one cached plan
   // per directive; the compiling model is recorded for provenance only.
   // Replans are position-dependent -> never cached.
+  // The plan store is COMMITTED to git: compiled plans are deterministic
+  // inputs to offline sweeps, and a fresh clone must not need LLM quota.
   const isReplan = opts.progress != null;
-  const key = createHash('sha256')
-    .update(`${opts.directive}\u0000${PLAN_SCHEMA_VERSION}`)
-    .digest('hex')
-    .slice(0, 32);
-  const cachePath = join(cacheDir, `${key}.json`);
+  const cachePath = planCachePath(opts.directive, cacheDir);
 
   if (!opts.noCache && !isReplan && existsSync(cachePath)) {
     try {

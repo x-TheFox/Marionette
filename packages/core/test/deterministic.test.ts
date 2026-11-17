@@ -130,8 +130,8 @@ describe('report milestones survive replans (dropped work stays visible)', () =>
   });
 });
 
-describe('final-position sweep (reporting only)', () => {
-  it('marks a never-activated milestone completed when its predicate holds at game end', () => {
+describe('final-position facts (reporting only, ordered verdicts untouched)', () => {
+  it('reports a never-activated milestone as true-at-end WITHOUT marking it completed', () => {
     // D2 shape: shed (incomplete) -> mated. Mate arrived while shed was active,
     // so get_checkmated never activated - but it DID hold at the end.
     const compiled = compilePlan({
@@ -153,14 +153,16 @@ describe('final-position sweep (reporting only)', () => {
     (ctx as { checkmate: boolean }).checkmate = true;
     (ctx as { winner: string | null }).winner = 'b';
     const notes: string[] = [];
-    finalPositionSweep(tracker, compiled, [], ctx, 44, notes);
-    expect(tracker.states[1]!.completed).toBe(true);
-    expect(tracker.states[1]!.completedAtPly).toBe(44);
+    const trueAtEnd = finalPositionSweep(tracker, compiled, [], ctx, 44, notes);
+    // The two facts are SEPARATE: 'mated' is true at end but NOT completed.
+    expect(trueAtEnd).toContain('mated');
+    expect(tracker.states[1]!.completed).toBe(false); // ordered verdict untouched
+    expect(tracker.states[1]!.completedAtPly).toBeUndefined();
     expect(tracker.states[0]!.completed).toBe(false); // shed really didn't finish
     expect(notes.some((n) => n.includes("'mated' held at game end"))).toBe(true);
   });
 
-  it('marks a dropped milestone completed when its predicate holds at game end', () => {
+  it('reports a dropped milestone as true-at-end without faking completion', () => {
     const compiled = compilePlan(D6_LIKE);
     const dropped = [
       {
@@ -179,9 +181,15 @@ describe('final-position sweep (reporting only)', () => {
     const ctx = buildContext(bare, 'w', { evalWhiteCp: 0, mateWhite: null });
     const tracker = new PlanTracker(compiled, 'w');
     const notes: string[] = [];
-    finalPositionSweep(tracker, compiled, dropped, ctx, 80, notes);
-    expect(dropped[0]!.completed).toBe(true);
+    const trueAtEnd = finalPositionSweep(tracker, compiled, dropped, ctx, 80, notes);
+    expect(trueAtEnd).toContain('reduce_to_kq');
+    expect(dropped[0]!.completed).toBe(false); // honesty invariant: not completed
     expect(notes.some((n) => n.includes('nevertheless held at game end'))).toBe(true);
+    // buildReportMilestones tags trueAtEnd separately from completed
+    const ms = buildReportMilestones(tracker, compiled, compiled.milestones, dropped, new Set(trueAtEnd));
+    const reduce = ms.find((m) => m.id === 'reduce_to_kq')!;
+    expect(reduce.completed).toBe(false);
+    expect(reduce.trueAtEnd).toBe(true);
   });
 });
 
@@ -198,6 +206,7 @@ function fakeReport(over: Partial<GameReport>): GameReport {
     plies: 80,
     moveNumber: 40,
     milestones: [],
+    finalPositionTrue: [],
     violations: [],
     replans: [],
     fallbackEngaged: null,

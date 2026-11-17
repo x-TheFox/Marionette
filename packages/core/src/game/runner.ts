@@ -78,7 +78,11 @@ export interface GameReport {
     dropReason?: string;
     /** Set when a replan introduced this milestone (not in the original plan). */
     addedByReplan?: boolean;
+    /** Completion predicate holds in the FINAL position (fact, independent of order). */
+    trueAtEnd?: boolean;
   }[];
+  /** Milestone ids (original-plan view, incl. dropped) whose predicates hold at game end. */
+  finalPositionTrue: string[];
   violations: ConstraintViolation[];
   replans: { atPly: number; reason: string; provider: string; model: string }[];
   fallbackEngaged: string | null;
@@ -382,12 +386,13 @@ export async function runDirectiveGame(opts: RunnerOptions): Promise<GameReport>
     const finalPly = game.history().length;
     tracker.update(ctxOf(), finalPly); // final predicate pass
     const finalCtx = ctxOf();
-    // Final-position sweep (reporting only): a milestone whose completion
-    // predicate holds in the final position is reported completed — even when
-    // the ordered progression never activated it (a mate can arrive before an
-    // earlier milestone finishes) and even for milestones a replan dropped.
-    // Steering stays strictly ordered; reports state facts.
-    finalPositionSweep(tracker, compiled, state.dropped, finalCtx, finalPly, notes);
+    // Final-position facts (reporting only): which milestone predicates hold
+    // in the final position — reported SEPARATELY from ordered completion.
+    // The ordered tracker's verdicts are never overwritten: a milestone that
+    // only became true at the end (e.g. a mate arriving before an earlier
+    // milestone finished, or a fact a dropped milestone implied) is a true
+    // final-position fact, not an in-order completion. Steering is unaffected.
+    const finalTrue = new Set(finalPositionSweep(tracker, compiled, state.dropped, finalCtx, finalPly, notes));
     const terminal = terminalMet(compiled, finalCtx);
     const endReason = detectEnd(game, maxPlies);
     const result = resultOf(game, endReason);
@@ -415,7 +420,8 @@ export async function runDirectiveGame(opts: RunnerOptions): Promise<GameReport>
       terminalMet: terminal,
       plies: finalPly,
       moveNumber: finalCtx.moveNumber,
-      milestones: buildReportMilestones(tracker, compiled, state.originalMilestones, state.dropped),
+      milestones: buildReportMilestones(tracker, compiled, state.originalMilestones, state.dropped, finalTrue),
+      finalPositionTrue: [...finalTrue],
       violations: tracker.violations(),
       replans: [...state.replans],
       fallbackEngaged: state.fallback?.action ?? null,
@@ -577,10 +583,12 @@ export async function runDirectiveGame(opts: RunnerOptions): Promise<GameReport>
 // pure helpers
 
 /**
- * Final-position sweep (reporting only): mark every milestone whose completion
- * predicate holds in the final position as completed — including ones the
- * ordered progression never reached and ones a replan dropped. Returns notes.
- * Steering logic is unaffected: ordering there stays strict.
+ * Final-position facts (reporting only): return the ids of every milestone
+ * whose completion predicate holds in the final position — including ones the
+ * ordered progression never reached and ones a replan dropped. Does NOT mutate
+ * the tracker: ordered completion and final-position truth are reported as
+ * separate facts (the sweep results table shows both). Steering logic is
+ * unaffected: ordering there stays strict.
  */
 export function finalPositionSweep(
   tracker: PlanTracker,
@@ -589,25 +597,28 @@ export function finalPositionSweep(
   finalCtx: GameContext,
   finalPly: number,
   notes: string[],
-): void {
+): string[] {
+  void finalPly; // kept for signature stability / logging symmetry
+  const trueAtEnd: string[] = [];
   for (let i = 0; i < compiled.milestones.length; i++) {
     const ms = compiled.milestones[i]!;
     const st = tracker.states[i]!;
-    if (!st.completed && evalPredicate(ms.completion, finalCtx)) {
-      st.completed = true;
-      st.completedAtPly = finalPly;
-      st.bestPartial = 1;
-      notes.push(`milestone '${ms.spec.id}' held at game end (final-position sweep)`);
+    if (evalPredicate(ms.completion, finalCtx)) {
+      trueAtEnd.push(ms.spec.id);
+      if (!st.completed) {
+        notes.push(`milestone '${ms.spec.id}' held at game end (final-position fact, not completed in order)`);
+      }
     }
   }
   for (const d of dropped) {
-    if (!d.completed && evalPredicate(compilePredicate(d.completion), finalCtx)) {
-      d.completed = true;
-      d.completedAtPly = finalPly;
-      d.bestPartial = 1;
-      notes.push(`dropped milestone '${d.id}' nevertheless held at game end`);
+    if (evalPredicate(compilePredicate(d.completion), finalCtx)) {
+      trueAtEnd.push(d.id);
+      if (!d.completed) {
+        notes.push(`dropped milestone '${d.id}' nevertheless held at game end`);
+      }
     }
   }
+  return trueAtEnd;
 }
 
 /**
@@ -621,6 +632,7 @@ export function buildReportMilestones(
   finalCompiled: CompiledPlan,
   originalMilestones: CompiledPlan['milestones'],
   dropped: DroppedMilestone[],
+  finalTrue?: Set<string>,
 ): GameReport['milestones'] {
   const out: GameReport['milestones'] = [];
   const seen = new Set<string>();
@@ -635,6 +647,7 @@ export function buildReportMilestones(
       completed: st.completed,
       completedAtPly: st.completedAtPly,
       bestPartial: st.bestPartial,
+      trueAtEnd: finalTrue?.has(ms.spec.id),
     };
   };
   const original = originalMilestones;
@@ -656,6 +669,7 @@ export function buildReportMilestones(
         bestPartial: drop.bestPartial,
         droppedAtPly: drop.droppedAtPly,
         dropReason: drop.reason,
+        trueAtEnd: finalTrue?.has(drop.id),
       });
     } else {
       // Milestone from the original plan that no replan explicitly dropped but
@@ -815,21 +829,29 @@ export function renderReport(r: GameReport): string {
     );
   lines.push('');
   lines.push('## Milestones');
+  lines.push('');
+  lines.push('`[x]` = completed in plan order during play; `(end)` = predicate true in the final position. The two are separate facts.');
+  lines.push('');
   for (const m of r.milestones) {
     const box = m.completed ? 'x' : ' ';
+    const endTag = m.trueAtEnd ? ' (end)' : '';
     let detail: string;
     if (m.completed) {
       detail =
         m.droppedAtPly != null
           ? `completed at ply ${m.completedAtPly} (was dropped at ply ${m.droppedAtPly}; predicate held at game end)`
           : `completed at ply ${m.completedAtPly}`;
+      if (!m.trueAtEnd) detail += ' — predicate NOT true at final position (was transient)';
+    } else if (m.trueAtEnd) {
+      detail = `predicate TRUE at game end, but not completed in order (partial ${Math.round(m.bestPartial * 100)}%)`;
+      if (m.droppedAtPly != null) detail += `, dropped at ply ${m.droppedAtPly} (${m.dropReason ?? 'replan'})`;
     } else if (m.droppedAtPly != null) {
       detail = `DROPPED at ply ${m.droppedAtPly} (${m.dropReason ?? 'replan'}), partial ${Math.round(m.bestPartial * 100)}%`;
     } else {
       detail = `incomplete, partial ${Math.round(m.bestPartial * 100)}%`;
     }
     const tag = m.addedByReplan ? ' [added by replan]' : '';
-    lines.push(`- [${box}] ${m.id} (w=${m.weight}, tol=${m.tolerance})${tag} — ${detail}: ${m.description}`);
+    lines.push(`- [${box}]${endTag} ${m.id} (w=${m.weight}, tol=${m.tolerance})${tag} — ${detail}: ${m.description}`);
     lines.push(`  - predicate: \`${m.completion}\``);
   }
   if (r.replans.length > 0) {
