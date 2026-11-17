@@ -75,3 +75,21 @@ final-position — `give_checks` transiently true, then traded away).
 Phase 2 steering iteration continues toward D1/D6; bars stay frozen.
 
 
+
+## Discovery pass #2 — COMPLETE (2026-11-17, before any Phase 3 UI code)
+
+- **Skills:** 5 vendored (shadcn, brainstorming, chess-analysis, chess-position,
+  build-game-audio-feedback), all pinned in `skills-lock.json`, documented with
+  publisher/license/purpose in `skills/MANIFEST.md` together with a
+  rejected-candidates list (license, adoption, scope reasons).
+- **Components:** research subagent evaluated shadcn/ui, Radix, Magic UI,
+  Aceternity and the chessboard libraries; picks + licenses + rejections
+  recorded in `assets/ASSETS.md`. Stack: shadcn/ui (MIT) + Magic UI (MIT) +
+  react-chessboard v5 (MIT) + cburnett pieces (BSD-3 option) + chess.js (BSD-2).
+- **Sounds:** 8 CC0 event sounds from Kenney packs committed under
+  `assets/sounds/` with per-file attribution (`LICENSES.md`) and a
+  reproduction script (`scripts/fetch-sounds.py`). Lichess sounds rejected
+  (AGPL repo, no per-sound license).
+- **Features:** ideation proposal beyond the original list posted in
+  `docs/FEATURE-PROPOSAL.md` (F1..F8, ranked by impact/effort) — awaiting
+  user selection.
