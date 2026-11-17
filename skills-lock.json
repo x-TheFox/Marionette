@@ -17,6 +17,38 @@
       "computedHash": "f221c9cfe03d9255ac3e2383bfb8b1481036142fe2fe9567403eb071d21092bb",
       "installMode": "copy"
     },
+    "brainstorming": {
+      "source": "obra/superpowers",
+      "commit": "22f0b463e7a5e579904dd6211a520321035526f7",
+      "sourceType": "github",
+      "skillPath": "skills/brainstorming/SKILL.md",
+      "computedHash": "a7424777b7f81e3eb9b4556d29fe233553736d8255780d3e1feea190fef61fef",
+      "installMode": "copy"
+    },
+    "build-game-audio-feedback": {
+      "source": "MengTo/Skills",
+      "commit": "3cc93458c4949c39a04e938ea7892a1d6d3d40bf",
+      "sourceType": "github",
+      "skillPath": "agent-skills/game-development/build-game-audio-feedback/SKILL.md",
+      "computedHash": "80fad632da978194758698c9f8e75ad0c8d45bf3a7ba267fcd75e30f7a1c1391",
+      "installMode": "copy"
+    },
+    "chess-analysis": {
+      "source": "brumar/chess-postmortem-skills",
+      "commit": "eca0edfd55feba0b4bd87bbd4e93cf911b5ad5a7",
+      "sourceType": "github",
+      "skillPath": "skills/chess-analysis/SKILL.md",
+      "computedHash": "9a57ea528d906e192fc3bc59dca985a327283bb127768496123232f5cafac533",
+      "installMode": "copy"
+    },
+    "chess-position": {
+      "source": "brumar/chess-postmortem-skills",
+      "commit": "eca0edfd55feba0b4bd87bbd4e93cf911b5ad5a7",
+      "sourceType": "github",
+      "skillPath": "skills/chess-position/SKILL.md",
+      "computedHash": "8b90288c39d677d80808142af213a58150c14171efe6de94bf3a1fedfd3a754e",
+      "installMode": "copy"
+    },
     "design-taste-frontend": {
       "source": "leonxlnx/taste-skill",
       "commit": "f6b76575f949707b4e3c37cd86cb44b0b98643e8",
@@ -55,6 +87,14 @@
       "sourceType": "github",
       "skillPath": ".agents/skills/impeccable/SKILL.md",
       "computedHash": "077889e9782761360c17acbc2522af320d0dd0f928b09cd90884fa304f443a34",
+      "installMode": "copy"
+    },
+    "shadcn": {
+      "source": "shadcn-ui/ui",
+      "commit": "968d8cb9dc42ae5d52e8fd356cf84596ec832a26",
+      "sourceType": "github",
+      "skillPath": "skills/shadcn/SKILL.md",
+      "computedHash": "388962d16c7a4f13aaeee0d8f128e50a87df8553d42ef7988c39c0e1c74a40e8",
       "installMode": "copy"
     },
     "web-design-guidelines": {
