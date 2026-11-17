@@ -36,15 +36,15 @@ describe('lambda mapping', () => {
   it('tolerance drives base lambda', () => {
     const compiled = plan(WIN_PLAN);
     const ctxNow = ctx(['e4', 'e5'], 'w');
-    const loose = lambdaFor({ milestone: { ...compiled.milestones[0]!.spec, tolerance: 'loose' }, plan: compiled }, ctxNow);
-    const tight = lambdaFor({ milestone: { ...compiled.milestones[0]!.spec, tolerance: 'tight' }, plan: compiled }, ctxNow);
+    const loose = lambdaFor({ milestone: { ...compiled.milestones[0]!, spec: { ...compiled.milestones[0]!.spec, tolerance: 'loose' } }, plan: compiled }, ctxNow);
+    const tight = lambdaFor({ milestone: { ...compiled.milestones[0]!, spec: { ...compiled.milestones[0]!.spec, tolerance: 'tight' } }, plan: compiled }, ctxNow);
     expect(loose).toBeLessThan(tight);
   });
 
   it('a losing terminal caps lambda low', () => {
     const compiled = plan({ ...WIN_PLAN, terminal: { kind: 'lose', priority: 'milestones_first' } });
     const ctxNow = ctx(['e4', 'e5'], 'w');
-    const λ = lambdaFor({ milestone: { ...compiled.milestones[0]!.spec, tolerance: 'tight' }, plan: compiled }, ctxNow);
+    const λ = lambdaFor({ milestone: { ...compiled.milestones[0]!, spec: { ...compiled.milestones[0]!.spec, tolerance: 'tight' } }, plan: compiled }, ctxNow);
     expect(λ).toBeLessThanOrEqual(0.6);
   });
 
@@ -52,19 +52,19 @@ describe('lambda mapping', () => {
     const compiled = plan(WIN_PLAN);
     const behind = ctx(['e4', 'e5'], 'w', -600);
     const ahead = ctx(['e4', 'e5'], 'w', 600);
-    const λBehind = lambdaFor({ milestone: { ...compiled.milestones[0]!.spec, tolerance: 'loose' }, plan: compiled }, behind);
-    const λAhead = lambdaFor({ milestone: { ...compiled.milestones[0]!.spec, tolerance: 'loose' }, plan: compiled }, ahead);
+    const λBehind = lambdaFor({ milestone: { ...compiled.milestones[0]!, spec: { ...compiled.milestones[0]!.spec, tolerance: 'loose' } }, plan: compiled }, behind);
+    const λAhead = lambdaFor({ milestone: { ...compiled.milestones[0]!, spec: { ...compiled.milestones[0]!.spec, tolerance: 'loose' } }, plan: compiled }, ahead);
     expect(λBehind).toBeGreaterThan(λAhead);
   });
 });
 
 describe('scoring', () => {
   const compiled = plan(WIN_PLAN);
-  const milestone = compiled.milestones[0]!.spec;
+  const milestone = compiled.milestones[0]!;
 
   it('weights and bonuses scale with milestone weight', () => {
-    expect(progressWeight({ ...milestone, weight: 5 })).toBeGreaterThan(progressWeight({ ...milestone, weight: 1 }));
-    expect(completionBonus({ ...milestone, weight: 5 })).toBeGreaterThan(completionBonus({ ...milestone, weight: 1 }));
+    expect(progressWeight({ ...milestone.spec, weight: 5 })).toBeGreaterThan(progressWeight({ ...milestone.spec, weight: 1 }));
+    expect(completionBonus({ ...milestone.spec, weight: 5 })).toBeGreaterThan(completionBonus({ ...milestone.spec, weight: 1 }));
   });
 
   it('completion dominates eval loss', () => {
@@ -346,5 +346,30 @@ describe('D1/D6 steering iteration: motivated candidates', () => {
     const cands = motivatedCandidates(compiled, ctxNow, 0, new Set());
     // Trade-down captures AND hanging offers should both appear.
     expect(cands.some((c) => c.motive.includes('non_pawn_count(self)'))).toBe(true);
+  });
+});
+
+describe('D6 steering iteration: lambda shedding exemption', () => {
+  it('a shedding milestone keeps its tolerance lambda even when behind (D6 K+Q is always material-down)', () => {
+    const compiled = plan({
+      summary: 'reduce to K+Q',
+      style: 'none',
+      terminal: { kind: 'win', priority: 'milestones_first' },
+      hardConstraints: [],
+      milestones: [
+        { id: 'reduce', description: 'K+Q only', completion: 'piece_count(self, queen) == 1 && piece_count(self, pawn) == 0 && non_pawn_count(self) == 1', tolerance: 'medium', weight: 5 },
+      ],
+      fallback: ['secure_terminal', 'play_best'],
+    });
+    const behind = ctx(['e4', 'e5'], 'w', -600);
+    const λ = lambdaFor({ milestone: compiled.milestones[0]!, plan: compiled }, behind);
+    expect(λ).toBeCloseTo(0.6, 5); // medium tolerance, NOT the 1.2 behind-raise
+  });
+
+  it('a non-shedding milestone still raises lambda when behind (protect the terminal)', () => {
+    const compiled = plan(WIN_PLAN);
+    const behind = ctx(['e4', 'e5'], 'w', -600);
+    const λ = lambdaFor({ milestone: compiled.milestones[0]!, plan: compiled }, behind);
+    expect(λ).toBeGreaterThanOrEqual(1.2);
   });
 });

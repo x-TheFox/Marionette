@@ -33,6 +33,8 @@ export interface SteerOptions {
   currentEvalWhiteCp?: number | null;
   /** Check flags for the current history (one per ply). */
   checkFlags?: boolean[];
+  /** Position keys already occurred >= 2 times: a move replaying one draws by threefold. */
+  repetitionKeys?: Set<string>;
   rng?: () => number;
 }
 
@@ -79,6 +81,7 @@ export async function steerMove(opts: SteerOptions): Promise<SteerDecision> {
     multiPV = 5,
     motivatedDepth = 12,
     checkFlags = [],
+    repetitionKeys = new Set<string>(),
     rng = Math.random,
   } = opts;
 
@@ -98,7 +101,7 @@ export async function steerMove(opts: SteerOptions): Promise<SteerDecision> {
     : null;
 
   const ctxNow = buildContext(game, self, { evalWhiteCp: currentEvalWhite, mateWhite: currentMateWhite }, checkFlags);
-  const lambda = lambdaFor({ milestone: active?.spec ?? null, plan: compiled }, ctxNow);
+  const lambda = lambdaFor({ milestone: active ?? null, plan: compiled }, ctxNow);
 
   // 2. Candidate list: engine lines + motivated extras.
   const verboseMoves = new Map<string, { from: string; to: string; promotion?: string; san: string }>(
@@ -260,7 +263,11 @@ export async function steerMove(opts: SteerOptions): Promise<SteerDecision> {
       (terminal.kind === 'draw' && e.ctxAfter.draw);
     const achievesTerminal = terminalEligible && terminalNow;
     const legitEnd = achievesTerminal || (activeIdx != null && completes);
-    const prematureEnd = e.ctxAfter.over && !legitEnd;
+    // Repetition draws are invisible to the history-less probe (new Chess(fen)
+    // cannot see prior occurrences), so check the runner-provided key set:
+    // replaying a position that already occurred twice is a voluntary draw.
+    const wouldThreefold = repetitionKeys.has(positionKey(e.fenAfter));
+    const prematureEnd = (e.ctxAfter.over || wouldThreefold) && !legitEnd;
 
     const parts = scoreCandidate(
       {
@@ -272,7 +279,7 @@ export async function steerMove(opts: SteerOptions): Promise<SteerDecision> {
         bestEvalSelfCp: bestEvalSelf,
       },
       {
-        milestone: active?.spec ?? null,
+        milestone: active ?? null,
         plan: compiled,
         ctxAfter: e.ctxAfter,
         ctxNow,
@@ -314,6 +321,7 @@ export async function steerMove(opts: SteerOptions): Promise<SteerDecision> {
         continue;
       }
       if (probe.isGameOver()) continue; // do not volunteer ANY game end here
+      if (repetitionKeys.has(positionKey(probe.fen()))) continue; // ...including a would-be threefold
       const fenAfter = probe.fen();
       const sub = await engine.analyse(fenAfter, { depth: Math.min(motivatedDepth, 10), multiPV: 1 });
       const l = sub.lines[0];
@@ -379,6 +387,12 @@ function whiteFromStm(cpSTM: number | null, mateSTM: number | null, fen: string)
   }
   const cp = cpSTM ?? 0;
   return fen.split(' ')[1] === 'b' ? -cp : cp;
+}
+
+/** FIDE repetition key: piece placement, turn, castling rights, en-passant. */
+export function positionKey(fen: string): string {
+  const parts = fen.split(' ');
+  return `${parts[0]} ${parts[1]} ${parts[2]} ${parts[3]}`;
 }
 
 /** Build the context after the candidate + first PV reply (lookahead). */

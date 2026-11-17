@@ -8,7 +8,7 @@ import { compileDirectivePlan } from '../compiler/compile.js';
 import type { CompiledPlan } from '../plan/schema.js';
 import { PlanTracker, terminalMet, type ConstraintViolation } from './tracker.js';
 import { deterministicReplan } from './deterministic.js';
-import { steerMove } from '../steering/steer.js';
+import { steerMove, positionKey } from '../steering/steer.js';
 
 /**
  * Headless directive game: Marionette (steered Stockfish) vs a strength-capped
@@ -286,6 +286,7 @@ export async function runDirectiveGame(opts: RunnerOptions): Promise<GameReport>
             multiPV: steerMultiPV,
             motivatedDepth,
             checkFlags: state.checkFlags,
+            repetitionKeys: repeatedPositionKeys(game),
             rng,
           });
           uci = decision.uci;
@@ -760,6 +761,30 @@ async function pickFallbackMove(
   }
   const mv = verbose[0]!;
   return { uci: toUci(mv), san: mv.san, evalWhiteCp: null };
+}
+
+/**
+ * Position keys that have already occurred at least twice in this game
+ * (including the initial position): replaying one of them is a voluntary
+ * threefold draw. Steer probes are history-less, so this set is how the
+ * scorer can see repetition ends coming.
+ */
+function repeatedPositionKeys(game: Chess): Set<string> {
+  const counts = new Map<string, number>();
+  const scratch = new Chess();
+  counts.set(positionKey(scratch.fen()), 1);
+  for (const san of game.history()) {
+    try {
+      scratch.move(san);
+    } catch {
+      break;
+    }
+    const k = positionKey(scratch.fen());
+    counts.set(k, (counts.get(k) ?? 0) + 1);
+  }
+  const out = new Set<string>();
+  for (const [k, n] of counts) if (n >= 2) out.add(k);
+  return out;
 }
 
 function replanTrigger(tracker: PlanTracker, ply: number, stallWindow: number, ctx: GameContext): string | null {

@@ -1,5 +1,6 @@
 import type { GameContext } from '../dsl/types.js';
-import type { CompiledPlan, Milestone } from '../plan/schema.js';
+import type { CompiledPlan, CompiledMilestone, Milestone } from '../plan/schema.js';
+import { extractGradientAtoms, atomGradientValue } from '../dsl/index.js';
 
 /**
  * Steering score for one candidate move:
@@ -115,7 +116,7 @@ export interface ScoreInput {
 }
 
 export interface ScoreContext {
-  milestone: Milestone | null;
+  milestone: CompiledMilestone | null;
   plan: CompiledPlan;
   /** GameContext after the candidate move (for style bonuses). */
   ctxAfter: GameContext;
@@ -126,19 +127,47 @@ export interface ScoreContext {
 }
 
 /**
+ * True when the milestone's own gradient says "get rid of own material": a
+ * self-side atom whose target is BELOW the current value (material(self),
+ * non_pawn_count(self), piece_count(self, pawn), ...) or whose own pieces
+ * must be captured (captured_value(self) >= n). For such milestones losing
+ * eval is the POINT, so the behind-guard must not price it out.
+ */
+export function isSheddingMilestone(m: CompiledMilestone | null, ctx: GameContext): boolean {
+  if (!m) return false;
+  const atoms = extractGradientAtoms(m.completion.ast);
+  return atoms.some((a) => {
+    if (a.sides[0] == null) return false;
+    const side =
+      a.sides[0] === 'self' ? ctx.self : a.sides[0] === 'opp' ? (ctx.self === 'w' ? 'b' : 'w') : a.sides[0] as 'w' | 'b';
+    if (side !== ctx.self) return false;
+    if (a.fn === 'captured_value') return a.op != null && ['>=', '>', '=='].includes(a.op) && (a.target ?? 0) > 0;
+    if (a.op == null || a.target == null) return false;
+    if (!['material', 'non_pawn_count', 'piece_count'].includes(a.fn)) return false;
+    if (!['<', '<=', '=='].includes(a.op)) return false;
+    const g = atomGradientValue(a, ctx);
+    return a.target < g;
+  });
+}
+
+/**
  * λ for the current steering state. Adapts beyond the static tolerance map:
  *   - terminal_first plans raise λ once the terminal is in reach (protect the
  *     result), unless the terminal itself wants a loss/draw (λ drops instead);
  *   - when the plan is behind its terminal target (must win but eval < 0), λ
- *     rises so the engine stops volunteering material for failed milestones.
+ *     rises so the engine stops volunteering material for failed milestones —
+ *     EXCEPT when the active milestone is itself a shedding milestone: being
+ *     "behind" is intrinsic to shedding (D6: K+Q vs a full army is always
+ *     material-down), and raising λ there makes the directive unexecutable.
  */
 export function lambdaFor(sc: Pick<ScoreContext, 'milestone' | 'plan'>, ctxNow: GameContext): number {
-  const tol = sc.milestone?.tolerance ?? 'tight';
+  const tol = sc.milestone?.spec.tolerance ?? 'tight';
   let λ: number = LAMBDA_BY_TOLERANCE[tol];
   const t = sc.plan.plan.terminal;
   const winningTarget = t.kind === 'win' || (t.kind === 'pattern' && t.priority === 'terminal_first');
   const selfEval = ctxNow.evalWhiteCp == null ? 0 : (ctxNow.self === 'w' ? ctxNow.evalWhiteCp : -ctxNow.evalWhiteCp);
-  if (winningTarget && selfEval < -150) λ = Math.max(λ, 1.2); // behind: stop the bleeding
+  const shedding = isSheddingMilestone(sc.milestone ?? null, ctxNow);
+  if (winningTarget && selfEval < -150 && !shedding) λ = Math.max(λ, 1.2); // behind: stop the bleeding
   if (t.kind === 'lose' || t.kind === 'draw') λ = Math.min(λ, 0.6); // losing/drawing terminal: eval damage is not the enemy
   if (t.priority === 'terminal_first') λ *= 1.6;
   return λ;
@@ -164,8 +193,8 @@ export function styleBonus(sc: Pick<ScoreContext, 'plan' | 'ctxAfter' | 'ctxNow'
 
 /** Full score of one candidate. Returns parts + total (−Infinity = excluded). */
 export function scoreCandidate(input: ScoreInput, sc: ScoreContext, λ: number): ScoreParts {
-  const w = sc.milestone ? progressWeight(sc.milestone) : 0;
-  const progress = w * clamp1(input.deltaProgress) + (input.completes && sc.milestone ? completionBonus(sc.milestone) : 0);
+  const w = sc.milestone ? progressWeight(sc.milestone.spec) : 0;
+  const progress = w * clamp1(input.deltaProgress) + (input.completes && sc.milestone ? completionBonus(sc.milestone.spec) : 0);
   const evalLoss = Math.max(0, input.bestEvalSelfCp - input.evalSelfCp) / 100;
   const evalCost = -λ * evalLoss;
   let bonus = styleBonus(sc);

@@ -51,10 +51,17 @@ export type HardConstraint = z.infer<typeof HardConstraintSchema>;
 export type Terminal = z.infer<typeof TerminalSchema>;
 export type Plan = z.infer<typeof PlanSchema>;
 
+/** A milestone with its predicates parsed + statically validated. */
+export interface CompiledMilestone {
+  spec: Milestone;
+  completion: CompiledPredicate;
+  infeasible?: CompiledPredicate;
+}
+
 /** A plan with all predicates parsed + statically validated. */
 export interface CompiledPlan {
   plan: Plan;
-  milestones: { spec: Milestone; completion: CompiledPredicate; infeasible?: CompiledPredicate }[];
+  milestones: CompiledMilestone[];
   constraints: { spec: HardConstraint; violation: CompiledPredicate }[];
   terminalPattern?: CompiledPredicate;
   schemaVersion: string;

@@ -1,0 +1,655 @@
+{
+  "stamp": "2026-11-17T12-22-21",
+  "sweep": "quick",
+  "gamesPerCell": 2,
+  "offline": true,
+  "elos": [
+    800
+  ],
+  "outcomes": [
+    {
+      "id": "D6",
+      "elo": 800,
+      "gameIdx": 0,
+      "error": null,
+      "report": {
+        "directive": "Win with only a queen and king left.",
+        "selfColor": "w",
+        "result": "1-0",
+        "endReason": "checkmate",
+        "terminalMet": true,
+        "plies": 55,
+        "moveNumber": 28,
+        "milestones": [
+          {
+            "id": "reduce_to_kq",
+            "description": "Reduce own material to exactly king + queen",
+            "completion": "piece_count(self, queen) == 1 && piece_count(self, pawn) == 0 && non_pawn_count(self) == 1",
+            "tolerance": "loose",
+            "weight": 5,
+            "completed": false,
+            "bestPartial": 0.30000000000000004,
+            "droppedAtPly": 42,
+            "dropReason": "milestone reduce_to_kq stalled: no partial progress for ~26 plies",
+            "trueAtEnd": false
+          },
+          {
+            "id": "deliver_mate",
+            "description": "Deliver checkmate with king and queen",
+            "completion": "is_checkmate() && winner() == self",
+            "tolerance": "tight",
+            "weight": 4,
+            "completed": true,
+            "completedAtPly": 55,
+            "bestPartial": 1,
+            "trueAtEnd": true
+          }
+        ],
+        "finalPositionTrue": [
+          "deliver_mate"
+        ],
+        "violations": [],
+        "replans": [
+          {
+            "atPly": 42,
+            "reason": "milestone reduce_to_kq stalled: no partial progress for ~26 plies",
+            "provider": "deterministic",
+            "model": "rule-based"
+          }
+        ],
+        "fallbackEngaged": null,
+        "acplSelf": 0.1575,
+        "steeredMoves": 28,
+        "marionetteMoves": 28,
+        "evalTrail": [
+          36,
+          45,
+          156,
+          173,
+          184,
+          150,
+          127,
+          49,
+          85,
+          65,
+          139,
+          107,
+          17,
+          57,
+          65,
+          107,
+          212,
+          203,
+          457,
+          547,
+          576,
+          693,
+          780,
+          830,
+          9650,
+          9750,
+          9800,
+          9950
+        ],
+        "snapshots": [
+          {
+            "matSelf": 4000,
+            "matOpp": 4000,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 4000,
+            "matOpp": 4000,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 4000,
+            "matOpp": 4000,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 4000,
+            "matOpp": 4000,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 4000,
+            "matOpp": 4000,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 4000,
+            "matOpp": 4000,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 4000,
+            "matOpp": 4000,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 3900,
+            "matOpp": 3680,
+            "checksSelf": 1
+          },
+          {
+            "matSelf": 3570,
+            "matOpp": 3580,
+            "checksSelf": 1
+          },
+          {
+            "matSelf": 3570,
+            "matOpp": 3580,
+            "checksSelf": 1
+          },
+          {
+            "matSelf": 3570,
+            "matOpp": 3580,
+            "checksSelf": 1
+          },
+          {
+            "matSelf": 3570,
+            "matOpp": 3580,
+            "checksSelf": 1
+          },
+          {
+            "matSelf": 3250,
+            "matOpp": 3260,
+            "checksSelf": 1
+          },
+          {
+            "matSelf": 2920,
+            "matOpp": 2930,
+            "checksSelf": 1
+          },
+          {
+            "matSelf": 2920,
+            "matOpp": 2930,
+            "checksSelf": 1
+          },
+          {
+            "matSelf": 2920,
+            "matOpp": 2930,
+            "checksSelf": 1
+          },
+          {
+            "matSelf": 2920,
+            "matOpp": 2930,
+            "checksSelf": 1
+          },
+          {
+            "matSelf": 2920,
+            "matOpp": 2930,
+            "checksSelf": 1
+          },
+          {
+            "matSelf": 2920,
+            "matOpp": 2930,
+            "checksSelf": 1
+          },
+          {
+            "matSelf": 2920,
+            "matOpp": 2930,
+            "checksSelf": 1
+          },
+          {
+            "matSelf": 2920,
+            "matOpp": 2930,
+            "checksSelf": 1
+          },
+          {
+            "matSelf": 2920,
+            "matOpp": 2930,
+            "checksSelf": 1
+          },
+          {
+            "matSelf": 2920,
+            "matOpp": 2930,
+            "checksSelf": 1
+          },
+          {
+            "matSelf": 2820,
+            "matOpp": 2830,
+            "checksSelf": 1
+          },
+          {
+            "matSelf": 2820,
+            "matOpp": 2830,
+            "checksSelf": 1
+          },
+          {
+            "matSelf": 2820,
+            "matOpp": 2830,
+            "checksSelf": 1
+          },
+          {
+            "matSelf": 2820,
+            "matOpp": 1930,
+            "checksSelf": 1
+          },
+          {
+            "matSelf": 2820,
+            "matOpp": 1930,
+            "checksSelf": 2
+          }
+        ],
+        "planFromCache": true,
+        "planProvider": "kilo",
+        "planModel": "kilo-auto/free",
+        "opponentElo": 800,
+        "opponentEmulated": true,
+        "steerDepth": 14,
+        "steerMultiPV": 5,
+        "elapsedMs": 24044,
+        "pgn": "[Event \"Marionette directive game\"]\n[Site \"marionette-cli\"]\n[Date \"2026.11.17\"]\n[Round \"?\"]\n[White \"Marionette\"]\n[Black \"Stockfish-19 (Elo 800)\"]\n[Result \"1-0\"]\n[Annotator \"plan: Trade or sacrifice everything except king and queen, then win the K+Q endgame\"]\n\n1. e4 Nc6 2. d4 Nf6 3. d5 Nb8 4. e5 Ng8 5. Nc3 d6 6. Bf4 Nd7 7. Bb5 dxe5 8. Bxd7+ Bxd7 9. Bxe5 Nf6 10. Qf3 Qc8 11. Nge2 Bg4 12. Qg3 Bxe2 13. Bxf6 gxf6 14. Nxe2 Qd7 15. O-O a6 16. Qf3 Bh6 17. Qh5 Bf8 18. c4 h6 19. Nf4 b5 20. Rfe1 Qd6 21. Ne6 Qd7 22. c5 c6 23. Rad1 cxd5 24. Rxd5 Qa7 25. Red1 Qb8 26. Qf3 Qd6 27. Rxd6 Rb8 28. Qc6# 1-0",
+        "notes": [
+          "opponent Elo 800 is below the native UCI_Elo floor (1320): emulated with Skill Level 0, depth cap 6, eval-weighted move choice",
+          "replan at ply 42 was deterministic (offline mode): dropped milestone 'reduce_to_kq' (milestone reduce_to_kq stalled: no partial progress for ~26 plies); dropped constraint 'no_extra_pieces' (was gated on dropped milestone 'reduce_to_kq')"
+        ]
+      },
+      "judge": {
+        "looksTrying": 1,
+        "natural": 0.7,
+        "plausibleLoss": 0.5,
+        "bully": 0.7544444444444445,
+        "score": 7.386111111111111,
+        "reasons": [
+          "ACPL 0, 0 blunder(s) >= 300cp, max drop 90cp",
+          "naturalness inputs: ACPL band 30-250, blunder spread, length 55 plies",
+          "no loss on the board caps plausibleLoss",
+          "material lead max 890cp (early ~220cp), 2 checks given, 55 plies"
+        ]
+      }
+    },
+    {
+      "id": "D6",
+      "elo": 800,
+      "gameIdx": 1,
+      "error": null,
+      "report": {
+        "directive": "Win with only a queen and king left.",
+        "selfColor": "b",
+        "result": "1/2-1/2",
+        "endReason": "threefold_repetition",
+        "terminalMet": false,
+        "plies": 98,
+        "moveNumber": 50,
+        "milestones": [
+          {
+            "id": "reduce_to_kq",
+            "description": "Reduce own material to exactly king + queen",
+            "completion": "piece_count(self, queen) == 1 && piece_count(self, pawn) == 0 && non_pawn_count(self) == 1",
+            "tolerance": "loose",
+            "weight": 5,
+            "completed": false,
+            "bestPartial": 0.8,
+            "droppedAtPly": 80,
+            "dropReason": "milestone reduce_to_kq exceeded its move budget (80 plies)",
+            "trueAtEnd": false
+          },
+          {
+            "id": "deliver_mate",
+            "description": "Deliver checkmate with king and queen",
+            "completion": "is_checkmate() && winner() == self",
+            "tolerance": "tight",
+            "weight": 4,
+            "completed": false,
+            "bestPartial": 0,
+            "trueAtEnd": false
+          }
+        ],
+        "finalPositionTrue": [],
+        "violations": [],
+        "replans": [
+          {
+            "atPly": 80,
+            "reason": "milestone reduce_to_kq exceeded its move budget (80 plies)",
+            "provider": "deterministic",
+            "model": "rule-based"
+          }
+        ],
+        "fallbackEngaged": null,
+        "acplSelf": 0.4157142857142858,
+        "steeredMoves": 49,
+        "marionetteMoves": 49,
+        "evalTrail": [
+          -29,
+          -6,
+          -6,
+          16,
+          -425,
+          -517,
+          -459,
+          -372,
+          -369,
+          -369,
+          -435,
+          -403,
+          -436,
+          -287,
+          -306,
+          -315,
+          -380,
+          -377,
+          -505,
+          -456,
+          -417,
+          -401,
+          -386,
+          -316,
+          -275,
+          -272,
+          -330,
+          -416,
+          -16,
+          -466,
+          -466,
+          -410,
+          -429,
+          -480,
+          -470,
+          -380,
+          -363,
+          -315,
+          -419,
+          -44,
+          -41,
+          -35,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "snapshots": [
+          {
+            "matSelf": 4000,
+            "matOpp": 4000,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 4000,
+            "matOpp": 4000,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 4000,
+            "matOpp": 4000,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 4000,
+            "matOpp": 4000,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 4000,
+            "matOpp": 4000,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 3680,
+            "matOpp": 4000,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 3680,
+            "matOpp": 4000,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 3680,
+            "matOpp": 3670,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 3350,
+            "matOpp": 3670,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 3350,
+            "matOpp": 3670,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 3350,
+            "matOpp": 3670,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 3350,
+            "matOpp": 3670,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 3350,
+            "matOpp": 3670,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 3350,
+            "matOpp": 3570,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 3350,
+            "matOpp": 3570,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 3030,
+            "matOpp": 3250,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 3030,
+            "matOpp": 3250,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 3030,
+            "matOpp": 3150,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 2930,
+            "matOpp": 3150,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 2930,
+            "matOpp": 3150,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 2930,
+            "matOpp": 3050,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 2830,
+            "matOpp": 3050,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 2830,
+            "matOpp": 3050,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 2830,
+            "matOpp": 3050,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 2830,
+            "matOpp": 3050,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 2830,
+            "matOpp": 3050,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 2730,
+            "matOpp": 2550,
+            "checksSelf": 1
+          },
+          {
+            "matSelf": 2230,
+            "matOpp": 2550,
+            "checksSelf": 1
+          },
+          {
+            "matSelf": 2230,
+            "matOpp": 2550,
+            "checksSelf": 1
+          },
+          {
+            "matSelf": 2230,
+            "matOpp": 2550,
+            "checksSelf": 1
+          },
+          {
+            "matSelf": 2130,
+            "matOpp": 2550,
+            "checksSelf": 1
+          },
+          {
+            "matSelf": 2130,
+            "matOpp": 2550,
+            "checksSelf": 1
+          },
+          {
+            "matSelf": 1800,
+            "matOpp": 2050,
+            "checksSelf": 1
+          },
+          {
+            "matSelf": 1700,
+            "matOpp": 1950,
+            "checksSelf": 1
+          },
+          {
+            "matSelf": 1600,
+            "matOpp": 1950,
+            "checksSelf": 1
+          },
+          {
+            "matSelf": 1600,
+            "matOpp": 1950,
+            "checksSelf": 1
+          },
+          {
+            "matSelf": 1600,
+            "matOpp": 1950,
+            "checksSelf": 1
+          },
+          {
+            "matSelf": 1600,
+            "matOpp": 1950,
+            "checksSelf": 1
+          },
+          {
+            "matSelf": 1600,
+            "matOpp": 1950,
+            "checksSelf": 2
+          },
+          {
+            "matSelf": 1600,
+            "matOpp": 1950,
+            "checksSelf": 2
+          },
+          {
+            "matSelf": 1600,
+            "matOpp": 1950,
+            "checksSelf": 2
+          },
+          {
+            "matSelf": 1600,
+            "matOpp": 1950,
+            "checksSelf": 2
+          },
+          {
+            "matSelf": 1600,
+            "matOpp": 1950,
+            "checksSelf": 2
+          },
+          {
+            "matSelf": 1600,
+            "matOpp": 1950,
+            "checksSelf": 2
+          },
+          {
+            "matSelf": 1600,
+            "matOpp": 1950,
+            "checksSelf": 2
+          },
+          {
+            "matSelf": 1600,
+            "matOpp": 1950,
+            "checksSelf": 2
+          },
+          {
+            "matSelf": 1600,
+            "matOpp": 1950,
+            "checksSelf": 2
+          },
+          {
+            "matSelf": 1600,
+            "matOpp": 1950,
+            "checksSelf": 2
+          },
+          {
+            "matSelf": 1600,
+            "matOpp": 1950,
+            "checksSelf": 2
+          }
+        ],
+        "planFromCache": true,
+        "planProvider": "kilo",
+        "planModel": "kilo-auto/free",
+        "opponentElo": 800,
+        "opponentEmulated": true,
+        "steerDepth": 14,
+        "steerMultiPV": 5,
+        "elapsedMs": 35509,
+        "pgn": "[Event \"Marionette directive game\"]\n[Site \"marionette-cli\"]\n[Date \"2026.11.17\"]\n[Round \"?\"]\n[White \"Stockfish-19 (Elo 800)\"]\n[Black \"Marionette\"]\n[Result \"1/2-1/2\"]\n[Annotator \"plan: Trade or sacrifice everything except king and queen, then win the K+Q endgame\"]\n\n1. e4 c5 2. Be2 Nc6 3. d3 d5 4. Nf3 Nf6 5. e5 Rg8 6. exf6 e5 7. g3 Bh3 8. Bf1 Bxf1 9. Kxf1 Qd7 10. Kg2 O-O-O 11. Qe2 Qe6 12. a4 h5 13. Nc3 a6 14. Bd2 gxf6 15. Rhe1 Nd4 16. Nxd4 cxd4 17. Nd1 Rg6 18. c3 dxc3 19. bxc3 Rg8 20. a5 h4 21. Ra4 hxg3 22. fxg3 Rh8 23. Kh1 Bd6 24. Rg1 f5 25. Qf2 Rdg8 26. Ne3 f4 27. gxf4 Rxg1+ 28. Kxg1 e4 29. Qg3 Qe8 30. Qg4+ f5 31. Qxf5+ Kb8 32. Qf6 Ka8 33. Qxd6 Qxa4 34. dxe4 Qxa5 35. exd5 Qb5 36. Qe6 a5 37. c4 Qb2 38. Nf1 a4 39. Qe5 Rg8+ 40. Kh1 a3 41. Qc3 Kb8 42. Qe5+ Ka8 43. d6 Qb1 44. Be1 a2 45. Qa5+ Kb8 46. Qc7+ Ka7 47. Qa5+ Kb8 48. Qc7+ Ka7 49. Qa5+ Kb8 1/2-1/2",
+        "notes": [
+          "opponent Elo 800 is below the native UCI_Elo floor (1320): emulated with Skill Level 0, depth cap 6, eval-weighted move choice",
+          "replan at ply 80 was deterministic (offline mode): dropped milestone 'reduce_to_kq' (milestone reduce_to_kq exceeded its move budget (80 plies)); dropped constraint 'no_extra_pieces' (was gated on dropped milestone 'reduce_to_kq')",
+          "1 milestone(s) incomplete at game end"
+        ]
+      },
+      "judge": {
+        "looksTrying": 0.7,
+        "natural": 0.8,
+        "plausibleLoss": 0.65,
+        "bully": 0.16,
+        "score": 5.775,
+        "reasons": [
+          "ACPL 0, 2 blunder(s) >= 300cp, max drop 450cp",
+          "naturalness inputs: ACPL band 30-250, blunder spread, length 98 plies",
+          "no loss on the board caps plausibleLoss",
+          "material lead max 180cp (early ~-320cp), 2 checks given, 98 plies"
+        ]
+      }
+    }
+  ],
+  "verdicts": [
+    {
+      "id": "D6",
+      "bar": "d6-full",
+      "n": 2,
+      "hits": 0,
+      "rate": 0,
+      "pass": false,
+      "expectedFail": true,
+      "detail": "0/2 games fully completed"
+    }
+  ]
+}
