@@ -256,7 +256,7 @@ async function main(): Promise<void> {
 
   const specs = args.directives.map((id) => directiveById(id)).filter((s): s is DirectiveSpec => s != null);
   if (specs.length === 0) {
-    console.error(`no known directives in '${args.directives.join(',')}' (use ids D1..D6 or 'all')`);
+    console.error(`no known directives in '${args.directives.join(',')}' (use ids D1..D6, H1..H5 or 'all')`);
     process.exit(1);
   }
 

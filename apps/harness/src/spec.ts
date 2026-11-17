@@ -6,9 +6,21 @@
  * is marked expectedFail: it is a KNOWN FAILING regression (Phase 1 close-out:
  * reduce_to_kq reaches only partial credit) and must never be reported as
  * passed until steering actually achieves it.
+ *
+ * HELD-OUT SET (H1..H5, added 2026-11-17 BEFORE their first run): directives
+ * the Goal Compiler prompt and steering were never tuned on. Their bars were
+ * declared before running and are frozen for this iteration's sweep:
+ *   - loss-rate bars mirror the frozen D2 loss bar (0.7) for the same
+ *     operationalization family (directed losing);
+ *   - full-completion bars for shed-then-win directives mirror D6's 0.4 /
+ *     D1's 0.3 scaled by how much material must be shed and how exotic the
+ *     mating request is (H1 minors-only is the hardest -> 0.15);
+ *   - win-rate bars mirror D5's 0.6 when the directive only constrains HOW
+ *     Marionette wins, 0.5 when it also demands a sequencing feat.
+ * Held-out results are reported but cannot move any D1..D6 threshold.
  */
 
-export type DirectiveId = 'D1' | 'D2' | 'D3' | 'D4' | 'D5' | 'D6';
+export type DirectiveId = 'D1' | 'D2' | 'D3' | 'D4' | 'D5' | 'D6' | 'H1' | 'H2' | 'H3' | 'H4' | 'H5';
 
 export type BarMetric =
   | 'full_completion' // all milestones completed AND terminal met
@@ -155,6 +167,109 @@ export const DIRECTIVES: DirectiveSpec[] = [
         threshold: 0.4,
         expectedFail: true,
         note: 'KNOWN FAILING regression kept visible on purpose (Phase 1 close-out: reduce_to_kq partial only). Do not mark passed.',
+      },
+    ],
+  },
+  // --- held-out set: never tuned on; bars declared before first run -------
+  {
+    id: 'H1',
+    directive: 'Win using only knights and bishops.',
+    bars: [
+      {
+        id: 'h1-full',
+        description: 'full completion (win with minors only) vs <=1600',
+        metric: 'full_completion',
+        elos: ELOS_LE_1600,
+        threshold: 0.15,
+        note: 'hardest held-out ask: shed Q+R+pawns AND mate with knights/bishops',
+      },
+      {
+        id: 'h1-win',
+        description: 'wins vs <=1600',
+        metric: 'win_rate',
+        elos: ELOS_LE_1600,
+        threshold: 0.5,
+      },
+    ],
+  },
+  {
+    id: 'H2',
+    directive: "Capture the opponent's queen before move 15, then win.",
+    bars: [
+      {
+        id: 'h2-full',
+        description: 'full completion (queen captured by ply 30 in order, then win) vs <=1600',
+        metric: 'full_completion',
+        elos: ELOS_LE_1600,
+        threshold: 0.3,
+      },
+      {
+        id: 'h2-win',
+        description: 'wins vs <=1600',
+        metric: 'win_rate',
+        elos: ELOS_LE_1600,
+        threshold: 0.5,
+      },
+    ],
+  },
+  {
+    id: 'H3',
+    directive: 'Promote a pawn to a queen, then lose the game.',
+    bars: [
+      {
+        id: 'h3-full',
+        description: 'full completion (queen promotion, then ordered loss) vs <=1600',
+        metric: 'full_completion',
+        elos: ELOS_LE_1600,
+        threshold: 0.3,
+      },
+      {
+        id: 'h3-loss',
+        description: 'losses vs all ELOs',
+        metric: 'loss_rate',
+        threshold: 0.7,
+        note: 'mirrors frozen D2 loss bar (same directed-losing family)',
+      },
+    ],
+  },
+  {
+    id: 'H4',
+    directive: 'Checkmate your opponent using a rook.',
+    bars: [
+      {
+        id: 'h4-full',
+        description: 'full completion (rook mate) vs <=1600',
+        metric: 'full_completion',
+        elos: ELOS_LE_1600,
+        threshold: 0.4,
+      },
+      {
+        id: 'h4-win',
+        description: 'wins vs <=1600',
+        metric: 'win_rate',
+        elos: ELOS_LE_1600,
+        threshold: 0.6,
+        note: 'mirrors frozen D5 win bar (directive constrains HOW Marionette wins)',
+      },
+    ],
+  },
+  {
+    id: 'H5',
+    directive: 'Lose, but capture at least three of my pieces first.',
+    bars: [
+      {
+        id: 'h5-full',
+        description: 'full completion (3+ captures, then ordered loss) vs <=1600',
+        metric: 'full_completion',
+        elos: ELOS_LE_1600,
+        threshold: 0.3,
+      },
+      {
+        id: 'h5-loss',
+        description: 'losses vs all ELOs',
+        metric: 'loss_rate',
+        threshold: 0.7,
+        note: 'mirrors frozen D2 loss bar (same directed-losing family)',
       },
     ],
   },
