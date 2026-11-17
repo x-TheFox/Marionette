@@ -1,0 +1,36 @@
+# --- secrets (never commit) ---
+.env
+.env.*
+!.env.example
+
+# --- dependencies / build ---
+node_modules/
+dist/
+build/
+out/
+coverage/
+*.tsbuildinfo
+
+# --- logs / local scratch ---
+*.log
+logs/
+scratch/
+tmp/
+
+# --- engine: extracted binary (the release .tar itself IS committed) ---
+vendor/stockfish/stockfish
+vendor/stockfish/extract/
+
+# --- os / editor ---
+.DS_Store
+.idea/
+.vscode/
+*.swp
+
+# --- agent dirs created by the skills CLI (canonical copy lives in .agents/skills/) ---
+.zcode/
+.claude/
+.cursor/
+
+# --- local caches (LLM plan cache etc.) ---
+.cache/
