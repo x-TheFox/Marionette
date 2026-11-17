@@ -149,3 +149,27 @@ recompile for D1/D6 with that guidance (one LLM call each), pending approval.
 Full D2-D5 refresh sweep recommended after any plan change (shared steering
 machinery changed this iteration: D2 shedding should improve under the λ cap
 + greedy model).
+
+## Iteration #3 (2026-11-17, compiler-prompt iteration)
+
+Approved and executed: fix the prompt (never per-plan), recompile D1/D6 via the LLM
+only, add a held-out set with bars declared before running, re-sweep, compare honestly.
+
+- Prompt rules added: surviving-piece quantifiers; real-impossibility-only infeasible
+  clauses; material-scaled budgets (~12 plies/unit shed, floor 80; ~10/pawn + 30;
+  ~8/capture); own-action hard constraints only. PLAN.md section "Goal Compiler prompt
+  semantics (iteration #3)".
+- D1/D6 recompiled through kilo-auto/free (no hand edits) and committed to the store.
+- Held-out H1..H5 declared in spec.ts + PLAN.md BEFORE first run; compiled through the
+  same chain with no special casing. Sixth candidate ("never move the same piece twice
+  in a row") rejected — DSL cannot express own-move history (Phase 4 candidate).
+- Sweep: 188 games offline. Report: bench/summary/2026-11-17-iteration3-report.md.
+- Bars: zero regressions (all previously-passing bars still pass; two judge dips
+  traced to two D2 wins, still PASS). D1-partial and D6-full first-ever completions
+  (1/30 each). D6 remains expectedFail. D1 shed completes 30/40 (was 0/40); D6 K+Q
+  partial 0.49 -> 0.73 -> 0.86.
+- Held-out: H2-win 100% and H5-loss 100% PASS; H1-win/H4-win near-bar; all
+  full-completion bars FAIL. Key new finding F1: winner()-only terminal milestones
+  stall-drop (no gradient) and the ladder can revert to winning play on lose-terminal
+  directives — recorded as the top candidate for the next steering iteration.
+- Phase 3 (web UI + human mode) started after this report, as instructed.
