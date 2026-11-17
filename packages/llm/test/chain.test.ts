@@ -26,10 +26,12 @@ describe('parseEnvFile', () => {
 });
 
 describe('findRepoRoot', () => {
-  it('finds the marionette root from a nested dir', () => {
+  it('finds the repo root from a nested dir (any checkout dir name)', () => {
     const root = findRepoRoot(join(process.cwd(), 'packages', 'llm', 'test'));
     expect(existsSync(join(root, 'package.json'))).toBe(true);
-    expect(root.endsWith('marionette')).toBe(true);
+    // Repo markers, not the folder name: a fresh clone may be called anything.
+    expect(existsSync(join(root, 'scripts', 'bootstrap.sh'))).toBe(true);
+    expect(existsSync(join(root, 'vendor', 'stockfish'))).toBe(true);
   });
 });
 

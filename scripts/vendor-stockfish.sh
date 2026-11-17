@@ -13,6 +13,9 @@
 #   4. Extracts the binary, keeps the upstream license file, smoke-tests UCI.
 #
 # Idempotent: exits early if the binary already answers `uci`.
+# Offline-friendly: if a release tarball is already vendored in the repo, it is
+# extracted without any network access (the GitHub API is only queried when no
+# tarball is present).
 set -euo pipefail
 
 ROOT="$(CDPATH= cd -- "$(dirname -- "$0")/.." && pwd)"
@@ -27,14 +30,19 @@ if [ -x "$BIN" ] && printf 'uci\nisready\nquit\n' | "$BIN" 2>/dev/null | grep -q
   exit 0
 fi
 
-echo "[vendor-stockfish] fetching release list..."
-auth=()
-if [ -n "${GITHUB_TOKEN:-}" ]; then auth=(-H "Authorization: Bearer $GITHUB_TOKEN"); fi
-curl -s -m 30 "${auth[@]}" \
-  "https://api.github.com/repos/official-stockfish/Stockfish/releases?per_page=10" \
-  -o /tmp/sf_rels.json
+# Prefer a tarball already vendored in the repo — no network needed.
+TAR="$(ls "$VDIR"/stockfish-*.tar.gz 2>/dev/null | head -1 || true)"
+if [ -n "$TAR" ]; then
+  echo "[vendor-stockfish] using vendored tarball $(basename "$TAR") (offline)"
+else
+  echo "[vendor-stockfish] fetching release list..."
+  auth=()
+  if [ -n "${GITHUB_TOKEN:-}" ]; then auth=(-H "Authorization: Bearer $GITHUB_TOKEN"); fi
+  curl -s -m 30 "${auth[@]}" \
+    "https://api.github.com/repos/official-stockfish/Stockfish/releases?per_page=10" \
+    -o /tmp/sf_rels.json
 
-read -r TAG URL NAME < <(python3 - <<'PY'
+  read -r TAG URL NAME < <(python3 - <<'PY'
 import json, platform, sys
 
 rels = json.load(open('/tmp/sf_rels.json'))
@@ -91,11 +99,12 @@ print(rel['tag_name'], url, name)
 PY
 ) || { echo "[vendor-stockfish] could not pick an asset for this platform (list above, if any)."; exit 2; }
 
-echo "[vendor-stockfish] release $TAG -> $NAME"
-TAR="$VDIR/$NAME"
-if [ ! -f "$TAR" ]; then
-  echo "[vendor-stockfish] downloading $URL"
-  curl -sL --retry 3 -m 900 -o "$TAR" "$URL"
+  echo "[vendor-stockfish] release $TAG -> $NAME"
+  TAR="$VDIR/$NAME"
+  if [ ! -f "$TAR" ]; then
+    echo "[vendor-stockfish] downloading $URL"
+    curl -sL --retry 3 -m 900 -o "$TAR" "$URL"
+  fi
 fi
 
 echo "[vendor-stockfish] sha256 of $TAR:"
