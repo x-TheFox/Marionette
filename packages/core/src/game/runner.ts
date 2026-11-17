@@ -244,8 +244,10 @@ export async function runDirectiveGame(opts: RunnerOptions): Promise<GameReport>
         const ctx = ctxOf();
         const trigger = replanTrigger(tracker, ply, stallWindow, ctx);
         if (trigger != null) {
-          const ok = await doReplan(trigger, ply);
-          if (ok) continue;
+          const outcome = await doReplan(trigger, ply);
+          if (outcome === 'replanned') continue;
+          if (outcome === 'impossible') continue; // fallback ladder engaged inside doReplan
+          // 'protected': the stall guard kept the milestone alive — keep steering it.
         }
       }
 
@@ -456,7 +458,10 @@ export async function runDirectiveGame(opts: RunnerOptions): Promise<GameReport>
 
   // --- closures over the mutable state (declared after try; hoisted) --------
 
-  async function doReplan(reason: string, ply: number): Promise<boolean> {
+  /** 'replanned' = plan revised; 'protected' = stall guard refused, KEEP
+   *  STEERING the milestone (never fall down the fallback ladder for this);
+   *  'impossible' = nothing droppable, the ladder takes over. */
+  async function doReplan(reason: string, ply: number): Promise<'replanned' | 'protected' | 'impossible'> {
     const ctx = buildContext(
       game,
       self,
@@ -465,9 +470,10 @@ export async function runDirectiveGame(opts: RunnerOptions): Promise<GameReport>
     );
     const progress = state.tracker!.progressReport(ctx);
 
-    const tryDeterministic = (why: string): boolean => {
+    const tryDeterministic = (why: string): 'replanned' | 'protected' | 'impossible' => {
       const r = deterministicReplan(state.compiled!, progress, reason, ctx);
-      if (!r) return false;
+      if (r?.kind === 'protected') return 'protected';
+      if (!r) return 'impossible';
       recordDroppedMilestones(r.compiled, ply, reason);
       state.compiled = r.compiled;
       state.tracker = new PlanTracker(r.compiled, self, ply);
@@ -476,13 +482,14 @@ export async function runDirectiveGame(opts: RunnerOptions): Promise<GameReport>
       emit({ kind: 'replan', atPly: ply, reason, provider: 'deterministic', model: 'rule-based' });
       emit({ kind: 'info', message: `deterministic replan: ${r.changes.join('; ')}` });
       notes.push(`replan at ply ${ply} was deterministic (${why}): ${r.changes.join('; ')}`);
-      return true;
+      return 'replanned';
     };
 
     if (replanMode === 'deterministic' || !opts.llm) {
-      if (tryDeterministic('offline mode')) return true;
+      const outcome = tryDeterministic('offline mode');
+      if (outcome !== 'impossible') return outcome;
       engageFallback(`deterministic replan impossible: ${reason}`, ply);
-      return false;
+      return 'impossible';
     }
 
     try {
@@ -502,7 +509,7 @@ export async function runDirectiveGame(opts: RunnerOptions): Promise<GameReport>
       state.replans.push({ atPly: ply, reason, provider: r.provider, model: r.model });
       emit({ kind: 'replan', atPly: ply, reason, provider: r.provider, model: r.model });
       emit({ kind: 'info', message: `new plan: ${r.compiled.plan.summary}` });
-      return true;
+      return 'replanned';
     } catch (e) {
       const detail =
         e instanceof LlmChainError
@@ -513,9 +520,10 @@ export async function runDirectiveGame(opts: RunnerOptions): Promise<GameReport>
             ? e.message
             : String(e);
       notes.push(`LLM replan failed at ply ${ply} [${detail}]`);
-      if (tryDeterministic('llm replan failed')) return true;
+      const outcome = tryDeterministic('llm replan failed');
+      if (outcome !== 'impossible') return outcome;
       engageFallback(`replan failed: ${reason}`, ply);
-      return false;
+      return 'impossible';
     }
   }
 

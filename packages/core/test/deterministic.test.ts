@@ -38,8 +38,9 @@ describe('deterministicReplan', () => {
   it('drops the failing milestone and its gated constraint, keeps the rest verbatim', () => {
     const compiled = compilePlan(D6_LIKE);
     const r = deterministicReplan(compiled, progress('reduce_to_kq', 'reduce_to_kq'), 'milestone stalled');
-    expect(r).not.toBeNull();
-    expect(r!.compiled.plan.milestones.map((m) => m.id)).toEqual(['deliver_mate']);
+    expect(r?.kind).toBe('replanned');
+    if (r?.kind !== 'replanned') return;
+    expect(r.compiled.plan.milestones.map((m) => m.id)).toEqual(['deliver_mate']);
     expect(r!.compiled.plan.hardConstraints.map((c) => c.id)).toEqual(['never_draw']);
     expect(r!.compiled.plan.terminal.kind).toBe('win');
     expect(r!.compiled.plan.fallback).toEqual(['secure_terminal', 'play_best']);
@@ -50,8 +51,10 @@ describe('deterministicReplan', () => {
   it('falls back to the active milestone when failing is not a milestone id', () => {
     const compiled = compilePlan(D6_LIKE);
     const r = deterministicReplan(compiled, progress('reduce_to_kq', 'some_constraint_id'), 'constraint violated');
-    expect(r).not.toBeNull();
-    expect(r!.compiled.plan.milestones.map((m) => m.id)).toEqual(['deliver_mate']);
+    expect(r?.kind).toBe('replanned');
+    if (r?.kind === 'replanned') {
+      expect(r.compiled.plan.milestones.map((m) => m.id)).toEqual(['deliver_mate']);
+    }
   });
 
   it('returns null when there is nothing active to drop', () => {
@@ -64,7 +67,8 @@ describe('deterministicReplan', () => {
       ...D6_LIKE,
       milestones: [D6_LIKE.milestones[0]],
     });
-    expect(deterministicReplan(single, progress('reduce_to_kq'), 'stalled')).toBeNull();
+    // hard trigger (not a stall) so the >= 0.5 stall guard does not protect it
+    expect(deterministicReplan(single, progress('reduce_to_kq'), 'budget exceeded')).toBeNull();
   });
 
   it('stall guard: a nearly-done milestone is NOT dropped for a mere stall', () => {
@@ -75,7 +79,7 @@ describe('deterministicReplan', () => {
       completed: [],
       active: { id: 'reduce_to_kq', description: 'x', partialCredit: 0.78 },
     };
-    expect(deterministicReplan(compiled, nearly, 'milestone reduce_to_kq stalled: no partial progress for ~16 plies')).toBeNull();
+    expect(deterministicReplan(compiled, nearly, 'milestone reduce_to_kq stalled: no partial progress for ~16 plies')).toEqual({ kind: 'protected' });
     // Far from done -> a stall still drops it.
     const far: ProgressReport = { ...nearly, active: { id: 'reduce_to_kq', description: 'x', partialCredit: 0.3 } };
     expect(deterministicReplan(compiled, far, 'milestone reduce_to_kq stalled: no partial progress for ~16 plies')).not.toBeNull();
@@ -87,7 +91,10 @@ describe('deterministicReplan', () => {
 describe('report milestones survive replans (dropped work stays visible)', () => {
   it('a dropped milestone is reported incomplete with its drop reason, not forgotten', () => {
     const original = compilePlan(D6_LIKE);
-    const revised = deterministicReplan(original, progress('reduce_to_kq', 'reduce_to_kq'), 'stalled')!;
+    const replanRes = deterministicReplan(original, progress('reduce_to_kq', 'reduce_to_kq'), 'stalled');
+    expect(replanRes?.kind).toBe('replanned');
+    if (replanRes?.kind !== 'replanned') return;
+    const revised = replanRes;
     // Game continued on the revised plan; deliver_mate completed later.
     const tracker = new PlanTracker(revised.compiled, 'w');
     const dropped = [
@@ -289,7 +296,7 @@ describe('D1/D6 steering iteration: shedding milestones survive stalls at any pa
     };
     expect(
       deterministicReplan(compiled, progress, 'milestone reduce_to_pawns stalled: no partial progress for ~16 plies', ctx),
-    ).toBeNull();
+    ).toEqual({ kind: 'protected' });
   });
 
   it('a NON-shedding milestone at low partial is still dropped for a stall (with ctx)', () => {
@@ -313,7 +320,8 @@ describe('D1/D6 steering iteration: shedding milestones survive stalls at any pa
       active: { id: 'castle', description: 'castle', partialCredit: 0 },
     };
     const r = deterministicReplan(compiled, progress, 'milestone castle stalled: no partial progress for ~16 plies', ctx);
-    expect(r).not.toBeNull();
-    expect(r!.changes.some((c) => c.includes("dropped milestone 'castle'"))).toBe(true);
+    expect(r?.kind).toBe('replanned');
+    if (r?.kind !== 'replanned') return;
+    expect(r.changes.some((c) => c.includes("dropped milestone 'castle'"))).toBe(true);
   });
 });

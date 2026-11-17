@@ -30,14 +30,28 @@ import { isSheddingMilestone } from '../steering/scorer.js';
  * stall window dropped reduce_to_pawns before the opponent ever captured).
  * Hard triggers (infeasibility, exceeded move budget) always drop.
  */
-export interface DeterministicReplanResult {
+export interface DeterministicReplanChange {
+  kind: 'replanned';
   compiled: CompiledPlan;
   /** Human-readable, honest change list (also used as report notes). */
   changes: string[];
 }
 
+/** The stall guard kept the milestone alive: the caller must KEEP STEERING,
+ *  not fall down the fallback ladder (D6 lesson: the ladder skipped to
+ *  secure_terminal and engine-best play stalemated a K+Q endgame the
+ *  milestone steering was still working on). */
+export interface DeterministicReplanProtected {
+  kind: 'protected';
+}
+
+export type DeterministicReplanResult = DeterministicReplanChange | DeterministicReplanProtected;
+
 export const STALL_DROP_MAX_PARTIAL = 0.5;
 
+/** Deterministic replan. Returns 'replanned' with the revised plan, 'protected'
+ *  when the stall guard refuses to drop (keep steering), or null when nothing
+ *  can be dropped (the caller falls back to the plan's ladder). */
 export function deterministicReplan(
   compiled: CompiledPlan,
   progress: ProgressReport,
@@ -53,14 +67,14 @@ export function deterministicReplan(
   const dropId = failId ?? progress.active?.id ?? null;
   if (dropId == null) return null;
 
-  // Stall guard: nearly-done milestones survive stalls; the caller's fallback
-  // ladder keeps steering them. Shedding milestones survive stalls at any
-  // partial credit (context-dependent check).
+  // Stall guard: nearly-done milestones survive stalls; the caller must keep
+  // steering them. Shedding milestones survive stalls at any partial credit
+  // (context-dependent check).
   const isStall = /stalled/i.test(reason);
   if (isStall && failId == null) {
-    if ((progress.active?.partialCredit ?? 0) >= STALL_DROP_MAX_PARTIAL) return null;
+    if ((progress.active?.partialCredit ?? 0) >= STALL_DROP_MAX_PARTIAL) return { kind: 'protected' };
     const activeMs = compiled.milestones.find((m) => m.spec.id === progress.active?.id);
-    if (activeMs && ctx && isSheddingMilestone(activeMs, ctx)) return null;
+    if (activeMs && ctx && isSheddingMilestone(activeMs, ctx)) return { kind: 'protected' };
   }
 
   const keptMilestones = compiled.plan.milestones.filter((m) => m.id !== dropId);
@@ -87,5 +101,5 @@ export function deterministicReplan(
     milestones: keptMilestones,
   });
 
-  return { compiled: revised, changes };
+  return { kind: 'replanned', compiled: revised, changes };
 }
