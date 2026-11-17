@@ -7,6 +7,7 @@ import type { GameContext, Side } from '../dsl/types.js';
 import { compileDirectivePlan } from '../compiler/compile.js';
 import type { CompiledPlan } from '../plan/schema.js';
 import { PlanTracker, terminalMet, type ConstraintViolation } from './tracker.js';
+import { deterministicReplan } from './deterministic.js';
 import { steerMove } from '../steering/steer.js';
 
 /**
@@ -31,7 +32,12 @@ export interface RunnerOptions {
   maxReplans?: number;
   /** Plies without partial-credit progress before a stall replan. */
   stallWindow?: number;
-  llm: LlmChain;
+  /** LLM chain for live compiles/replans; may be null in offline mode. */
+  llm?: LlmChain | null;
+  /** 'llm' (default) tries the provider chain first, deterministic as fallback; 'deterministic' never calls an LLM. */
+  replanMode?: 'llm' | 'deterministic';
+  /** Offline mode: initial plan must come from the cache (PlanCacheMissError otherwise). */
+  planFromCacheOnly?: boolean;
   noCache?: boolean;
   /** Deterministic seed for emulated opponents / natural fallbacks. */
   seed?: number;
@@ -75,6 +81,10 @@ export interface GameReport {
   /** Moves scored through the steering path (ACPL denominator). */
   steeredMoves: number;
   marionetteMoves: number;
+  /** Self-perspective eval (cp) after each Marionette move (judge input). */
+  evalTrail: (number | null)[];
+  /** Material + checks snapshot after each Marionette move (judge input). */
+  snapshots: { matSelf: number; matOpp: number; checksSelf: number }[];
   planFromCache: boolean;
   planProvider: string;
   planModel: string;
@@ -99,6 +109,7 @@ export async function runDirectiveGame(opts: RunnerOptions): Promise<GameReport>
   const maxPlies = opts.maxPlies ?? 300;
   const maxReplans = opts.maxReplans ?? 2;
   const stallWindow = opts.stallWindow ?? 16;
+  const replanMode = opts.replanMode ?? 'llm';
   const steerDepth = opts.steerDepth ?? 14;
   const steerMultiPV = Math.min(opts.steerMultiPV ?? 5, 5);
   const motivatedDepth = opts.motivatedDepth ?? 12;
@@ -123,6 +134,8 @@ export async function runDirectiveGame(opts: RunnerOptions): Promise<GameReport>
     acplSum: number;
     acplN: number;
     marionetteMoves: number;
+    evalTrail: (number | null)[];
+    snapshots: { matSelf: number; matOpp: number; checksSelf: number }[];
     compileFromCache: boolean;
     compileProvider: string;
     compileModel: string;
@@ -137,6 +150,8 @@ export async function runDirectiveGame(opts: RunnerOptions): Promise<GameReport>
     acplSum: 0,
     acplN: 0,
     marionetteMoves: 0,
+    evalTrail: [],
+    snapshots: [],
     compileFromCache: false,
     compileProvider: '',
     compileModel: '',
@@ -159,12 +174,16 @@ export async function runDirectiveGame(opts: RunnerOptions): Promise<GameReport>
     });
 
     // --- Plan ---------------------------------------------------------------
+    if (!opts.llm && !opts.planFromCacheOnly) {
+      throw new Error('runDirectiveGame: no LLM chain and planFromCacheOnly not set — nothing to compile with');
+    }
     const compileResult = await compileDirectivePlan({
       directive: opts.directive,
       selfColor: self,
       fen: startFen,
-      llm: opts.llm,
+      llm: opts.llm ?? null,
       noCache: opts.noCache,
+      fromCacheOnly: opts.planFromCacheOnly,
     });
     state.compiled = compileResult.compiled;
     state.compileFromCache = compileResult.fromCache;
@@ -261,6 +280,9 @@ export async function runDirectiveGame(opts: RunnerOptions): Promise<GameReport>
         }
         state.marionetteMoves++;
         state.lastEvalWhite = evalWhiteCp ?? state.lastEvalWhite;
+        state.evalTrail.push(
+          evalWhiteCp == null ? null : self === 'w' ? evalWhiteCp : -evalWhiteCp,
+        );
         state.checkFlags.push(game.isCheck());
         emit({ kind: 'move', ply, san, side: self, source, evalWhiteCp, lambda });
       } else {
@@ -284,6 +306,13 @@ export async function runDirectiveGame(opts: RunnerOptions): Promise<GameReport>
 
       // --- Post-ply predicate pass -----------------------------------------
       const after = ctxOf();
+      if (turn === self) {
+        state.snapshots.push({
+          matSelf: after.material[self],
+          matOpp: after.material[self === 'w' ? 'b' : 'w'],
+          checksSelf: after.checksCount[self],
+        });
+      }
       const upd = tracker.update(after, game.history().length);
       for (const m of upd.newlyCompleted) {
         emit({ kind: 'milestone', id: m.id, description: m.description, atPly: m.atPly });
@@ -361,6 +390,8 @@ export async function runDirectiveGame(opts: RunnerOptions): Promise<GameReport>
       acplSelf: state.acplN > 0 ? state.acplSum / state.acplN : null,
       steeredMoves: state.acplN,
       marionetteMoves: state.marionetteMoves,
+      evalTrail: [...state.evalTrail],
+      snapshots: [...state.snapshots],
       planFromCache: state.compileFromCache,
       planProvider: state.compileProvider,
       planModel: state.compileModel,
@@ -394,6 +425,26 @@ export async function runDirectiveGame(opts: RunnerOptions): Promise<GameReport>
       state.checkFlags,
     );
     const progress = state.tracker!.progressReport(ctx);
+
+    const tryDeterministic = (why: string): boolean => {
+      const r = deterministicReplan(state.compiled!, progress, reason);
+      if (!r) return false;
+      state.compiled = r.compiled;
+      state.tracker = new PlanTracker(r.compiled, self, ply);
+      state.tracker.rederive(ctx, ply);
+      state.replans.push({ atPly: ply, reason, provider: 'deterministic', model: 'rule-based' });
+      emit({ kind: 'replan', atPly: ply, reason, provider: 'deterministic', model: 'rule-based' });
+      emit({ kind: 'info', message: `deterministic replan: ${r.changes.join('; ')}` });
+      notes.push(`replan at ply ${ply} was deterministic (${why}): ${r.changes.join('; ')}`);
+      return true;
+    };
+
+    if (replanMode === 'deterministic' || !opts.llm) {
+      if (tryDeterministic('offline mode')) return true;
+      engageFallback(`deterministic replan impossible: ${reason}`, ply);
+      return false;
+    }
+
     try {
       const r = await compileDirectivePlan({
         directive: opts.directive,
@@ -420,7 +471,8 @@ export async function runDirectiveGame(opts: RunnerOptions): Promise<GameReport>
           : e instanceof Error
             ? e.message
             : String(e);
-      notes.push(`replan failed at ply ${ply}; engaging fallback [${detail}]`);
+      notes.push(`LLM replan failed at ply ${ply} [${detail}]`);
+      if (tryDeterministic('llm replan failed')) return true;
       engageFallback(`replan failed: ${reason}`, ply);
       return false;
     }

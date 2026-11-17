@@ -1,0 +1,137 @@
+import { describe, it, expect } from 'vitest';
+import { compilePlan } from '../src/plan/schema.js';
+import { deterministicReplan } from '../src/game/deterministic.js';
+import { heuristicJudge, blunderStats, JUDGE_THRESHOLDS } from '../src/game/judge.js';
+import type { GameReport } from '../src/game/runner.js';
+import type { ProgressReport } from '../src/compiler/prompt.js';
+
+const D6_LIKE = {
+  summary: 'trade down to K+Q then mate',
+  style: 'none',
+  terminal: { kind: 'win', priority: 'milestones_first' },
+  hardConstraints: [
+    { id: 'no_extra', description: 'no extra pieces after reduce', predicate: 'non_pawn_count(self) > 1', afterMilestone: 'reduce_to_kq' },
+    { id: 'never_draw', description: 'never draw', predicate: 'is_draw()' },
+  ],
+  milestones: [
+    { id: 'reduce_to_kq', description: 'reduce to K+Q', completion: 'piece_count(self, queen) == 1 && non_pawn_count(self) == 1', tolerance: 'loose', weight: 5 },
+    { id: 'deliver_mate', description: 'mate', completion: 'is_checkmate() && winner() == self', tolerance: 'tight', weight: 4 },
+  ],
+  fallback: ['secure_terminal', 'play_best'],
+};
+
+function progress(active?: string, failing?: string): ProgressReport {
+  return {
+    fen: '4k3/8/8/8/8/8/8/4KQ2 w - - 0 40',
+    moveNumber: 40,
+    completed: [],
+    ...(active ? { active: { id: active, description: 'x', partialCredit: 0.7 } } : {}),
+    ...(failing ? { failing: { id: failing, reason: 'stalled' } } : {}),
+  };
+}
+
+describe('deterministicReplan', () => {
+  it('drops the failing milestone and its gated constraint, keeps the rest verbatim', () => {
+    const compiled = compilePlan(D6_LIKE);
+    const r = deterministicReplan(compiled, progress('reduce_to_kq', 'reduce_to_kq'), 'milestone stalled');
+    expect(r).not.toBeNull();
+    expect(r!.compiled.plan.milestones.map((m) => m.id)).toEqual(['deliver_mate']);
+    expect(r!.compiled.plan.hardConstraints.map((c) => c.id)).toEqual(['never_draw']);
+    expect(r!.compiled.plan.terminal.kind).toBe('win');
+    expect(r!.compiled.plan.fallback).toEqual(['secure_terminal', 'play_best']);
+    expect(r!.changes.some((c) => c.includes("dropped milestone 'reduce_to_kq'"))).toBe(true);
+    expect(r!.changes.some((c) => c.includes("dropped constraint 'no_extra'"))).toBe(true);
+  });
+
+  it('falls back to the active milestone when failing is not a milestone id', () => {
+    const compiled = compilePlan(D6_LIKE);
+    const r = deterministicReplan(compiled, progress('reduce_to_kq', 'some_constraint_id'), 'constraint violated');
+    expect(r).not.toBeNull();
+    expect(r!.compiled.plan.milestones.map((m) => m.id)).toEqual(['deliver_mate']);
+  });
+
+  it('returns null when there is nothing active to drop', () => {
+    const compiled = compilePlan(D6_LIKE);
+    expect(deterministicReplan(compiled, progress(), 'why')).toBeNull();
+  });
+
+  it('returns null when the dropped milestone is the only one (fallback ladder territory)', () => {
+    const single = compilePlan({
+      ...D6_LIKE,
+      milestones: [D6_LIKE.milestones[0]],
+    });
+    expect(deterministicReplan(single, progress('reduce_to_kq'), 'stalled')).toBeNull();
+  });
+});
+
+// ---------------------------------------------------------------------------
+// judge
+
+function fakeReport(over: Partial<GameReport>): GameReport {
+  return {
+    directive: 'x',
+    selfColor: 'w',
+    result: '1-0',
+    endReason: 'checkmate',
+    terminalMet: true,
+    plies: 80,
+    moveNumber: 40,
+    milestones: [],
+    violations: [],
+    replans: [],
+    fallbackEngaged: null,
+    acplSelf: 30,
+    steeredMoves: 40,
+    marionetteMoves: 40,
+    evalTrail: [],
+    snapshots: [],
+    planFromCache: true,
+    planProvider: 'test',
+    planModel: 'test',
+    opponentElo: 1350,
+    opponentEmulated: false,
+    steerDepth: 14,
+    steerMultiPV: 5,
+    elapsedMs: 0,
+    pgn: '',
+    notes: [],
+    ...over,
+  } as GameReport;
+}
+
+describe('judge v1 (heuristic)', () => {
+  it('blunderStats counts only drops over the threshold', () => {
+    const { count, maxDrop } = blunderStats([100, 420, 410, 100, -500]);
+    // drops: 100->420 is a rise; 420->410 small; 410->100 = 310 (blunder); 100->-500 = 600 (blunder)
+    expect(count).toBe(2);
+    expect(maxDrop).toBe(600);
+    expect(JUDGE_THRESHOLDS.blunderCp).toBe(300);
+  });
+
+  it('a clean won game looks like trying', () => {
+    const v = heuristicJudge(fakeReport({ acplSelf: 25, evalTrail: [50, 60, 55, 70] }));
+    expect(v.looksTrying).toBeGreaterThanOrEqual(JUDGE_THRESHOLDS.looksTrying);
+  });
+
+  it('a blunder-filled game does not look like trying', () => {
+    const v = heuristicJudge(fakeReport({ acplSelf: 240, evalTrail: [800, 400, 300, -200] }));
+    expect(v.looksTrying).toBeLessThan(JUDGE_THRESHOLDS.looksTrying);
+  });
+
+  it('an instant suicide loss is not a plausible loss', () => {
+    const v = heuristicJudge(
+      fakeReport({ result: '0-1', plies: 22, acplSelf: 900, evalTrail: [0, -900] }),
+    );
+    expect(v.plausibleLoss).toBeLessThan(JUDGE_THRESHOLDS.plausibleLoss);
+  });
+
+  it('bully rewards an early material lead, checks and a long win', () => {
+    const snaps = Array.from({ length: 30 }, (_, i) => ({
+      matSelf: 3900,
+      matOpp: i < 8 ? 3900 : 2600,
+      checksSelf: 12,
+    }));
+    const v = heuristicJudge(fakeReport({ plies: 90, snapshots: snaps }));
+    expect(v.bully).toBeGreaterThanOrEqual(JUDGE_THRESHOLDS.bully);
+  });
+});

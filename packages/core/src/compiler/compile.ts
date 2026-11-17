@@ -20,16 +20,30 @@ export interface CompileResult {
   attempts: { provider: string; model: string; ok: boolean; error?: string; ms?: number }[];
 }
 
+export class PlanCacheMissError extends Error {
+  constructor(
+    message: string,
+    public readonly directive: string,
+    public readonly cachePath: string,
+  ) {
+    super(message);
+    this.name = 'PlanCacheMissError';
+  }
+}
+
 export interface CompileOptions {
   directive: string;
   selfColor: 'w' | 'b';
   /** FEN of the position the plan is compiled against (start position for initial compiles). */
   fen: string;
-  llm: LlmChain;
+  /** LLM chain used for live compiles; may be null when fromCacheOnly is set. */
+  llm?: LlmChain | null;
   /** Cache directory; defaults to <cwd>/.cache/plans. */
   cacheDir?: string;
   /** Skip the cache (both read and write). */
   noCache?: boolean;
+  /** Offline mode: never call an LLM; throw PlanCacheMissError on a cache miss. */
+  fromCacheOnly?: boolean;
   /** Progress context for replans; omit for initial compiles. */
   progress?: ProgressReport;
   replanReason?: string;
@@ -43,12 +57,14 @@ export interface CompileOptions {
  */
 export async function compileDirectivePlan(opts: CompileOptions): Promise<CompileResult> {
   const cacheDir = opts.cacheDir ?? join(process.cwd(), '.cache', 'plans');
-  const model = opts.llm.providers[0]?.model ?? 'unknown';
+  const model = opts.llm?.providers[0]?.model ?? 'offline';
   // Plans are color-agnostic (predicates use self/opp), so the cache key
-  // excludes color. Replans are position-dependent -> never cached.
+  // excludes color. Keyed by (directive, schema version) — one cached plan
+  // per directive; the compiling model is recorded for provenance only.
+  // Replans are position-dependent -> never cached.
   const isReplan = opts.progress != null;
   const key = createHash('sha256')
-    .update(`${opts.directive}\u0000${model}\u0000${PLAN_SCHEMA_VERSION}`)
+    .update(`${opts.directive}\u0000${PLAN_SCHEMA_VERSION}`)
     .digest('hex')
     .slice(0, 32);
   const cachePath = join(cacheDir, `${key}.json`);
@@ -70,12 +86,26 @@ export async function compileDirectivePlan(opts: CompileOptions): Promise<Compil
     }
   }
 
+  if (opts.fromCacheOnly) {
+    throw new PlanCacheMissError(
+      `no cached plan for directive "${opts.directive}" (schema v${PLAN_SCHEMA_VERSION}, model ${model}); ` +
+        `run once without --offline (or scripts/compile-plans.ts) to populate the cache`,
+      opts.directive,
+      cachePath,
+    );
+  }
+
+  if (!opts.llm) {
+    throw new Error('compileDirectivePlan: live compile requested but no LLM chain provided');
+  }
+  const llm = opts.llm;
+
   const user = isReplan
     ? replanUserMessage(opts.directive, opts.selfColor, opts.progress!, opts.replanReason ?? 'plan infeasible')
     : initialCompileUserMessage(opts.directive, opts.selfColor, opts.fen);
 
   let compiledPlan: CompiledPlan | null = null;
-  const result = await opts.llm.chat({
+  const result = await llm.chat({
     system: GOAL_COMPILER_SYSTEM,
     user,
     maxTokens: opts.maxTokens ?? 16_384,
@@ -103,6 +133,7 @@ export async function compileDirectivePlan(opts: CompileOptions): Promise<Compil
       JSON.stringify(
         {
           directive: opts.directive,
+          schemaVersion: PLAN_SCHEMA_VERSION,
           model: result.model,
           provider: result.provider,
           compiledAt: new Date().toISOString(),

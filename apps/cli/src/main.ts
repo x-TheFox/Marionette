@@ -23,6 +23,7 @@ interface CliArgs {
   maxReplans: number;
   seed?: number;
   noCache: boolean;
+  offline: boolean;
   outDir: string;
   quiet: boolean;
 }
@@ -41,6 +42,9 @@ Options:
   --max-replans <n>  LLM replans per game. Default 2.
   --seed <n>         Deterministic seed (emulated opponents / fallbacks).
   --no-cache         Bypass the plan cache.
+  --offline          No LLM calls at all: plan must be cached, replans are
+                     deterministic (rule-based). Run once without --offline to
+                     populate the cache for a new directive.
   --out <dir>        Output dir for PGN + report. Default <repo>/games.
   --quiet            Suppress per-move events.
 `.trim();
@@ -88,6 +92,7 @@ function parseArgs(argv: string[]): CliArgs {
     maxReplans: num('max-replans', 2),
     seed: named.has('seed') ? num('seed', 0) : undefined,
     noCache: named.has('no-cache'),
+    offline: named.has('offline'),
     outDir: typeof named.get('out') === 'string' ? (named.get('out') as string) : 'games',
     quiet: named.has('quiet') || named.has('q'),
   };
@@ -125,9 +130,9 @@ function main(): void {
     process.exit(1);
   }
 
-  const chain = LlmChain.fromEnv();
-  if (chain.providers.length === 0) {
-    console.error('No LLM providers configured (see .env.example)');
+  const chain = args.offline ? null : LlmChain.fromEnv();
+  if (!args.offline && chain!.providers.length === 0) {
+    console.error('No LLM providers configured (see .env.example) — or use --offline with a cached plan');
     process.exit(1);
   }
 
@@ -138,7 +143,7 @@ function main(): void {
   const pgnPath = join(outDir, `${stamp}-${slug}.pgn`);
   const reportPath = join(outDir, `${stamp}-${slug}.report.md`);
 
-  console.log(`Marionette vs Stockfish @ ${args.elo} Elo — "${args.directive}"`);
+  console.log(`Marionette vs Stockfish @ ${args.elo} Elo — "${args.directive}"${args.offline ? ' [offline: cached plan + deterministic replans]' : ''}`);
   console.log(`PGN: ${pgnPath}\nReport: ${reportPath}\n`);
 
   const events: GameEvent[] = [];
@@ -156,6 +161,8 @@ function main(): void {
     seed: args.seed,
     noCache: args.noCache,
     llm: chain,
+    replanMode: args.offline ? 'deterministic' : 'llm',
+    planFromCacheOnly: args.offline,
     pgnPath,
     reportPath,
     onEvent: (e) => {

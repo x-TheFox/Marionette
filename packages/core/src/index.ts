@@ -7,3 +7,5 @@ export * from './steering/candidates.js';
 export * from './steering/steer.js';
 export * from './game/tracker.js';
 export * from './game/runner.js';
+export * from './game/deterministic.js';
+export * from './game/judge.js';
