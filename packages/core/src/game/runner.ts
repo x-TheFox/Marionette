@@ -466,7 +466,7 @@ export async function runDirectiveGame(opts: RunnerOptions): Promise<GameReport>
     const progress = state.tracker!.progressReport(ctx);
 
     const tryDeterministic = (why: string): boolean => {
-      const r = deterministicReplan(state.compiled!, progress, reason);
+      const r = deterministicReplan(state.compiled!, progress, reason, ctx);
       if (!r) return false;
       recordDroppedMilestones(r.compiled, ply, reason);
       state.compiled = r.compiled;

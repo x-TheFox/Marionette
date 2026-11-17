@@ -1,6 +1,8 @@
 import type { CompiledPlan } from '../plan/schema.js';
 import { compilePlan } from '../plan/schema.js';
 import type { ProgressReport } from '../compiler/prompt.js';
+import type { GameContext } from '../dsl/types.js';
+import { isSheddingMilestone } from '../steering/scorer.js';
 
 /**
  * Deterministic (no-LLM) replan: a rule-based plan revision used when the
@@ -21,8 +23,12 @@ import type { ProgressReport } from '../compiler/prompt.js';
  * Stall guard: a milestone that is already >= 50% complete is NOT dropped for
  * a mere progress stall — dropping nearly-finished work made early sweeps
  * abandon 78%-done shedding phases. Stalls on such milestones return null and
- * the caller falls back to the plan's ladder (usually: keep steering). Hard
- * triggers (infeasibility, exceeded move budget) always drop.
+ * the caller falls back to the plan's ladder (usually: keep steering). The
+ * same protection applies at ANY partial credit to shedding milestones when
+ * the caller supplies the game context: offers wait for the opponent to bite,
+ * and a quiet stretch is normal chess, not failure (D1/D6 lesson — the 16-ply
+ * stall window dropped reduce_to_pawns before the opponent ever captured).
+ * Hard triggers (infeasibility, exceeded move budget) always drop.
  */
 export interface DeterministicReplanResult {
   compiled: CompiledPlan;
@@ -36,6 +42,7 @@ export function deterministicReplan(
   compiled: CompiledPlan,
   progress: ProgressReport,
   reason: string,
+  ctx?: GameContext,
 ): DeterministicReplanResult | null {
   const milestoneIds = new Set(compiled.plan.milestones.map((m) => m.id));
   // Prefer the failing milestone; fall back to the active one. A constraint id
@@ -47,10 +54,13 @@ export function deterministicReplan(
   if (dropId == null) return null;
 
   // Stall guard: nearly-done milestones survive stalls; the caller's fallback
-  // ladder keeps steering them.
+  // ladder keeps steering them. Shedding milestones survive stalls at any
+  // partial credit (context-dependent check).
   const isStall = /stalled/i.test(reason);
-  if (isStall && failId == null && (progress.active?.partialCredit ?? 0) >= STALL_DROP_MAX_PARTIAL) {
-    return null;
+  if (isStall && failId == null) {
+    if ((progress.active?.partialCredit ?? 0) >= STALL_DROP_MAX_PARTIAL) return null;
+    const activeMs = compiled.milestones.find((m) => m.spec.id === progress.active?.id);
+    if (activeMs && ctx && isSheddingMilestone(activeMs, ctx)) return null;
   }
 
   const keptMilestones = compiled.plan.milestones.filter((m) => m.id !== dropId);

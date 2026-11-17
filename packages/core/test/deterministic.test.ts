@@ -265,3 +265,55 @@ describe('judge v1 (heuristic)', () => {
     expect(v.bully).toBeGreaterThanOrEqual(JUDGE_THRESHOLDS.bully);
   });
 });
+
+describe('D1/D6 steering iteration: shedding milestones survive stalls at any partial', () => {
+  it('a shedding milestone at low partial is NOT dropped for a stall when ctx is provided', () => {
+    const compiled = compilePlan({
+      summary: 'pawns only then knight promotions',
+      style: 'none',
+      terminal: { kind: 'win', priority: 'milestones_first' },
+      hardConstraints: [],
+      milestones: [
+        { id: 'reduce_to_pawns', description: 'non-pawns gone, 8 pawns', completion: 'non_pawn_count(self) == 0 && piece_count(self, pawn) == 8', tolerance: 'medium', weight: 5 },
+        { id: 'promote', description: 'promote to knights', completion: 'promoted_count(self, knight) == 8', tolerance: 'loose', weight: 5 },
+      ],
+      fallback: ['complete_remaining_milestones', 'secure_terminal', 'play_best'],
+    });
+    const g = new Chess();
+    const ctx = buildContext(g, 'w', { evalWhiteCp: 0, mateWhite: null });
+    const progress = {
+      fen: g.fen(),
+      moveNumber: 8,
+      completed: [],
+      active: { id: 'reduce_to_pawns', description: 'non-pawns gone, 8 pawns', partialCredit: 0.125 },
+    };
+    expect(
+      deterministicReplan(compiled, progress, 'milestone reduce_to_pawns stalled: no partial progress for ~16 plies', ctx),
+    ).toBeNull();
+  });
+
+  it('a NON-shedding milestone at low partial is still dropped for a stall (with ctx)', () => {
+    const compiled = compilePlan({
+      summary: 'castle then mate',
+      style: 'none',
+      terminal: { kind: 'win', priority: 'milestones_first' },
+      hardConstraints: [],
+      milestones: [
+        { id: 'castle', description: 'castle', completion: 'castled(self)', tolerance: 'medium', weight: 2 },
+        { id: 'mate', description: 'mate', completion: 'is_checkmate() && winner() == self', tolerance: 'tight', weight: 5 },
+      ],
+      fallback: ['secure_terminal', 'play_best'],
+    });
+    const g = new Chess();
+    const ctx = buildContext(g, 'w', { evalWhiteCp: 0, mateWhite: null });
+    const progress = {
+      fen: g.fen(),
+      moveNumber: 12,
+      completed: [],
+      active: { id: 'castle', description: 'castle', partialCredit: 0 },
+    };
+    const r = deterministicReplan(compiled, progress, 'milestone castle stalled: no partial progress for ~16 plies', ctx);
+    expect(r).not.toBeNull();
+    expect(r!.changes.some((c) => c.includes("dropped milestone 'castle'"))).toBe(true);
+  });
+});
