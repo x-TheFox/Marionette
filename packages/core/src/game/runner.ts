@@ -2,13 +2,14 @@ import { Chess } from 'chess.js';
 import { LlmChainError } from '@marionette/llm';
 import type { LlmChain } from '@marionette/llm';
 import { UciEngine, configureStrength, pickEmulatedMove, mulberry32 } from '@marionette/uci';
-import { buildContext, evalPredicate, compilePredicate } from '../dsl/index.js';
+import { buildContext, evalPredicate, compilePredicate, predicatePartial } from '../dsl/index.js';
 import type { GameContext, Side } from '../dsl/types.js';
 import { compileDirectivePlan } from '../compiler/compile.js';
 import type { CompiledPlan } from '../plan/schema.js';
 import { PlanTracker, terminalMet, type ConstraintViolation } from './tracker.js';
 import { deterministicReplan } from './deterministic.js';
 import { steerMove, positionKey } from '../steering/steer.js';
+import type { CandidateScore } from '../steering/steer.js';
 
 /**
  * Headless directive game: Marionette (steered Stockfish) vs a strength-capped
@@ -49,12 +50,39 @@ export interface RunnerOptions {
 export type GameEvent =
   | { kind: 'info'; message: string }
   | { kind: 'move'; ply: number; san: string; side: Side; source: string; evalWhiteCp?: number | null; lambda?: number }
+  | { kind: 'steer'; ply: number; entry: SteeringTrailEntry; candidates: CandidateScore[] }
   | { kind: 'milestone'; id: string; description: string; atPly: number }
   | { kind: 'violation'; id: string; description: string; atPly: number }
   | { kind: 'infeasible'; id: string; reason: string; atPly: number }
   | { kind: 'replan'; atPly: number; reason: string; provider: string; model: string }
   | { kind: 'fallback'; action: string; atPly: number }
   | { kind: 'end'; result: string; reason: string };
+
+/**
+ * Per-steered-move decision record for the puppeteer view (F5): what the
+ * steering layer chose, what it gave up, and why. "Best" = the MultiPV
+ * candidate with the highest self-perspective eval, regardless of whether it
+ * was chosen (evalLossCp = 0 when the steered move IS the engine best).
+ */
+export interface SteeringTrailEntry {
+  ply: number;
+  san: string;
+  chosenUci: string;
+  chosenEvalSelfCp: number;
+  /** Steering score of the chosen move (progress - lambda*evalLoss + style). */
+  chosenScore: number | null;
+  /** Active-milestone partial credit AFTER the chosen move (0..1; 1 when no milestone was active). */
+  chosenProgress: number;
+  /** Highest-eval MultiPV candidate (may equal chosenUci when steering agreed with the engine). */
+  bestUci: string | null;
+  bestSan: string | null;
+  bestEvalSelfCp: number | null;
+  /** bestEvalSelfCp - chosenEvalSelfCp in cp (self perspective); >= 0. */
+  evalLossCp: number | null;
+  lambda: number | null;
+  activeMilestoneId: string | null;
+  activeMilestoneProgress: number | null;
+}
 
 export interface GameReport {
   directive: string;
@@ -94,6 +122,8 @@ export interface GameReport {
   evalTrail: (number | null)[];
   /** Material + checks snapshot after each Marionette move (judge input). */
   snapshots: { matSelf: number; matOpp: number; checksSelf: number }[];
+  /** Per-steered-move chosen-vs-rejected-best records (puppeteer view, F5). */
+  steeringTrail?: SteeringTrailEntry[];
   planFromCache: boolean;
   planProvider: string;
   planModel: string;
@@ -159,6 +189,10 @@ export async function runDirectiveGame(opts: RunnerOptions): Promise<GameReport>
     marionetteMoves: number;
     evalTrail: (number | null)[];
     snapshots: { matSelf: number; matOpp: number; checksSelf: number }[];
+    /** F5 steering trail: one entry per steered move (finalized post-ply). */
+    steeringTrail: SteeringTrailEntry[];
+    pendingTrail: SteeringTrailEntry | null;
+    pendingCandidates: CandidateScore[];
     /** Milestone specs of the ORIGINAL plan (report anchor across replans). */
     originalMilestones: CompiledPlan['milestones'];
     dropped: DroppedMilestone[];
@@ -178,6 +212,9 @@ export async function runDirectiveGame(opts: RunnerOptions): Promise<GameReport>
     marionetteMoves: 0,
     evalTrail: [],
     snapshots: [],
+    steeringTrail: [],
+    pendingTrail: null,
+    pendingCandidates: [],
     originalMilestones: [],
     dropped: [],
     compileFromCache: false,
@@ -305,6 +342,31 @@ export async function runDirectiveGame(opts: RunnerOptions): Promise<GameReport>
               state.acplN++;
             }
           }
+          // F5 steering trail: remember the decision; the entry is finalized
+          // (progress fields) after the post-ply predicate pass below.
+          const engineCands = decision.candidates.filter((c) => c.source === 'engine' && !c.excluded);
+          let bestCand: CandidateScore | null = null;
+          for (const c of engineCands) {
+            if (!bestCand || c.evalSelfCp > bestCand.evalSelfCp) bestCand = c;
+          }
+          if (chosen) {
+            state.pendingTrail = {
+              ply,
+              san,
+              chosenUci: chosen.uci,
+              chosenEvalSelfCp: chosen.evalSelfCp,
+              chosenScore: chosen.parts ? chosen.parts.total : null,
+              chosenProgress: 0, // finalized after the post-ply pass
+              bestUci: bestCand?.uci ?? null,
+              bestSan: bestCand?.san ?? null,
+              bestEvalSelfCp: bestCand?.evalSelfCp ?? null,
+              evalLossCp: bestCand ? Math.max(0, bestCand.evalSelfCp - chosen.evalSelfCp) : null,
+              lambda,
+              activeMilestoneId: decision.activeMilestoneId,
+              activeMilestoneProgress: null,
+            };
+            state.pendingCandidates = decision.candidates;
+          }
         }
 
         const verbose = (
@@ -317,6 +379,9 @@ export async function runDirectiveGame(opts: RunnerOptions): Promise<GameReport>
           )[0]!;
           game.move({ from: any.from, to: any.to, promotion: any.promotion });
           san = any.san;
+          // The trail entry would describe a move that was not played: drop it.
+          state.pendingTrail = null;
+          state.pendingCandidates = [];
         } else {
           game.move({ from: verbose.from, to: verbose.to, promotion: verbose.promotion });
         }
@@ -358,6 +423,22 @@ export async function runDirectiveGame(opts: RunnerOptions): Promise<GameReport>
       const upd = tracker.update(after, game.history().length);
       for (const m of upd.newlyCompleted) {
         emit({ kind: 'milestone', id: m.id, description: m.description, atPly: m.atPly });
+      }
+      // Finalize the F5 steering trail entry now that the post-ply context is
+      // available: partial credit of the DECISION-TIME active milestone after
+      // the chosen move, then stream the decision to live listeners.
+      const pt = state.pendingTrail;
+      if (pt != null) {
+        const idx = pt.activeMilestoneId != null
+          ? compiled.milestones.findIndex((m) => m.spec.id === pt.activeMilestoneId)
+          : -1;
+        const progress = idx >= 0 ? predicatePartial(compiled.milestones[idx]!.completion, after) : 1;
+        pt.chosenProgress = progress;
+        pt.activeMilestoneProgress = progress;
+        state.steeringTrail.push(pt);
+        emit({ kind: 'steer', ply: pt.ply, entry: pt, candidates: state.pendingCandidates });
+        state.pendingTrail = null;
+        state.pendingCandidates = [];
       }
       if (upd.violated) {
         emit({
@@ -433,6 +514,7 @@ export async function runDirectiveGame(opts: RunnerOptions): Promise<GameReport>
       marionetteMoves: state.marionetteMoves,
       evalTrail: [...state.evalTrail],
       snapshots: [...state.snapshots],
+      steeringTrail: [...state.steeringTrail],
       planFromCache: state.compileFromCache,
       planProvider: state.compileProvider,
       planModel: state.compileModel,

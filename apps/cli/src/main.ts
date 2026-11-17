@@ -102,6 +102,11 @@ function shortEvent(e: GameEvent): string {
   switch (e.kind) {
     case 'move':
       return `  ply ${String(e.ply).padStart(3)} ${e.side === 'w' ? 'W' : 'B'} ${e.san.padEnd(7)} [${e.source}${e.lambda != null ? `, λ=${e.lambda.toFixed(2)}` : ''}]`;
+    case 'steer': {
+      const loss = e.entry.evalLossCp != null ? `${e.entry.evalLossCp}cp` : '-';
+      const prog = e.entry.activeMilestoneProgress != null ? ` progress ${(e.entry.activeMilestoneProgress * 100).toFixed(0)}%` : '';
+      return `  ply ${String(e.ply).padStart(3)} steer ${e.entry.san.padEnd(7)} score=${e.entry.chosenScore != null ? e.entry.chosenScore.toFixed(2) : '-'} evalLoss=${loss}${prog} vs best ${e.entry.bestSan ?? '-'}`;
+    }
     case 'milestone':
       return `>> milestone ${e.id} completed at ply ${e.atPly}: ${e.description}`;
     case 'violation':
