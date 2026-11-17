@@ -11,7 +11,7 @@ Example directives (examples, not a closed list — there is **no** per-directiv
 - "Bully me."
 - "Win with only a queen and king left."
 
-**Status:** Phase 0 (bootstrap) complete — repo, vendored engine, vendored design skills, secrets hygiene, provider chain verified. See `docs/PROGRESS.md`.
+**Status:** Phase 1 (core engine + CLI) complete, accepted with one caveat: D6 ("win with only a queen and king left") does not fully complete and is kept as a failing regression. Phase 2 (benchmark harness + steering iteration) in progress. See `docs/PROGRESS.md`.
 
 ## Quickstart
 
@@ -20,6 +20,16 @@ git clone https://github.com/x-TheFox/Marionette
 cd Marionette
 cp .env.example .env    # fill in keys if you have them (every provider degrades gracefully)
 ./scripts/bootstrap.sh  # engine + deps + skills + git hooks
+
+# compile + cache plans once (the only LLM-touching step):
+npm run harness -- --prepare
+
+# play a directive game (offline: cached plan, deterministic replans, no LLM):
+npm run cli -- "Win with only a queen and king left." --elo 1350
+
+# benchmark sweep (offline by default — quota-independent):
+npm run harness                # quick: 1 game / directive / ELO
+npm run harness -- --sweep full   # 5 games per cell
 ```
 
 Requires: Node.js >= 20, curl, tar, python3. Stockfish is vendored — no system install needed.

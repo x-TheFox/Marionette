@@ -19,7 +19,6 @@ import { join, resolve } from 'node:path';
 import { LlmChain, loadEnvFile, findRepoRoot } from '@marionette/llm';
 import {
   runDirectiveGame,
-  renderReport,
   heuristicJudge,
   JUDGE_THRESHOLDS,
   compileDirectivePlan,
@@ -35,6 +34,8 @@ interface Args {
   online: boolean;
   concurrency: number;
   outRoot: string;
+  tag: string;
+  resume: boolean;
   seedBase: number;
   maxPlies: number;
   check: boolean;
@@ -57,6 +58,8 @@ Options:
   --online               Allow live LLM compiles/replans (default: offline, quota-independent).
   --concurrency <n>      Parallel games, 1..4 (sandbox budget: <=2 recommended). Default 2.
   --out <dir>            Raw output root. Default bench/raw (gitignored).
+  --tag <name>           Run directory name under the root (default: the sweep name). Re-runs overwrite the same tag.
+  --resume               Skip games whose metrics.json already exists under the tag (load them for aggregation).
   --seed <n>             Seed base for deterministic per-game seeds. Default 42.
   --max-plies <n>        Hard ply cap per game. Default 300.
   --check                Exit 1 on any unexpected FAIL/PASS (expected-fail bars excluded) or crash.
@@ -99,6 +102,8 @@ function parseArgs(argv: string[]): Args {
     online: named.has('online'),
     concurrency: Math.max(1, Math.min(4, num('concurrency', 2))),
     outRoot: str('out', 'bench/raw'),
+    tag: str('tag', str('sweep', 'quick') === 'full' ? 'full' : 'quick'),
+    resume: named.has('resume'),
     seedBase: num('seed', 42),
     maxPlies: num('max-plies', 300),
     check: named.has('check'),
@@ -290,7 +295,7 @@ async function main(): Promise<void> {
   }
 
   const stamp = new Date().toISOString().replace(/[:.]/g, '-').slice(0, 19);
-  const outRoot = resolve(repoRoot, args.outRoot, `${stamp}-${args.sweep}`);
+  const outRoot = resolve(repoRoot, args.outRoot, args.tag);
   mkdirSync(outRoot, { recursive: true });
 
   const tasks: (() => Promise<GameOutcome>)[] = [];
@@ -301,9 +306,22 @@ async function main(): Promise<void> {
         const selfColor = gameIdx % 2 === 0 ? 'w' : 'b';
         const seed = (hash32(`${spec.id}:${elo}:${gameIdx}`) ^ args.seedBase) >>> 0;
         const dir = join(outRoot, spec.id, `elo${elo}`, `game-${String(gameIdx).padStart(3, '0')}`);
-        tasks.push(async () => {
-          mkdirSync(dir, { recursive: true });
+        tasks.push(async (): Promise<GameOutcome> => {
           const label = `${spec.id}/elo${elo}/g${gameIdx}`;
+          const metricsPath = join(dir, 'metrics.json');
+          if (args.resume && existsSync(metricsPath)) {
+            try {
+              const cached = JSON.parse(readFileSync(metricsPath, 'utf8')) as {
+                report: GameReport;
+                judge: ReturnType<typeof heuristicJudge>;
+              };
+              console.log(`[skip] ${label}: metrics.json exists (resume)`);
+              return { spec, elo, gameIdx, report: cached.report, judge: cached.judge, dir };
+            } catch {
+              // Corrupt metrics: fall through and re-run.
+            }
+          }
+          mkdirSync(dir, { recursive: true });
           const t0 = Date.now();
           try {
             const report = await runDirectiveGame({

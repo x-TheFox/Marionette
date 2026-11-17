@@ -46,7 +46,9 @@
 
 ```
 Plan
-├─ hardConstraints[]        e.g. only pawns may remain for Marionette
+├─ hardConstraints[]        violation predicates; HARD FILTERS while in force
+│    ├─ afterMilestone       optional gate: enforced once it completes
+│    └─ (omit)               enforced from the FIRST move (schema v2)
 ├─ milestones[]             ordered; each has:
 │    ├─ id, description
 │    ├─ completionPredicate (DSL expression)
@@ -57,6 +59,14 @@ Plan
 ├─ fallbackPriority         what to preserve when the plan breaks
 └─ replanPolicy             when to re-invoke the LLM with board + progress
 ```
+
+Hard constraints are candidate filters, never score terms: while a constraint
+is in force, any candidate move whose resulting position satisfies its
+violation predicate is excluded before scoring. Constraints whose violation
+already holds in the current position cannot be un-violated by move choice
+and are left to honest tracker reporting instead of filtering (which would
+exclude every legal move). The tracker records the first ply where each
+in-force violation condition holds.
 
 ## Predicate DSL (fixed grammar — the LLM emits expressions, never code)
 
@@ -81,7 +91,30 @@ Every predicate is validated (Zod grammar) AND unit-tested with fixed board fixt
 
 ## Replanning and degradation
 
-Triggers: milestone infeasible (predicate or lookahead proof), eval collapse beyond plan tolerance, opponent deviation measure above threshold, move budget exhausted. The LLM gets current board (FEN), progress log, and the failing predicate; it may rephase, drop milestones (recording why), or declare partial-completion goals. The final report states per milestone: achieved / failed / skipped + reason.
+Triggers: milestone infeasible (predicate or lookahead proof), eval collapse beyond plan tolerance, opponent deviation measure above threshold, move budget exhausted. The final report states per milestone: achieved / failed / skipped + reason.
+
+Two replan backends:
+
+- **LLM replan** (default online): the Goal Compiler revises the plan with full position context (board FEN, progress log, failing predicate); it may rephase, drop milestones (recording why), or declare partial-completion goals.
+- **Deterministic replan** (offline / LLM failure): rule-based — drops the failing milestone and constraints gated on it, keeps everything else verbatim, and lists every relaxation in the report. Never invents new goals.
+
+## Offline replay mode
+
+Games can run with zero LLM calls: the initial plan must come from the plan
+cache (keyed by directive + schema version), replans are deterministic, and
+judging uses the heuristic judge. This is the default for benchmark sweeps so
+results never depend on provider quotas. `apps/harness --prepare` populates
+the cache (the only LLM-touching step of a sweep).
+
+## Judge (v1, heuristic)
+
+`packages/core/src/game/judge.ts` scores finished games on four axes —
+looksTrying, natural, plausibleLoss, bully — from the eval trail
+(self-perspective eval after each Marionette move), material/checks snapshots,
+ACPL and blunder counts (drops ≥ 300cp). Declared thresholds live in
+`JUDGE_THRESHOLDS` and are referenced by the frozen regression bars. An LLM
+judge (rubric + PGN) is a planned opt-in refinement for interactive use,
+never a sweep dependency.
 
 ## Play modes
 

@@ -11,9 +11,11 @@ Goal: repo is the source of truth; survives sandbox resets; secrets hygiene befo
 - **Docs:** README, AGENTS.md (agent orientation + ground rules), PLAN (phases + test spec v1 with pre-declared success bars), ARCHITECTURE (components, plan schema, predicate DSL sketch, steering formula), PROVIDERS.
 - **Git:** work on `dev`; bootstrap commit also seeded `main`; subsequent phases land via PR after results are shown.
 
-## Phase 1 — core engine + CLI — COMPLETE (2026-11-17)
+## Phase 1 — core engine + CLI — COMPLETE (2026-11-17), ACCEPTED WITH ONE CAVEAT
 
 Goal: `packages/uci` + `packages/core` + `apps/cli`; two showcase directives end-to-end vs ELO-capped Stockfish with honest milestone reports.
+
+**Acceptance caveat (user review):** D6 ("win with only a queen and king left") does not fully complete — `reduce_to_kq` reaches only partial credit. D6 is kept as a **failing regression** (expected-fail in the Phase 2 spec, visible in every results table) and must not be marked passed until steering achieves it.
 
 - **UCI client** (`packages/uci`): serialized-command engine wrapper, MultiPV analysis parsing (mate/cp, side-to-move perspective), and strength control: native `UCI_Elo` >= 1320; below the floor opponents are EMULATED (Skill Level map + depth cap + softmax-over-eval move choice, seeded mulberry32) and labeled as emulated in every report.
 - **Predicate DSL** (`core/dsl`): lexer/parser/typed evaluator for the fixed 26-function vocabulary (material, piece counts, promotions, captured_value, checks, castling, terminal state, eval/mate, mated_by...); static validation rejects unknown functions/type mismatches; gradient values + partial credit drive steering. Partial credit uses fuzzy min/max semantics over AND/OR (D6 lesson: max-semantics let a satisfied sub-atom fake 100% progress).
@@ -27,7 +29,22 @@ Goal: `packages/uci` + `packages/core` + `apps/cli`; two showcase directives end
 - **Provider chain**: groq (first when GROQ_API_KEY set; edge-blocked 403 from this sandbox - documented in PROVIDERS.md), kilo anonymous (reasoning model: 16k token budget now default after `finish=length` truncations), llm7 (daily quota respected), nim (last). Replan failures surface the full attempt chain in report notes.
 - **Tests**: 47 unit tests green (dsl 12, tracker 7, steering 16, llm chain 8, uci live 4) + live e2e games.
 
-## Phase 2 — steering quality — NEXT
+## Phase 2 — benchmark harness + steering iteration — IN PROGRESS (2026-11-17)
 
-Scope per PLAN.md: benchmark harness (quick sweep 1 game/directive/ELO, full 5), tune λ/exact-target handling, D1 knight-promotion directive, judge prompts, validate the pre-declared success bars.
+Review requirements from the user (all addressed):
+1. Hard plan constraints enforced as candidate filters, not only score terms — done (schema v2: un-gated constraints filter from the first move; already-violated ones skip filtering and are reported by the tracker).
+2. No-LLM replay mode — done (`--offline`: cached plans + deterministic rule-based replan + heuristic judge; sweeps default to it, `--prepare` is the only LLM step).
+3. Pre-declared success thresholds stay fixed; actual rates reported — done (bars frozen as data in `apps/harness/src/spec.ts`; D6 marked expected-fail, rendered "FAIL (expected)", never passed).
+4. All commits and docs in English — done.
+5. Vendored Stockfish and skills untouched; raw benchmark output gitignored (`bench/raw/`), only `bench/summary/` tables and a few showcase games (`games/`) committed — done.
+
+Work log:
+- `feat(core)`: constraint filter semantics + schema v2; compiler prompt gains the pronoun rule (directives are spoken by the human: "me/my" = opp, "you/your" = self — D4/D5 compile correctly now).
+- `feat(core,cli)`: offline mode — plan cache keyed by (directive, schemaVersion), `PlanCacheMissError`, deterministic replan (drop failing milestone + gated constraints, honest change notes), runner `replanMode`, eval/material trails in reports, judge v1 heuristics, CLI `--offline`.
+- `feat(harness)`: sweep app (quick/full, resume support, deterministic seeds, per-game raw artifacts under `bench/raw/`, aggregated markdown+JSON summaries under `bench/summary/`, frozen bars with expected-fail for D6, `--check` gate).
+- All 6 directives compiled and cached under schema v2 via kilo (D1 44s, D2 25s, D3 13s, D4 29s, D5 36s, D6 15s); plans reviewed in the prepare output.
+- Test suite: 65 green (12 new for constraints, deterministic replan, judge, offline compile).
+
+Next: quick sweep results (see `bench/summary/`), then steering iteration toward the frozen bars; D6 remains the known failing regression.
+
 
