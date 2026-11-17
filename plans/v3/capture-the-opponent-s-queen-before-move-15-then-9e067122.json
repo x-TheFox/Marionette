@@ -1,0 +1,38 @@
+{
+  "directive": "Capture the opponent's queen before move 15, then win.",
+  "schemaVersion": "3",
+  "model": "kilo-auto/free",
+  "provider": "kilo",
+  "compiledAt": "2026-11-17T16:05:30.008Z",
+  "plan": {
+    "summary": "Capture the opponent's queen before move 15 and then win the game.",
+    "style": "natural",
+    "terminal": {
+      "kind": "win",
+      "priority": "milestones_first"
+    },
+    "hardConstraints": [],
+    "milestones": [
+      {
+        "id": "capture_opponent_queen",
+        "description": "Capture the black queen before move 15.",
+        "completion": "piece_count(opp, queen) == 0 && move_number() < 15",
+        "infeasible": "move_number() >= 15 && piece_count(opp, queen) > 0",
+        "tolerance": "tight",
+        "weight": 5,
+        "moveBudget": 27
+      },
+      {
+        "id": "win_game",
+        "description": "Win the game after capturing the queen.",
+        "completion": "winner() == self",
+        "tolerance": "tight",
+        "weight": 4
+      }
+    ],
+    "fallback": [
+      "complete_remaining_milestones",
+      "play_best"
+    ]
+  }
+}
