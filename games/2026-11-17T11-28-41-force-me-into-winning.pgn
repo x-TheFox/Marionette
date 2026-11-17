@@ -1,0 +1,10 @@
+[Event "Marionette directive game"]
+[Site "marionette-cli"]
+[Date "2026.11.17"]
+[Round "?"]
+[White "Marionette"]
+[Black "Stockfish-19 (Elo 2000)"]
+[Result "0-1"]
+[Annotator "plan: As White, gradually surrender material and positional advantage so Black wins na"]
+
+1. e4 e5 2. Nf3 d6 3. d4 exd4 4. Nxd4 Nc6 5. Nc3 Be7 6. Bf4 h6 7. Qd3 Nf6 8. O-O-O Ng4 9. Bg3 O-O 10. Nd5 Be6 11. Nb5 Nce5 12. Qe2 Bh4 13. Ne3 Bd7 14. Bxe5 Nxe5 15. Nd4 Nc6 16. g3 Be7 17. Kb1 g6 18. f4 Re8 19. Nxc6 bxc6 20. c3 Rb8 21. Qd2 a5 22. e5 Bf8 23. Qc2 a4 24. Bd3 a3 25. Qa4 dxe5 26. Ka1 Ra8 27. Qc4 axb2+ 28. Kxb2 Qb8+ 29. Kc2 e4 30. Bf1 Be6 31. a4 Qb6 32. a5 Qxe3 33. f5 Qf2+ 34. Kb1 Rab8+ 35. Ka1 Qb2# 0-1

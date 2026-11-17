@@ -1,0 +1,295 @@
+{
+  "report": {
+    "directive": "Force me into winning.",
+    "selfColor": "w",
+    "result": "0-1",
+    "endReason": "checkmate",
+    "terminalMet": true,
+    "plies": 70,
+    "moveNumber": 36,
+    "milestones": [
+      {
+        "id": "cede_material",
+        "description": "Let Black capture material so Black has at least White's material",
+        "completion": "material(opp) >= material(self) && captured_value(opp) >= 300",
+        "tolerance": "loose",
+        "weight": 4,
+        "completed": true,
+        "completedAtPly": 28,
+        "bestPartial": 1,
+        "trueAtEnd": true
+      },
+      {
+        "id": "reach_lost_eval",
+        "description": "Reach a clearly lost evaluation for White",
+        "completion": "self_eval_cp() <= -500",
+        "tolerance": "medium",
+        "weight": 4,
+        "completed": true,
+        "completedAtPly": 53,
+        "bestPartial": 1,
+        "trueAtEnd": true
+      },
+      {
+        "id": "black_wins",
+        "description": "Black checkmates or otherwise wins the game",
+        "completion": "winner() == opp",
+        "tolerance": "tight",
+        "weight": 5,
+        "completed": true,
+        "completedAtPly": 70,
+        "bestPartial": 1,
+        "trueAtEnd": true
+      }
+    ],
+    "finalPositionTrue": [
+      "cede_material",
+      "reach_lost_eval",
+      "black_wins"
+    ],
+    "violations": [],
+    "replans": [],
+    "fallbackEngaged": "secure_terminal",
+    "acplSelf": 0.022500000000000003,
+    "steeredMoves": 12,
+    "marionetteMoves": 35,
+    "evalTrail": [
+      36,
+      34,
+      56,
+      72,
+      68,
+      75,
+      90,
+      95,
+      97,
+      88,
+      109,
+      96,
+      45,
+      1,
+      16,
+      -21,
+      -9,
+      32,
+      28,
+      25,
+      -3,
+      -15,
+      -22,
+      -50,
+      -423,
+      -457,
+      -640,
+      -708,
+      -800,
+      -849,
+      -870,
+      -944,
+      -945,
+      -9700,
+      -9950
+    ],
+    "snapshots": [
+      {
+        "matSelf": 4000,
+        "matOpp": 4000,
+        "checksSelf": 0
+      },
+      {
+        "matSelf": 4000,
+        "matOpp": 4000,
+        "checksSelf": 0
+      },
+      {
+        "matSelf": 4000,
+        "matOpp": 4000,
+        "checksSelf": 0
+      },
+      {
+        "matSelf": 3900,
+        "matOpp": 3900,
+        "checksSelf": 0
+      },
+      {
+        "matSelf": 3900,
+        "matOpp": 3900,
+        "checksSelf": 0
+      },
+      {
+        "matSelf": 3900,
+        "matOpp": 3900,
+        "checksSelf": 0
+      },
+      {
+        "matSelf": 3900,
+        "matOpp": 3900,
+        "checksSelf": 0
+      },
+      {
+        "matSelf": 3900,
+        "matOpp": 3900,
+        "checksSelf": 0
+      },
+      {
+        "matSelf": 3900,
+        "matOpp": 3900,
+        "checksSelf": 0
+      },
+      {
+        "matSelf": 3900,
+        "matOpp": 3900,
+        "checksSelf": 0
+      },
+      {
+        "matSelf": 3900,
+        "matOpp": 3900,
+        "checksSelf": 0
+      },
+      {
+        "matSelf": 3900,
+        "matOpp": 3900,
+        "checksSelf": 0
+      },
+      {
+        "matSelf": 3900,
+        "matOpp": 3900,
+        "checksSelf": 0
+      },
+      {
+        "matSelf": 3900,
+        "matOpp": 3580,
+        "checksSelf": 0
+      },
+      {
+        "matSelf": 3570,
+        "matOpp": 3580,
+        "checksSelf": 0
+      },
+      {
+        "matSelf": 3570,
+        "matOpp": 3580,
+        "checksSelf": 0
+      },
+      {
+        "matSelf": 3570,
+        "matOpp": 3580,
+        "checksSelf": 0
+      },
+      {
+        "matSelf": 3570,
+        "matOpp": 3580,
+        "checksSelf": 0
+      },
+      {
+        "matSelf": 3570,
+        "matOpp": 3260,
+        "checksSelf": 0
+      },
+      {
+        "matSelf": 3250,
+        "matOpp": 3260,
+        "checksSelf": 0
+      },
+      {
+        "matSelf": 3250,
+        "matOpp": 3260,
+        "checksSelf": 0
+      },
+      {
+        "matSelf": 3250,
+        "matOpp": 3260,
+        "checksSelf": 0
+      },
+      {
+        "matSelf": 3250,
+        "matOpp": 3260,
+        "checksSelf": 0
+      },
+      {
+        "matSelf": 3250,
+        "matOpp": 3260,
+        "checksSelf": 0
+      },
+      {
+        "matSelf": 3250,
+        "matOpp": 3260,
+        "checksSelf": 0
+      },
+      {
+        "matSelf": 3150,
+        "matOpp": 3260,
+        "checksSelf": 0
+      },
+      {
+        "matSelf": 3150,
+        "matOpp": 3260,
+        "checksSelf": 0
+      },
+      {
+        "matSelf": 3050,
+        "matOpp": 3160,
+        "checksSelf": 0
+      },
+      {
+        "matSelf": 3050,
+        "matOpp": 3160,
+        "checksSelf": 0
+      },
+      {
+        "matSelf": 3050,
+        "matOpp": 3160,
+        "checksSelf": 0
+      },
+      {
+        "matSelf": 3050,
+        "matOpp": 3160,
+        "checksSelf": 0
+      },
+      {
+        "matSelf": 3050,
+        "matOpp": 3160,
+        "checksSelf": 0
+      },
+      {
+        "matSelf": 2730,
+        "matOpp": 3160,
+        "checksSelf": 0
+      },
+      {
+        "matSelf": 2730,
+        "matOpp": 3160,
+        "checksSelf": 0
+      },
+      {
+        "matSelf": 2730,
+        "matOpp": 3160,
+        "checksSelf": 0
+      }
+    ],
+    "planFromCache": true,
+    "planProvider": "kilo",
+    "planModel": "kilo-auto/free",
+    "opponentElo": 2000,
+    "opponentEmulated": false,
+    "steerDepth": 14,
+    "steerMultiPV": 5,
+    "elapsedMs": 71198,
+    "pgn": "[Event \"Marionette directive game\"]\n[Site \"marionette-cli\"]\n[Date \"2026.11.17\"]\n[Round \"?\"]\n[White \"Marionette\"]\n[Black \"Stockfish-19 (Elo 2000)\"]\n[Result \"0-1\"]\n[Annotator \"plan: As White, gradually surrender material and positional advantage so Black wins na\"]\n\n1. e4 e5 2. Nf3 d6 3. d4 exd4 4. Nxd4 Nc6 5. Nc3 Be7 6. Bf4 h6 7. Qd3 Nf6 8. O-O-O Ng4 9. Bg3 O-O 10. Nd5 Be6 11. Nb5 Nce5 12. Qe2 Bh4 13. Ne3 Bd7 14. Bxe5 Nxe5 15. Nd4 Nc6 16. g3 Be7 17. Kb1 g6 18. f4 Re8 19. Nxc6 bxc6 20. c3 Rb8 21. Qd2 a5 22. e5 Bf8 23. Qc2 a4 24. Bd3 a3 25. Qa4 dxe5 26. Ka1 Ra8 27. Qc4 axb2+ 28. Kxb2 Qb8+ 29. Kc2 e4 30. Bf1 Be6 31. a4 Qb6 32. a5 Qxe3 33. f5 Qf2+ 34. Kb1 Rab8+ 35. Ka1 Qb2# 0-1",
+    "notes": [
+      "fallback engaged at ply 23 (deterministic replan impossible: milestone cede_material stalled: no partial progress for ~16 plies): lose toward terminal lose"
+    ]
+  },
+  "judge": {
+    "looksTrying": 0.7,
+    "natural": 0.8,
+    "plausibleLoss": 1,
+    "bully": 0.17777777777777778,
+    "score": 6.694444444444444,
+    "reasons": [
+      "ACPL 0, 2 blunder(s) >= 300cp, max drop 8755cp",
+      "naturalness inputs: ACPL band 30-250, blunder spread, length 70 plies",
+      "material lead max 320cp (early ~0cp), 0 checks given, 70 plies"
+    ]
+  }
+}

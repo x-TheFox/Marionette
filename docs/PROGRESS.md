@@ -47,4 +47,31 @@ Work log:
 
 Next: quick sweep results (see `bench/summary/`), then steering iteration toward the frozen bars; D6 remains the known failing regression.
 
+## Quick sweep #1 (schema v3) — COMPLETE (2026-11-17)
+
+Full 6x4x3 = 72-game offline sweep, deterministic seeds (base 42), alternating colors,
+steering depth 14 / MultiPV 5. Summary: `bench/summary/2026-11-17T11-28-41-quick.md`
+(+ three new showcase games under `games/`). No thresholds were touched.
+
+Verdicts against the frozen bars:
+
+- **D2 PASS, PASS** (83% losses ≥ 70%; plausible 100% ≥ 60%)
+- **D3 PASS, PASS** (trying 100% ≥ 75%; mean ACPL 0 ≤ 100)
+- **D4 PASS, PASS** (opponent wins 100% ≥ 70%; natural 100% ≥ 70%)
+- **D5 PASS, PASS** (78% wins vs ≤1600 ≥ 60%; bully 83% ≥ 50%)
+- **D1 FAIL, FAIL** (0% full vs 30%; 0% pawns+promotions partial vs 80%) — the
+  pawns-only/all-knights directive is the new big steering gap: sacrifice phase
+  rarely finishes before the game drifts; promotion chains get broken up by
+  opponent captures of promoted knights/pawns.
+- **D6 FAIL (expected)** — known failing regression, kept visible: Marionette
+  often WINS (terminal MET in 8/12 games) but `reduce_to_kq` never completes
+  (queen mates delivered from positions with extra material). Ordered-full 0%
+  vs the 40% bar.
+
+Ordered vs final-position separation (new this sweep): D3/D5 games show the
+split working as intended (e.g. D5 wins often 3/4 ordered but 4/4
+final-position — `give_checks` transiently true, then traded away).
+
+Phase 2 steering iteration continues toward D1/D6; bars stay frozen.
+
 
