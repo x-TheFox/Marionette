@@ -799,8 +799,15 @@ function replanTrigger(tracker: PlanTracker, ply: number, stallWindow: number, c
   const ai = tracker.activeIndex();
   if (ai == null) return null;
   const spec = tracker.plan.milestones[ai]!.spec;
-  if (tracker.budgetExceeded(ply)) {
-    return `milestone ${spec.id} exceeded its move budget (${spec.moveBudget} plies)`;
+  // Budget semantics: the compiler prompt documents moveBudget as an anti-stall
+  // device ("set it for milestones that can stall"). An absolute ply cap
+  // instead murdered every actively-progressing shed (D6: reduce_to_kq was
+  // dropped at ply 80 at partial 0.40-0.88 in 10/10 games — the milestone was
+  // working, the cap was not). So the budget forces a replan only when the
+  // milestone has ALSO stopped progressing; a live milestone runs to the
+  // game's ply cap or its own completion/infeasibility, which stay honest.
+  if (tracker.budgetExceeded(ply) && tracker.stalled(ply, stallWindow)) {
+    return `milestone ${spec.id} exceeded its move budget (${spec.moveBudget} plies) with no progress for ~${stallWindow} plies`;
   }
   if (tracker.stalled(ply, stallWindow)) {
     return `milestone ${spec.id} stalled: no partial progress for ~${ply - tracker.states[ai]!.bestPartialAtPly} plies`;

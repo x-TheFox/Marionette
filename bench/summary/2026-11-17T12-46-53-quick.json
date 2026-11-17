@@ -1,0 +1,5188 @@
+{
+  "stamp": "2026-11-17T12-46-53",
+  "sweep": "quick",
+  "gamesPerCell": 10,
+  "offline": true,
+  "elos": [
+    800
+  ],
+  "outcomes": [
+    {
+      "id": "D6",
+      "elo": 800,
+      "gameIdx": 0,
+      "error": null,
+      "report": {
+        "directive": "Win with only a queen and king left.",
+        "selfColor": "w",
+        "result": "1-0",
+        "endReason": "checkmate",
+        "terminalMet": true,
+        "plies": 81,
+        "moveNumber": 41,
+        "milestones": [
+          {
+            "id": "reduce_to_kq",
+            "description": "Reduce own material to exactly king + queen",
+            "completion": "piece_count(self, queen) == 1 && piece_count(self, pawn) == 0 && non_pawn_count(self) == 1",
+            "tolerance": "loose",
+            "weight": 5,
+            "completed": false,
+            "bestPartial": 0.5,
+            "droppedAtPly": 80,
+            "dropReason": "milestone reduce_to_kq exceeded its move budget (80 plies)",
+            "trueAtEnd": false
+          },
+          {
+            "id": "deliver_mate",
+            "description": "Deliver checkmate with king and queen",
+            "completion": "is_checkmate() && winner() == self",
+            "tolerance": "tight",
+            "weight": 4,
+            "completed": true,
+            "completedAtPly": 81,
+            "bestPartial": 1,
+            "trueAtEnd": true
+          }
+        ],
+        "finalPositionTrue": [
+          "deliver_mate"
+        ],
+        "violations": [],
+        "replans": [
+          {
+            "atPly": 80,
+            "reason": "milestone reduce_to_kq exceeded its move budget (80 plies)",
+            "provider": "deterministic",
+            "model": "rule-based"
+          }
+        ],
+        "fallbackEngaged": null,
+        "acplSelf": 2.643170731707317,
+        "steeredMoves": 41,
+        "marionetteMoves": 41,
+        "evalTrail": [
+          36,
+          45,
+          156,
+          173,
+          184,
+          150,
+          127,
+          49,
+          85,
+          65,
+          139,
+          107,
+          17,
+          57,
+          65,
+          107,
+          106,
+          114,
+          169,
+          192,
+          322,
+          321,
+          146,
+          243,
+          241,
+          234,
+          363,
+          529,
+          531,
+          502,
+          543,
+          629,
+          713,
+          466,
+          669,
+          9900,
+          543,
+          655,
+          775,
+          9800,
+          9950
+        ],
+        "snapshots": [
+          {
+            "matSelf": 4000,
+            "matOpp": 4000,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 4000,
+            "matOpp": 4000,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 4000,
+            "matOpp": 4000,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 4000,
+            "matOpp": 4000,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 4000,
+            "matOpp": 4000,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 4000,
+            "matOpp": 4000,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 4000,
+            "matOpp": 4000,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 3900,
+            "matOpp": 3680,
+            "checksSelf": 1
+          },
+          {
+            "matSelf": 3570,
+            "matOpp": 3580,
+            "checksSelf": 1
+          },
+          {
+            "matSelf": 3570,
+            "matOpp": 3580,
+            "checksSelf": 1
+          },
+          {
+            "matSelf": 3570,
+            "matOpp": 3580,
+            "checksSelf": 1
+          },
+          {
+            "matSelf": 3570,
+            "matOpp": 3580,
+            "checksSelf": 1
+          },
+          {
+            "matSelf": 3250,
+            "matOpp": 3260,
+            "checksSelf": 1
+          },
+          {
+            "matSelf": 2920,
+            "matOpp": 2930,
+            "checksSelf": 1
+          },
+          {
+            "matSelf": 2920,
+            "matOpp": 2930,
+            "checksSelf": 1
+          },
+          {
+            "matSelf": 2920,
+            "matOpp": 2930,
+            "checksSelf": 1
+          },
+          {
+            "matSelf": 2920,
+            "matOpp": 2930,
+            "checksSelf": 1
+          },
+          {
+            "matSelf": 2920,
+            "matOpp": 2930,
+            "checksSelf": 1
+          },
+          {
+            "matSelf": 2920,
+            "matOpp": 2930,
+            "checksSelf": 1
+          },
+          {
+            "matSelf": 2920,
+            "matOpp": 2930,
+            "checksSelf": 1
+          },
+          {
+            "matSelf": 2920,
+            "matOpp": 2830,
+            "checksSelf": 1
+          },
+          {
+            "matSelf": 2820,
+            "matOpp": 2330,
+            "checksSelf": 2
+          },
+          {
+            "matSelf": 2320,
+            "matOpp": 2230,
+            "checksSelf": 2
+          },
+          {
+            "matSelf": 2320,
+            "matOpp": 2230,
+            "checksSelf": 3
+          },
+          {
+            "matSelf": 2320,
+            "matOpp": 2230,
+            "checksSelf": 3
+          },
+          {
+            "matSelf": 2320,
+            "matOpp": 2230,
+            "checksSelf": 3
+          },
+          {
+            "matSelf": 2320,
+            "matOpp": 2230,
+            "checksSelf": 3
+          },
+          {
+            "matSelf": 2320,
+            "matOpp": 2230,
+            "checksSelf": 3
+          },
+          {
+            "matSelf": 2320,
+            "matOpp": 2230,
+            "checksSelf": 4
+          },
+          {
+            "matSelf": 2000,
+            "matOpp": 1900,
+            "checksSelf": 4
+          },
+          {
+            "matSelf": 2000,
+            "matOpp": 1900,
+            "checksSelf": 4
+          },
+          {
+            "matSelf": 2000,
+            "matOpp": 1900,
+            "checksSelf": 4
+          },
+          {
+            "matSelf": 2000,
+            "matOpp": 1900,
+            "checksSelf": 4
+          },
+          {
+            "matSelf": 1900,
+            "matOpp": 1900,
+            "checksSelf": 4
+          },
+          {
+            "matSelf": 1900,
+            "matOpp": 1900,
+            "checksSelf": 4
+          },
+          {
+            "matSelf": 1900,
+            "matOpp": 1900,
+            "checksSelf": 5
+          },
+          {
+            "matSelf": 1900,
+            "matOpp": 1900,
+            "checksSelf": 5
+          },
+          {
+            "matSelf": 1900,
+            "matOpp": 1800,
+            "checksSelf": 5
+          },
+          {
+            "matSelf": 1900,
+            "matOpp": 1800,
+            "checksSelf": 5
+          },
+          {
+            "matSelf": 1900,
+            "matOpp": 1800,
+            "checksSelf": 6
+          },
+          {
+            "matSelf": 1900,
+            "matOpp": 900,
+            "checksSelf": 7
+          }
+        ],
+        "planFromCache": true,
+        "planProvider": "kilo",
+        "planModel": "kilo-auto/free",
+        "opponentElo": 800,
+        "opponentEmulated": true,
+        "steerDepth": 14,
+        "steerMultiPV": 5,
+        "elapsedMs": 33960,
+        "pgn": "[Event \"Marionette directive game\"]\n[Site \"marionette-cli\"]\n[Date \"2026.11.17\"]\n[Round \"?\"]\n[White \"Marionette\"]\n[Black \"Stockfish-19 (Elo 800)\"]\n[Result \"1-0\"]\n[Annotator \"plan: Trade or sacrifice everything except king and queen, then win the K+Q endgame\"]\n\n1. e4 Nc6 2. d4 Nf6 3. d5 Nb8 4. e5 Ng8 5. Nc3 d6 6. Bf4 Nd7 7. Bb5 dxe5 8. Bxd7+ Bxd7 9. Bxe5 Nf6 10. Qf3 Qc8 11. Nge2 Bg4 12. Qg3 Bxe2 13. Bxf6 gxf6 14. Nxe2 Qd7 15. O-O a6 16. Qf3 O-O-O 17. Rad1 h5 18. h3 Rg8 19. Ng3 Rg6 20. c4 c6 21. dxc6 Qxc6 22. Rxd8+ Kxd8 23. Qxh5 e6 24. Rd1+ Kc8 25. a3 Qa4 26. b4 a5 27. Ne4 Rh6 28. Qf3 Be7 29. Nd6+ Bxd6 30. Rxd6 Rg6 31. c5 Kb8 32. h4 Kc7 33. g3 axb4 34. Qe4 Kc8 35. Qd4 e5 36. Rd8+ Kc7 37. Qd2 Qc6 38. axb4 Rg4 39. b5 Qe6 40. Qa5+ Qb6 41. Qxb6# 1-0",
+        "notes": [
+          "opponent Elo 800 is below the native UCI_Elo floor (1320): emulated with Skill Level 0, depth cap 6, eval-weighted move choice",
+          "replan at ply 80 was deterministic (offline mode): dropped milestone 'reduce_to_kq' (milestone reduce_to_kq exceeded its move budget (80 plies)); dropped constraint 'no_extra_pieces' (was gated on dropped milestone 'reduce_to_kq')"
+        ]
+      },
+      "judge": {
+        "looksTrying": 0.85,
+        "natural": 0.8,
+        "plausibleLoss": 0.5,
+        "bully": 0.9099999999999999,
+        "score": 7.649999999999999,
+        "reasons": [
+          "ACPL 3, 1 blunder(s) >= 300cp, max drop 9357cp",
+          "naturalness inputs: ACPL band 30-250, blunder spread, length 81 plies",
+          "no loss on the board caps plausibleLoss",
+          "material lead max 1000cp (early ~-10cp), 7 checks given, 81 plies"
+        ]
+      }
+    },
+    {
+      "id": "D6",
+      "elo": 800,
+      "gameIdx": 1,
+      "error": null,
+      "report": {
+        "directive": "Win with only a queen and king left.",
+        "selfColor": "b",
+        "result": "0-1",
+        "endReason": "checkmate",
+        "terminalMet": true,
+        "plies": 186,
+        "moveNumber": 94,
+        "milestones": [
+          {
+            "id": "reduce_to_kq",
+            "description": "Reduce own material to exactly king + queen",
+            "completion": "piece_count(self, queen) == 1 && piece_count(self, pawn) == 0 && non_pawn_count(self) == 1",
+            "tolerance": "loose",
+            "weight": 5,
+            "completed": false,
+            "bestPartial": 0.875,
+            "droppedAtPly": 80,
+            "dropReason": "milestone reduce_to_kq exceeded its move budget (80 plies)",
+            "trueAtEnd": false
+          },
+          {
+            "id": "deliver_mate",
+            "description": "Deliver checkmate with king and queen",
+            "completion": "is_checkmate() && winner() == self",
+            "tolerance": "tight",
+            "weight": 4,
+            "completed": true,
+            "completedAtPly": 186,
+            "bestPartial": 1,
+            "trueAtEnd": true
+          }
+        ],
+        "finalPositionTrue": [
+          "deliver_mate"
+        ],
+        "violations": [],
+        "replans": [
+          {
+            "atPly": 80,
+            "reason": "milestone reduce_to_kq exceeded its move budget (80 plies)",
+            "provider": "deterministic",
+            "model": "rule-based"
+          }
+        ],
+        "fallbackEngaged": "secure_terminal",
+        "acplSelf": 0.435,
+        "steeredMoves": 48,
+        "marionetteMoves": 93,
+        "evalTrail": [
+          -29,
+          -6,
+          -6,
+          16,
+          -425,
+          -517,
+          -459,
+          -372,
+          -369,
+          -537,
+          -459,
+          -447,
+          -481,
+          -549,
+          -523,
+          -937,
+          -876,
+          -971,
+          -933,
+          -883,
+          -920,
+          -923,
+          -855,
+          -912,
+          -856,
+          -881,
+          -919,
+          -814,
+          -777,
+          -776,
+          -734,
+          -757,
+          -678,
+          -722,
+          -744,
+          -624,
+          -545,
+          -529,
+          -526,
+          -540,
+          -533,
+          -532,
+          -548,
+          -519,
+          -540,
+          -539,
+          -505,
+          -513,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        "snapshots": [
+          {
+            "matSelf": 4000,
+            "matOpp": 4000,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 4000,
+            "matOpp": 4000,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 4000,
+            "matOpp": 4000,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 4000,
+            "matOpp": 4000,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 4000,
+            "matOpp": 4000,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 3680,
+            "matOpp": 4000,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 3680,
+            "matOpp": 4000,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 3680,
+            "matOpp": 3670,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 3350,
+            "matOpp": 3670,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 3350,
+            "matOpp": 3670,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 3350,
+            "matOpp": 3670,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 3350,
+            "matOpp": 3670,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 3350,
+            "matOpp": 3670,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 3350,
+            "matOpp": 3670,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 3350,
+            "matOpp": 3670,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 3250,
+            "matOpp": 3670,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 2920,
+            "matOpp": 3900,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 2920,
+            "matOpp": 3800,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 2920,
+            "matOpp": 3800,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 2820,
+            "matOpp": 3470,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 2500,
+            "matOpp": 3470,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 2400,
+            "matOpp": 3470,
+            "checksSelf": 1
+          },
+          {
+            "matSelf": 2400,
+            "matOpp": 3470,
+            "checksSelf": 1
+          },
+          {
+            "matSelf": 2400,
+            "matOpp": 3470,
+            "checksSelf": 1
+          },
+          {
+            "matSelf": 2300,
+            "matOpp": 2970,
+            "checksSelf": 1
+          },
+          {
+            "matSelf": 2200,
+            "matOpp": 2970,
+            "checksSelf": 1
+          },
+          {
+            "matSelf": 2200,
+            "matOpp": 2970,
+            "checksSelf": 1
+          },
+          {
+            "matSelf": 2100,
+            "matOpp": 2640,
+            "checksSelf": 1
+          },
+          {
+            "matSelf": 2100,
+            "matOpp": 2540,
+            "checksSelf": 1
+          },
+          {
+            "matSelf": 2100,
+            "matOpp": 2540,
+            "checksSelf": 1
+          },
+          {
+            "matSelf": 2100,
+            "matOpp": 2440,
+            "checksSelf": 1
+          },
+          {
+            "matSelf": 2000,
+            "matOpp": 2440,
+            "checksSelf": 1
+          },
+          {
+            "matSelf": 2000,
+            "matOpp": 2440,
+            "checksSelf": 2
+          },
+          {
+            "matSelf": 1900,
+            "matOpp": 1940,
+            "checksSelf": 3
+          },
+          {
+            "matSelf": 1400,
+            "matOpp": 1840,
+            "checksSelf": 3
+          },
+          {
+            "matSelf": 1400,
+            "matOpp": 1840,
+            "checksSelf": 3
+          },
+          {
+            "matSelf": 1400,
+            "matOpp": 1840,
+            "checksSelf": 3
+          },
+          {
+            "matSelf": 1400,
+            "matOpp": 1840,
+            "checksSelf": 3
+          },
+          {
+            "matSelf": 1400,
+            "matOpp": 1840,
+            "checksSelf": 3
+          },
+          {
+            "matSelf": 1400,
+            "matOpp": 1840,
+            "checksSelf": 3
+          },
+          {
+            "matSelf": 1400,
+            "matOpp": 1840,
+            "checksSelf": 3
+          },
+          {
+            "matSelf": 1400,
+            "matOpp": 1840,
+            "checksSelf": 3
+          },
+          {
+            "matSelf": 1400,
+            "matOpp": 1840,
+            "checksSelf": 3
+          },
+          {
+            "matSelf": 1400,
+            "matOpp": 1840,
+            "checksSelf": 3
+          },
+          {
+            "matSelf": 1400,
+            "matOpp": 1840,
+            "checksSelf": 3
+          },
+          {
+            "matSelf": 1400,
+            "matOpp": 940,
+            "checksSelf": 3
+          },
+          {
+            "matSelf": 500,
+            "matOpp": 940,
+            "checksSelf": 3
+          },
+          {
+            "matSelf": 500,
+            "matOpp": 940,
+            "checksSelf": 3
+          },
+          {
+            "matSelf": 500,
+            "matOpp": 940,
+            "checksSelf": 3
+          },
+          {
+            "matSelf": 500,
+            "matOpp": 940,
+            "checksSelf": 4
+          },
+          {
+            "matSelf": 500,
+            "matOpp": 940,
+            "checksSelf": 4
+          },
+          {
+            "matSelf": 500,
+            "matOpp": 940,
+            "checksSelf": 5
+          },
+          {
+            "matSelf": 500,
+            "matOpp": 940,
+            "checksSelf": 5
+          },
+          {
+            "matSelf": 500,
+            "matOpp": 840,
+            "checksSelf": 5
+          },
+          {
+            "matSelf": 500,
+            "matOpp": 840,
+            "checksSelf": 6
+          },
+          {
+            "matSelf": 500,
+            "matOpp": 840,
+            "checksSelf": 7
+          },
+          {
+            "matSelf": 500,
+            "matOpp": 840,
+            "checksSelf": 8
+          },
+          {
+            "matSelf": 500,
+            "matOpp": 520,
+            "checksSelf": 8
+          },
+          {
+            "matSelf": 500,
+            "matOpp": 520,
+            "checksSelf": 8
+          },
+          {
+            "matSelf": 500,
+            "matOpp": 420,
+            "checksSelf": 8
+          },
+          {
+            "matSelf": 500,
+            "matOpp": 420,
+            "checksSelf": 8
+          },
+          {
+            "matSelf": 500,
+            "matOpp": 320,
+            "checksSelf": 8
+          },
+          {
+            "matSelf": 500,
+            "matOpp": 320,
+            "checksSelf": 8
+          },
+          {
+            "matSelf": 500,
+            "matOpp": 320,
+            "checksSelf": 8
+          },
+          {
+            "matSelf": 500,
+            "matOpp": 320,
+            "checksSelf": 8
+          },
+          {
+            "matSelf": 500,
+            "matOpp": 320,
+            "checksSelf": 8
+          },
+          {
+            "matSelf": 500,
+            "matOpp": 320,
+            "checksSelf": 8
+          },
+          {
+            "matSelf": 500,
+            "matOpp": 320,
+            "checksSelf": 8
+          },
+          {
+            "matSelf": 500,
+            "matOpp": 320,
+            "checksSelf": 8
+          },
+          {
+            "matSelf": 500,
+            "matOpp": 320,
+            "checksSelf": 8
+          },
+          {
+            "matSelf": 500,
+            "matOpp": 320,
+            "checksSelf": 8
+          },
+          {
+            "matSelf": 500,
+            "matOpp": 320,
+            "checksSelf": 8
+          },
+          {
+            "matSelf": 500,
+            "matOpp": 320,
+            "checksSelf": 8
+          },
+          {
+            "matSelf": 500,
+            "matOpp": 320,
+            "checksSelf": 8
+          },
+          {
+            "matSelf": 500,
+            "matOpp": 320,
+            "checksSelf": 9
+          },
+          {
+            "matSelf": 500,
+            "matOpp": 320,
+            "checksSelf": 9
+          },
+          {
+            "matSelf": 500,
+            "matOpp": 320,
+            "checksSelf": 9
+          },
+          {
+            "matSelf": 500,
+            "matOpp": 320,
+            "checksSelf": 9
+          },
+          {
+            "matSelf": 500,
+            "matOpp": 320,
+            "checksSelf": 9
+          },
+          {
+            "matSelf": 500,
+            "matOpp": 320,
+            "checksSelf": 9
+          },
+          {
+            "matSelf": 500,
+            "matOpp": 320,
+            "checksSelf": 9
+          },
+          {
+            "matSelf": 500,
+            "matOpp": 320,
+            "checksSelf": 9
+          },
+          {
+            "matSelf": 500,
+            "matOpp": 320,
+            "checksSelf": 9
+          },
+          {
+            "matSelf": 500,
+            "matOpp": 320,
+            "checksSelf": 9
+          },
+          {
+            "matSelf": 500,
+            "matOpp": 320,
+            "checksSelf": 9
+          },
+          {
+            "matSelf": 500,
+            "matOpp": 320,
+            "checksSelf": 9
+          },
+          {
+            "matSelf": 500,
+            "matOpp": 0,
+            "checksSelf": 9
+          },
+          {
+            "matSelf": 500,
+            "matOpp": 0,
+            "checksSelf": 9
+          },
+          {
+            "matSelf": 500,
+            "matOpp": 0,
+            "checksSelf": 9
+          },
+          {
+            "matSelf": 500,
+            "matOpp": 0,
+            "checksSelf": 9
+          },
+          {
+            "matSelf": 500,
+            "matOpp": 0,
+            "checksSelf": 9
+          },
+          {
+            "matSelf": 500,
+            "matOpp": 0,
+            "checksSelf": 9
+          },
+          {
+            "matSelf": 500,
+            "matOpp": 0,
+            "checksSelf": 10
+          }
+        ],
+        "planFromCache": true,
+        "planProvider": "kilo",
+        "planModel": "kilo-auto/free",
+        "opponentElo": 800,
+        "opponentEmulated": true,
+        "steerDepth": 14,
+        "steerMultiPV": 5,
+        "elapsedMs": 44088,
+        "pgn": "[Event \"Marionette directive game\"]\n[Site \"marionette-cli\"]\n[Date \"2026.11.17\"]\n[Round \"?\"]\n[White \"Stockfish-19 (Elo 800)\"]\n[Black \"Marionette\"]\n[Result \"0-1\"]\n[Annotator \"plan: Trade or sacrifice everything except king and queen, then win the K+Q endgame\"]\n\n1. e4 c5 2. Be2 Nc6 3. d3 d5 4. Nf3 Nf6 5. e5 Rg8 6. exf6 e5 7. g3 Bh3 8. Bf1 Bxf1 9. Kxf1 Qd7 10. Kg2 Qf5 11. Nc3 O-O-O 12. Rg1 Qd7 13. a4 Kb8 14. a5 Re8 15. Kh1 h5 16. fxg7 f5 17. gxf8=B d4 18. Na4 Nxa5 19. Bd6+ Ka8 20. Nxc5 Qxd6 21. Rxa5 h4 22. Nxh4 Qc6+ 23. Nf3 b6 24. Nb3 e4 25. Rxa7+ Kxa7 26. Nbxd4 Qd7 27. Be3 f4 28. dxe4 fxe3 29. Qe1 Rxe4 30. Qa1+ Kb8 31. Qa6 exf2 32. Qxb6+ Kc8 33. Ra1 Re1+ 34. Rxe1 fxe1=R+ 35. Nxe1 Rxg3 36. Nef3 Rg7 37. Qb4 Qg4 38. Qc4+ Kb7 39. Qb5+ Kc7 40. Qe5+ Kb7 41. Qd5+ Kb8 42. Qb5+ Ka8 43. Qe2 Ka7 44. c3 Kb8 45. c4 Qf4 46. Qe5+ Qxe5 47. Nxe5 Rb7 48. Nec6+ Kc7 49. b3 Kd6 50. Kg2 Rg7+ 51. Kf2 Rh7 52. Ke3 Rh3+ 53. Kf4 Kc5 54. Ke5 Rxh2 55. Nd8 Rh5+ 56. Ke4 Rh4+ 57. Ke5 Rh5+ 58. Kf4 Kxd4 59. Ne6+ Kc3 60. c5 Kxb3 61. Kg4 Re5 62. Nd8 Rxc5 63. Kh4 Rc8 64. Nb7 Kc2 65. Nd6 Kd3 66. Kg4 Rf8 67. Kh5 Rf6 68. Ne8 Re6 69. Ng7 Rc6 70. Nf5 Ke4 71. Nh6 Kf4 72. Nf7 Kf5 73. Ng5 Rc8 74. Nf7 Rc5 75. Nh6+ Kf6+ 76. Kh4 Rg5 77. Ng4+ Kf5 78. Nh6+ Kf6 79. Nf7 Rg7 80. Nd6 Ke5 81. Nc4+ Kf4 82. Kh5 Rc7 83. Na3 Rc3 84. Nb1 Rd3 85. Kg6 Ke3 86. Kg5 Rb3 87. Nc3 Rxc3 88. Kf6 Kf4 89. Ke7 Ke5 90. Kf7 Kf5 91. Ke7 Rd3 92. Ke8 Kf6 93. Kf8 Rd8# 0-1",
+        "notes": [
+          "opponent Elo 800 is below the native UCI_Elo floor (1320): emulated with Skill Level 0, depth cap 6, eval-weighted move choice",
+          "replan at ply 80 was deterministic (offline mode): dropped milestone 'reduce_to_kq' (milestone reduce_to_kq exceeded its move budget (80 plies)); dropped constraint 'no_extra_pieces' (was gated on dropped milestone 'reduce_to_kq')",
+          "fallback engaged at ply 97 (deterministic replan impossible: milestone deliver_mate stalled: no partial progress for ~17 plies): best toward terminal win"
+        ]
+      },
+      "judge": {
+        "looksTrying": 0.7,
+        "natural": 0.8,
+        "plausibleLoss": 0.5,
+        "bully": 0.7777777777777777,
+        "score": 6.944444444444445,
+        "reasons": [
+          "ACPL 0, 2 blunder(s) >= 300cp, max drop 441cp",
+          "naturalness inputs: ACPL band 30-250, blunder spread, length 186 plies",
+          "no loss on the board caps plausibleLoss",
+          "material lead max 500cp (early ~-1070cp), 10 checks given, 186 plies"
+        ]
+      }
+    },
+    {
+      "id": "D6",
+      "elo": 800,
+      "gameIdx": 2,
+      "error": null,
+      "report": {
+        "directive": "Win with only a queen and king left.",
+        "selfColor": "w",
+        "result": "0-1",
+        "endReason": "checkmate",
+        "terminalMet": false,
+        "plies": 296,
+        "moveNumber": 149,
+        "milestones": [
+          {
+            "id": "reduce_to_kq",
+            "description": "Reduce own material to exactly king + queen",
+            "completion": "piece_count(self, queen) == 1 && piece_count(self, pawn) == 0 && non_pawn_count(self) == 1",
+            "tolerance": "loose",
+            "weight": 5,
+            "completed": false,
+            "bestPartial": 0.6,
+            "droppedAtPly": 80,
+            "dropReason": "milestone reduce_to_kq exceeded its move budget (80 plies)",
+            "trueAtEnd": false
+          },
+          {
+            "id": "deliver_mate",
+            "description": "Deliver checkmate with king and queen",
+            "completion": "is_checkmate() && winner() == self",
+            "tolerance": "tight",
+            "weight": 4,
+            "completed": false,
+            "bestPartial": 0,
+            "trueAtEnd": false
+          }
+        ],
+        "finalPositionTrue": [],
+        "violations": [],
+        "replans": [
+          {
+            "atPly": 80,
+            "reason": "milestone reduce_to_kq exceeded its move budget (80 plies)",
+            "provider": "deterministic",
+            "model": "rule-based"
+          }
+        ],
+        "fallbackEngaged": "secure_terminal",
+        "acplSelf": 0.5747272727272728,
+        "steeredMoves": 55,
+        "marionetteMoves": 148,
+        "evalTrail": [
+          36,
+          -8,
+          46,
+          62,
+          62,
+          59,
+          91,
+          203,
+          192,
+          509,
+          521,
+          494,
+          -378,
+          -768,
+          -856,
+          -954,
+          -957,
+          -935,
+          -874,
+          -857,
+          -889,
+          -873,
+          -887,
+          -1111,
+          -959,
+          -837,
+          -814,
+          -771,
+          -451,
+          -525,
+          -559,
+          -483,
+          -861,
+          -1053,
+          -851,
+          -828,
+          -862,
+          -781,
+          -813,
+          -756,
+          -790,
+          -814,
+          -820,
+          -821,
+          -875,
+          -775,
+          -818,
+          -799,
+          -870,
+          -867,
+          -859,
+          -848,
+          -842,
+          -826,
+          -851,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        "snapshots": [
+          {
+            "matSelf": 4000,
+            "matOpp": 4000,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 4000,
+            "matOpp": 4000,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 4000,
+            "matOpp": 4000,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 4000,
+            "matOpp": 4000,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 3900,
+            "matOpp": 3900,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 3900,
+            "matOpp": 3900,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 3900,
+            "matOpp": 3900,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 3900,
+            "matOpp": 3900,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 3900,
+            "matOpp": 3800,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 3900,
+            "matOpp": 3700,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 3900,
+            "matOpp": 3700,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 3800,
+            "matOpp": 3700,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 2900,
+            "matOpp": 3600,
+            "checksSelf": 1
+          },
+          {
+            "matSelf": 2570,
+            "matOpp": 3600,
+            "checksSelf": 1
+          },
+          {
+            "matSelf": 2570,
+            "matOpp": 3600,
+            "checksSelf": 2
+          },
+          {
+            "matSelf": 2570,
+            "matOpp": 3280,
+            "checksSelf": 2
+          },
+          {
+            "matSelf": 2240,
+            "matOpp": 3280,
+            "checksSelf": 2
+          },
+          {
+            "matSelf": 2240,
+            "matOpp": 3280,
+            "checksSelf": 2
+          },
+          {
+            "matSelf": 2240,
+            "matOpp": 3280,
+            "checksSelf": 2
+          },
+          {
+            "matSelf": 2240,
+            "matOpp": 3280,
+            "checksSelf": 2
+          },
+          {
+            "matSelf": 2240,
+            "matOpp": 3280,
+            "checksSelf": 2
+          },
+          {
+            "matSelf": 2240,
+            "matOpp": 3280,
+            "checksSelf": 2
+          },
+          {
+            "matSelf": 2240,
+            "matOpp": 3280,
+            "checksSelf": 3
+          },
+          {
+            "matSelf": 2240,
+            "matOpp": 3280,
+            "checksSelf": 3
+          },
+          {
+            "matSelf": 2240,
+            "matOpp": 3280,
+            "checksSelf": 3
+          },
+          {
+            "matSelf": 1920,
+            "matOpp": 2380,
+            "checksSelf": 3
+          },
+          {
+            "matSelf": 1600,
+            "matOpp": 2060,
+            "checksSelf": 3
+          },
+          {
+            "matSelf": 1600,
+            "matOpp": 1730,
+            "checksSelf": 3
+          },
+          {
+            "matSelf": 1600,
+            "matOpp": 1730,
+            "checksSelf": 3
+          },
+          {
+            "matSelf": 1600,
+            "matOpp": 1630,
+            "checksSelf": 3
+          },
+          {
+            "matSelf": 1500,
+            "matOpp": 1630,
+            "checksSelf": 3
+          },
+          {
+            "matSelf": 1500,
+            "matOpp": 1530,
+            "checksSelf": 3
+          },
+          {
+            "matSelf": 1500,
+            "matOpp": 1430,
+            "checksSelf": 4
+          },
+          {
+            "matSelf": 1000,
+            "matOpp": 1430,
+            "checksSelf": 4
+          },
+          {
+            "matSelf": 1000,
+            "matOpp": 1430,
+            "checksSelf": 4
+          },
+          {
+            "matSelf": 1000,
+            "matOpp": 1430,
+            "checksSelf": 4
+          },
+          {
+            "matSelf": 900,
+            "matOpp": 1430,
+            "checksSelf": 4
+          },
+          {
+            "matSelf": 900,
+            "matOpp": 1430,
+            "checksSelf": 4
+          },
+          {
+            "matSelf": 900,
+            "matOpp": 1430,
+            "checksSelf": 4
+          },
+          {
+            "matSelf": 900,
+            "matOpp": 1430,
+            "checksSelf": 4
+          },
+          {
+            "matSelf": 900,
+            "matOpp": 1430,
+            "checksSelf": 4
+          },
+          {
+            "matSelf": 900,
+            "matOpp": 1430,
+            "checksSelf": 4
+          },
+          {
+            "matSelf": 900,
+            "matOpp": 1430,
+            "checksSelf": 4
+          },
+          {
+            "matSelf": 900,
+            "matOpp": 1430,
+            "checksSelf": 4
+          },
+          {
+            "matSelf": 900,
+            "matOpp": 1430,
+            "checksSelf": 4
+          },
+          {
+            "matSelf": 900,
+            "matOpp": 1430,
+            "checksSelf": 4
+          },
+          {
+            "matSelf": 900,
+            "matOpp": 1430,
+            "checksSelf": 4
+          },
+          {
+            "matSelf": 900,
+            "matOpp": 1430,
+            "checksSelf": 4
+          },
+          {
+            "matSelf": 900,
+            "matOpp": 1430,
+            "checksSelf": 4
+          },
+          {
+            "matSelf": 800,
+            "matOpp": 1430,
+            "checksSelf": 4
+          },
+          {
+            "matSelf": 800,
+            "matOpp": 1430,
+            "checksSelf": 5
+          },
+          {
+            "matSelf": 800,
+            "matOpp": 1430,
+            "checksSelf": 5
+          },
+          {
+            "matSelf": 800,
+            "matOpp": 1430,
+            "checksSelf": 5
+          },
+          {
+            "matSelf": 800,
+            "matOpp": 1430,
+            "checksSelf": 5
+          },
+          {
+            "matSelf": 800,
+            "matOpp": 1430,
+            "checksSelf": 5
+          },
+          {
+            "matSelf": 800,
+            "matOpp": 1430,
+            "checksSelf": 5
+          },
+          {
+            "matSelf": 800,
+            "matOpp": 1430,
+            "checksSelf": 5
+          },
+          {
+            "matSelf": 800,
+            "matOpp": 1430,
+            "checksSelf": 5
+          },
+          {
+            "matSelf": 800,
+            "matOpp": 1430,
+            "checksSelf": 5
+          },
+          {
+            "matSelf": 800,
+            "matOpp": 1430,
+            "checksSelf": 5
+          },
+          {
+            "matSelf": 800,
+            "matOpp": 1430,
+            "checksSelf": 5
+          },
+          {
+            "matSelf": 800,
+            "matOpp": 1430,
+            "checksSelf": 5
+          },
+          {
+            "matSelf": 800,
+            "matOpp": 1430,
+            "checksSelf": 5
+          },
+          {
+            "matSelf": 800,
+            "matOpp": 1430,
+            "checksSelf": 5
+          },
+          {
+            "matSelf": 800,
+            "matOpp": 1430,
+            "checksSelf": 5
+          },
+          {
+            "matSelf": 800,
+            "matOpp": 1430,
+            "checksSelf": 5
+          },
+          {
+            "matSelf": 800,
+            "matOpp": 1430,
+            "checksSelf": 5
+          },
+          {
+            "matSelf": 800,
+            "matOpp": 1430,
+            "checksSelf": 5
+          },
+          {
+            "matSelf": 800,
+            "matOpp": 1430,
+            "checksSelf": 5
+          },
+          {
+            "matSelf": 800,
+            "matOpp": 1430,
+            "checksSelf": 5
+          },
+          {
+            "matSelf": 800,
+            "matOpp": 1430,
+            "checksSelf": 5
+          },
+          {
+            "matSelf": 800,
+            "matOpp": 1430,
+            "checksSelf": 5
+          },
+          {
+            "matSelf": 800,
+            "matOpp": 1430,
+            "checksSelf": 5
+          },
+          {
+            "matSelf": 800,
+            "matOpp": 1430,
+            "checksSelf": 5
+          },
+          {
+            "matSelf": 800,
+            "matOpp": 1430,
+            "checksSelf": 5
+          },
+          {
+            "matSelf": 800,
+            "matOpp": 1430,
+            "checksSelf": 5
+          },
+          {
+            "matSelf": 800,
+            "matOpp": 1430,
+            "checksSelf": 5
+          },
+          {
+            "matSelf": 800,
+            "matOpp": 1430,
+            "checksSelf": 5
+          },
+          {
+            "matSelf": 800,
+            "matOpp": 1430,
+            "checksSelf": 5
+          },
+          {
+            "matSelf": 800,
+            "matOpp": 1430,
+            "checksSelf": 6
+          },
+          {
+            "matSelf": 800,
+            "matOpp": 1430,
+            "checksSelf": 6
+          },
+          {
+            "matSelf": 800,
+            "matOpp": 1430,
+            "checksSelf": 6
+          },
+          {
+            "matSelf": 800,
+            "matOpp": 1430,
+            "checksSelf": 7
+          },
+          {
+            "matSelf": 800,
+            "matOpp": 1430,
+            "checksSelf": 7
+          },
+          {
+            "matSelf": 800,
+            "matOpp": 1430,
+            "checksSelf": 7
+          },
+          {
+            "matSelf": 800,
+            "matOpp": 1430,
+            "checksSelf": 8
+          },
+          {
+            "matSelf": 800,
+            "matOpp": 1430,
+            "checksSelf": 8
+          },
+          {
+            "matSelf": 800,
+            "matOpp": 1430,
+            "checksSelf": 8
+          },
+          {
+            "matSelf": 800,
+            "matOpp": 1430,
+            "checksSelf": 8
+          },
+          {
+            "matSelf": 700,
+            "matOpp": 1330,
+            "checksSelf": 8
+          },
+          {
+            "matSelf": 700,
+            "matOpp": 1330,
+            "checksSelf": 8
+          },
+          {
+            "matSelf": 700,
+            "matOpp": 1330,
+            "checksSelf": 8
+          },
+          {
+            "matSelf": 700,
+            "matOpp": 1330,
+            "checksSelf": 8
+          },
+          {
+            "matSelf": 700,
+            "matOpp": 1330,
+            "checksSelf": 8
+          },
+          {
+            "matSelf": 700,
+            "matOpp": 1330,
+            "checksSelf": 8
+          },
+          {
+            "matSelf": 700,
+            "matOpp": 1330,
+            "checksSelf": 8
+          },
+          {
+            "matSelf": 700,
+            "matOpp": 1330,
+            "checksSelf": 8
+          },
+          {
+            "matSelf": 700,
+            "matOpp": 830,
+            "checksSelf": 9
+          },
+          {
+            "matSelf": 200,
+            "matOpp": 830,
+            "checksSelf": 9
+          },
+          {
+            "matSelf": 200,
+            "matOpp": 830,
+            "checksSelf": 9
+          },
+          {
+            "matSelf": 200,
+            "matOpp": 830,
+            "checksSelf": 9
+          },
+          {
+            "matSelf": 200,
+            "matOpp": 830,
+            "checksSelf": 9
+          },
+          {
+            "matSelf": 200,
+            "matOpp": 830,
+            "checksSelf": 9
+          },
+          {
+            "matSelf": 200,
+            "matOpp": 830,
+            "checksSelf": 9
+          },
+          {
+            "matSelf": 200,
+            "matOpp": 830,
+            "checksSelf": 9
+          },
+          {
+            "matSelf": 200,
+            "matOpp": 830,
+            "checksSelf": 9
+          },
+          {
+            "matSelf": 200,
+            "matOpp": 830,
+            "checksSelf": 10
+          },
+          {
+            "matSelf": 200,
+            "matOpp": 830,
+            "checksSelf": 10
+          },
+          {
+            "matSelf": 900,
+            "matOpp": 830,
+            "checksSelf": 10
+          },
+          {
+            "matSelf": 0,
+            "matOpp": 830,
+            "checksSelf": 10
+          },
+          {
+            "matSelf": 0,
+            "matOpp": 830,
+            "checksSelf": 10
+          },
+          {
+            "matSelf": 0,
+            "matOpp": 830,
+            "checksSelf": 10
+          },
+          {
+            "matSelf": 0,
+            "matOpp": 830,
+            "checksSelf": 10
+          },
+          {
+            "matSelf": 0,
+            "matOpp": 830,
+            "checksSelf": 10
+          },
+          {
+            "matSelf": 0,
+            "matOpp": 830,
+            "checksSelf": 10
+          },
+          {
+            "matSelf": 0,
+            "matOpp": 830,
+            "checksSelf": 10
+          },
+          {
+            "matSelf": 0,
+            "matOpp": 830,
+            "checksSelf": 10
+          },
+          {
+            "matSelf": 0,
+            "matOpp": 830,
+            "checksSelf": 10
+          },
+          {
+            "matSelf": 0,
+            "matOpp": 830,
+            "checksSelf": 10
+          },
+          {
+            "matSelf": 0,
+            "matOpp": 830,
+            "checksSelf": 10
+          },
+          {
+            "matSelf": 0,
+            "matOpp": 830,
+            "checksSelf": 10
+          },
+          {
+            "matSelf": 0,
+            "matOpp": 830,
+            "checksSelf": 10
+          },
+          {
+            "matSelf": 0,
+            "matOpp": 830,
+            "checksSelf": 10
+          },
+          {
+            "matSelf": 0,
+            "matOpp": 830,
+            "checksSelf": 10
+          },
+          {
+            "matSelf": 0,
+            "matOpp": 830,
+            "checksSelf": 10
+          },
+          {
+            "matSelf": 0,
+            "matOpp": 830,
+            "checksSelf": 10
+          },
+          {
+            "matSelf": 0,
+            "matOpp": 830,
+            "checksSelf": 10
+          },
+          {
+            "matSelf": 0,
+            "matOpp": 830,
+            "checksSelf": 10
+          },
+          {
+            "matSelf": 0,
+            "matOpp": 830,
+            "checksSelf": 10
+          },
+          {
+            "matSelf": 0,
+            "matOpp": 830,
+            "checksSelf": 10
+          },
+          {
+            "matSelf": 0,
+            "matOpp": 830,
+            "checksSelf": 10
+          },
+          {
+            "matSelf": 0,
+            "matOpp": 830,
+            "checksSelf": 10
+          },
+          {
+            "matSelf": 0,
+            "matOpp": 830,
+            "checksSelf": 10
+          },
+          {
+            "matSelf": 0,
+            "matOpp": 830,
+            "checksSelf": 10
+          },
+          {
+            "matSelf": 0,
+            "matOpp": 830,
+            "checksSelf": 10
+          },
+          {
+            "matSelf": 0,
+            "matOpp": 830,
+            "checksSelf": 10
+          },
+          {
+            "matSelf": 0,
+            "matOpp": 830,
+            "checksSelf": 10
+          },
+          {
+            "matSelf": 0,
+            "matOpp": 830,
+            "checksSelf": 10
+          },
+          {
+            "matSelf": 0,
+            "matOpp": 830,
+            "checksSelf": 10
+          },
+          {
+            "matSelf": 0,
+            "matOpp": 830,
+            "checksSelf": 10
+          },
+          {
+            "matSelf": 0,
+            "matOpp": 830,
+            "checksSelf": 10
+          },
+          {
+            "matSelf": 0,
+            "matOpp": 830,
+            "checksSelf": 10
+          },
+          {
+            "matSelf": 0,
+            "matOpp": 830,
+            "checksSelf": 10
+          },
+          {
+            "matSelf": 0,
+            "matOpp": 830,
+            "checksSelf": 10
+          },
+          {
+            "matSelf": 0,
+            "matOpp": 830,
+            "checksSelf": 10
+          },
+          {
+            "matSelf": 0,
+            "matOpp": 830,
+            "checksSelf": 10
+          },
+          {
+            "matSelf": 0,
+            "matOpp": 830,
+            "checksSelf": 10
+          },
+          {
+            "matSelf": 0,
+            "matOpp": 830,
+            "checksSelf": 10
+          }
+        ],
+        "planFromCache": true,
+        "planProvider": "kilo",
+        "planModel": "kilo-auto/free",
+        "opponentElo": 800,
+        "opponentEmulated": true,
+        "steerDepth": 14,
+        "steerMultiPV": 5,
+        "elapsedMs": 78209,
+        "pgn": "[Event \"Marionette directive game\"]\n[Site \"marionette-cli\"]\n[Date \"2026.11.17\"]\n[Round \"?\"]\n[White \"Marionette\"]\n[Black \"Stockfish-19 (Elo 800)\"]\n[Result \"0-1\"]\n[Annotator \"plan: Trade or sacrifice everything except king and queen, then win the K+Q endgame\"]\n\n1. e4 e5 2. d4 d6 3. Nf3 Nd7 4. Bc4 exd4 5. Qxd4 Ngf6 6. Nc3 a6 7. a4 c6 8. Bf4 d5 9. exd5 Be7 10. dxc6 Nb6 11. Bb3 bxc6 12. O-O-O Qxd4 13. Bxf7+ Kxf7 14. Bc7 Qc5 15. Ne5+ Kg8 16. Bxb6 Qxb6 17. Rhe1 Qb7 18. a5 Kf8 19. Na4 Rb8 20. Nb6 Nd5 21. Kb1 Bh4 22. Rd3 g6 23. Nbd7+ Kg7 24. b3 h5 25. g3 Qxd7 26. Nxd7 Bxd7 27. Rxd5 Bc8 28. gxh4 Rb7 29. Rd6 Bf5 30. Rxc6 Rxb3+ 31. Kc1 Rbb8 32. Rxa6 Rhc8 33. Rxg6+ Bxg6 34. c3 Kh6 35. Re6 Rc5 36. Rb6 Rxc3+ 37. Kd1 Rd3+ 38. Ke1 Rdd8 39. f3 Kh7 40. Kf1 Rf8 41. Kg2 Rfc8 42. Kg1 Re8 43. Kf2 Rf8 44. Re6 Rb3 45. Re3 Rb7 46. Ra3 Bb1 47. a6 Rb2+ 48. Ke3 Ra2 49. Rc3 Rxa6 50. Kf2 Bf5 51. Rc7+ Kg6 52. Rc3 Kh7 53. Kg2 Rfa8 54. Kf2 Bb1 55. Kg3 Rg6+ 56. Kf4 Rga6 57. Rb3 Bg6 58. Re3 Kh6 59. Kg3 Rc8 60. Re7 Rca8 61. Re2 Bd3 62. Rb2 Rd8 63. Rb3 Bc2 64. Rc3 Bg6 65. Kh3 Ra4 66. Rc6 Rb8 67. Re6 Ra5 68. Kg3 Rc8 69. Re3 Rf8 70. Kf2 Bf7 71. Kg3 Bc4 72. Rc3 Rc8 73. Rc2 Ra4 74. Rd2 Rc6 75. Rd4 Ra1 76. Rd2 Bf1 77. Kf2 Rg6 78. Ke3 Ba6 79. Rd8 Bf1 80. Rh8+ Kg7 81. Rb8 Kh6 82. Rf8 Rg2 83. Rf6+ Kg7 84. Rc6 Re1+ 85. Kf4 Rge2 86. Rc7+ Re7 87. Rc2 R1e2 88. Rc5 Rf7+ 89. Kg5 Rxh2 90. Kxh5 Bg2 91. Kg4 Rh1 92. f4 Bh3+ 93. Kf3 Ra7 94. Ke4 Bg2+ 95. Ke5 Bf1 96. Kd6 Rf7 97. Rc7 Bg2 98. Rxf7+ Kxf7 99. f5 Rd1+ 100. Kc7 Kf6 101. h5 Rc1+ 102. Kd6 Rb1 103. h6 Rb6+ 104. Kc5 Rb8 105. h7 Ba8 106. Kd4 Kg7 107. f6+ Kg6 108. f7 Kxf7 109. h8=Q Rxh8 110. Ke5 Bh1 111. Kd6 Re8 112. Kc5 Re1 113. Kc4 Rd1 114. Kc3 Rg1 115. Kc4 Rg2 116. Kc5 Rg1 117. Kd6 Kf6 118. Kc5 Re1 119. Kc4 Bf3 120. Kc3 Rf1 121. Kd4 Bb7 122. Ke3 Ba6 123. Kd4 Bb7 124. Kc3 Rf2 125. Kd3 Rf3+ 126. Kd4 Bc6 127. Kc5 Rf5+ 128. Kb6 Ba4 129. Kb7 Bc2 130. Kc6 Rf4 131. Kd6 Bb3 132. Kd7 Bd5 133. Kd6 Rf5 134. Kd7 Rf3 135. Kd6 Bb3 136. Kc6 Rf1 137. Kc5 Rf4 138. Kd6 Bd1 139. Kc7 Bg4 140. Kd6 Bf3 141. Kd7 Rc4 142. Kd6 Be4 143. Kd7 Ba8 144. Kd6 Bg2 145. Kd7 Rc6 146. Ke8 Bh3 147. Kd8 Rc1 148. Ke8 Rc8# 0-1",
+        "notes": [
+          "opponent Elo 800 is below the native UCI_Elo floor (1320): emulated with Skill Level 0, depth cap 6, eval-weighted move choice",
+          "replan at ply 80 was deterministic (offline mode): dropped milestone 'reduce_to_kq' (milestone reduce_to_kq exceeded its move budget (80 plies)); dropped constraint 'no_extra_pieces' (was gated on dropped milestone 'reduce_to_kq')",
+          "fallback engaged at ply 110 (deterministic replan impossible: milestone deliver_mate stalled: no partial progress for ~30 plies): best toward terminal win",
+          "1 milestone(s) incomplete at game end"
+        ]
+      },
+      "judge": {
+        "looksTrying": 0.55,
+        "natural": 0.8,
+        "plausibleLoss": 1,
+        "bully": 0.4111111111111111,
+        "score": 6.902777777777778,
+        "reasons": [
+          "ACPL 1, 3 blunder(s) >= 300cp, max drop 872cp",
+          "naturalness inputs: ACPL band 30-250, blunder spread, length 296 plies",
+          "material lead max 200cp (early ~-530cp), 10 checks given, 296 plies"
+        ]
+      }
+    },
+    {
+      "id": "D6",
+      "elo": 800,
+      "gameIdx": 3,
+      "error": null,
+      "report": {
+        "directive": "Win with only a queen and king left.",
+        "selfColor": "b",
+        "result": "0-1",
+        "endReason": "checkmate",
+        "terminalMet": true,
+        "plies": 80,
+        "moveNumber": 41,
+        "milestones": [
+          {
+            "id": "reduce_to_kq",
+            "description": "Reduce own material to exactly king + queen",
+            "completion": "piece_count(self, queen) == 1 && piece_count(self, pawn) == 0 && non_pawn_count(self) == 1",
+            "tolerance": "loose",
+            "weight": 5,
+            "completed": false,
+            "bestPartial": 0.8,
+            "trueAtEnd": false
+          },
+          {
+            "id": "deliver_mate",
+            "description": "Deliver checkmate with king and queen",
+            "completion": "is_checkmate() && winner() == self",
+            "tolerance": "tight",
+            "weight": 4,
+            "completed": false,
+            "bestPartial": 0,
+            "trueAtEnd": true
+          }
+        ],
+        "finalPositionTrue": [
+          "deliver_mate"
+        ],
+        "violations": [],
+        "replans": [],
+        "fallbackEngaged": null,
+        "acplSelf": 2.4252499999999997,
+        "steeredMoves": 40,
+        "marionetteMoves": 40,
+        "evalTrail": [
+          -16,
+          -1,
+          -20,
+          168,
+          97,
+          228,
+          261,
+          259,
+          346,
+          322,
+          335,
+          354,
+          293,
+          273,
+          325,
+          400,
+          771,
+          734,
+          687,
+          852,
+          838,
+          1042,
+          1080,
+          9800,
+          9850,
+          9900,
+          9950,
+          9950,
+          9900,
+          9900,
+          9900,
+          1068,
+          9550,
+          9650,
+          9750,
+          9850,
+          9900,
+          9900,
+          9900,
+          9950
+        ],
+        "snapshots": [
+          {
+            "matSelf": 4000,
+            "matOpp": 4000,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 4000,
+            "matOpp": 4000,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 4000,
+            "matOpp": 3900,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 4000,
+            "matOpp": 3900,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 4000,
+            "matOpp": 3900,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 4000,
+            "matOpp": 3800,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 3900,
+            "matOpp": 3800,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 3900,
+            "matOpp": 3800,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 3900,
+            "matOpp": 3800,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 3900,
+            "matOpp": 3800,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 3900,
+            "matOpp": 3800,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 3900,
+            "matOpp": 3800,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 3900,
+            "matOpp": 3480,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 3580,
+            "matOpp": 3480,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 3580,
+            "matOpp": 3480,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 3580,
+            "matOpp": 3480,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 3480,
+            "matOpp": 2580,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 3480,
+            "matOpp": 2480,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 2580,
+            "matOpp": 1980,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 2580,
+            "matOpp": 1660,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 2480,
+            "matOpp": 1330,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 2480,
+            "matOpp": 1230,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 2160,
+            "matOpp": 1130,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 2160,
+            "matOpp": 1130,
+            "checksSelf": 1
+          },
+          {
+            "matSelf": 2160,
+            "matOpp": 800,
+            "checksSelf": 1
+          },
+          {
+            "matSelf": 2160,
+            "matOpp": 800,
+            "checksSelf": 1
+          },
+          {
+            "matSelf": 2160,
+            "matOpp": 800,
+            "checksSelf": 1
+          },
+          {
+            "matSelf": 2060,
+            "matOpp": 800,
+            "checksSelf": 1
+          },
+          {
+            "matSelf": 2060,
+            "matOpp": 800,
+            "checksSelf": 1
+          },
+          {
+            "matSelf": 1960,
+            "matOpp": 800,
+            "checksSelf": 1
+          },
+          {
+            "matSelf": 1960,
+            "matOpp": 800,
+            "checksSelf": 1
+          },
+          {
+            "matSelf": 1860,
+            "matOpp": 800,
+            "checksSelf": 1
+          },
+          {
+            "matSelf": 1530,
+            "matOpp": 800,
+            "checksSelf": 2
+          },
+          {
+            "matSelf": 1200,
+            "matOpp": 300,
+            "checksSelf": 2
+          },
+          {
+            "matSelf": 1200,
+            "matOpp": 300,
+            "checksSelf": 2
+          },
+          {
+            "matSelf": 2000,
+            "matOpp": 300,
+            "checksSelf": 2
+          },
+          {
+            "matSelf": 2000,
+            "matOpp": 300,
+            "checksSelf": 2
+          },
+          {
+            "matSelf": 2000,
+            "matOpp": 300,
+            "checksSelf": 3
+          },
+          {
+            "matSelf": 2000,
+            "matOpp": 300,
+            "checksSelf": 4
+          },
+          {
+            "matSelf": 2000,
+            "matOpp": 300,
+            "checksSelf": 5
+          }
+        ],
+        "planFromCache": true,
+        "planProvider": "kilo",
+        "planModel": "kilo-auto/free",
+        "opponentElo": 800,
+        "opponentEmulated": true,
+        "steerDepth": 14,
+        "steerMultiPV": 5,
+        "elapsedMs": 25648,
+        "pgn": "[Event \"Marionette directive game\"]\n[Site \"marionette-cli\"]\n[Date \"2026.11.17\"]\n[Round \"?\"]\n[White \"Stockfish-19 (Elo 800)\"]\n[Black \"Marionette\"]\n[Result \"0-1\"]\n[Annotator \"plan: Trade or sacrifice everything except king and queen, then win the K+Q endgame\"]\n\n1. d4 d5 2. Bf4 c5 3. Nc3 cxd4 4. Nb1 f6 5. c3 Bf5 6. Bc1 dxc3 7. bxc3 Nc6 8. Qb3 e5 9. Nf3 Qd7 10. e3 Na5 11. Qd1 O-O-O 12. Nfd2 Nh6 13. Nb3 Nxb3 14. Qxb3 Be6 15. Na3 Kb8 16. Rb1 d4 17. Qxb7+ Qxb7 18. Be2 Bxa2 19. Rxb7+ Kxb7 20. Nc4 Bxc4 21. exd4 Bxe2 22. c4 Bxc4 23. Bxh6 Rxd4 24. g3 Bb4+ 25. Bd2 Rxd2 26. f4 Rhd8 27. g4 a5 28. fxe5 g5 29. h4 h5 30. hxg5 f5 31. Rh4 a4 32. gxf5 a3 33. Rxc4 Rb2+ 34. Rxb4+ Rxb4 35. Ke2 a2 36. g6 a1=Q 37. Kf3 Rd2 38. f6 Qd1+ 39. Kg3 h4+ 40. Kh3 Qg4# 0-1",
+        "notes": [
+          "opponent Elo 800 is below the native UCI_Elo floor (1320): emulated with Skill Level 0, depth cap 6, eval-weighted move choice",
+          "milestone 'deliver_mate' held at game end (final-position fact, not completed in order)"
+        ]
+      },
+      "judge": {
+        "looksTrying": 0.85,
+        "natural": 0.8,
+        "plausibleLoss": 0.5,
+        "bully": 0.8500000000000001,
+        "score": 7.5,
+        "reasons": [
+          "ACPL 2, 1 blunder(s) >= 300cp, max drop 8832cp",
+          "naturalness inputs: ACPL band 30-250, blunder spread, length 80 plies",
+          "no loss on the board caps plausibleLoss",
+          "material lead max 1700cp (early ~100cp), 5 checks given, 80 plies"
+        ]
+      }
+    },
+    {
+      "id": "D6",
+      "elo": 800,
+      "gameIdx": 4,
+      "error": null,
+      "report": {
+        "directive": "Win with only a queen and king left.",
+        "selfColor": "w",
+        "result": "1-0",
+        "endReason": "checkmate",
+        "terminalMet": true,
+        "plies": 81,
+        "moveNumber": 41,
+        "milestones": [
+          {
+            "id": "reduce_to_kq",
+            "description": "Reduce own material to exactly king + queen",
+            "completion": "piece_count(self, queen) == 1 && piece_count(self, pawn) == 0 && non_pawn_count(self) == 1",
+            "tolerance": "loose",
+            "weight": 5,
+            "completed": false,
+            "bestPartial": 0.6,
+            "droppedAtPly": 80,
+            "dropReason": "milestone reduce_to_kq exceeded its move budget (80 plies)",
+            "trueAtEnd": false
+          },
+          {
+            "id": "deliver_mate",
+            "description": "Deliver checkmate with king and queen",
+            "completion": "is_checkmate() && winner() == self",
+            "tolerance": "tight",
+            "weight": 4,
+            "completed": true,
+            "completedAtPly": 81,
+            "bestPartial": 1,
+            "trueAtEnd": true
+          }
+        ],
+        "finalPositionTrue": [
+          "deliver_mate"
+        ],
+        "violations": [],
+        "replans": [
+          {
+            "atPly": 80,
+            "reason": "milestone reduce_to_kq exceeded its move budget (80 plies)",
+            "provider": "deterministic",
+            "model": "rule-based"
+          }
+        ],
+        "fallbackEngaged": null,
+        "acplSelf": 0.3624390243902439,
+        "steeredMoves": 41,
+        "marionetteMoves": 41,
+        "evalTrail": [
+          36,
+          45,
+          34,
+          260,
+          230,
+          306,
+          328,
+          712,
+          690,
+          779,
+          901,
+          946,
+          963,
+          973,
+          1051,
+          1075,
+          1271,
+          1486,
+          9450,
+          2667,
+          9700,
+          9750,
+          9650,
+          9700,
+          9750,
+          9650,
+          9650,
+          9750,
+          9800,
+          9850,
+          9900,
+          9900,
+          9850,
+          9900,
+          9900,
+          9950,
+          9900,
+          9900,
+          9900,
+          9950,
+          9950
+        ],
+        "snapshots": [
+          {
+            "matSelf": 4000,
+            "matOpp": 4000,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 4000,
+            "matOpp": 4000,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 4000,
+            "matOpp": 3900,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 4000,
+            "matOpp": 3900,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 3900,
+            "matOpp": 3900,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 3900,
+            "matOpp": 3900,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 3900,
+            "matOpp": 3900,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 3900,
+            "matOpp": 3900,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 3580,
+            "matOpp": 3000,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 3580,
+            "matOpp": 2900,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 3580,
+            "matOpp": 2900,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 3580,
+            "matOpp": 2900,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 3580,
+            "matOpp": 2900,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 3580,
+            "matOpp": 2900,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 3580,
+            "matOpp": 2900,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 3580,
+            "matOpp": 2580,
+            "checksSelf": 1
+          },
+          {
+            "matSelf": 3580,
+            "matOpp": 2250,
+            "checksSelf": 1
+          },
+          {
+            "matSelf": 3580,
+            "matOpp": 2250,
+            "checksSelf": 1
+          },
+          {
+            "matSelf": 3580,
+            "matOpp": 2250,
+            "checksSelf": 2
+          },
+          {
+            "matSelf": 3250,
+            "matOpp": 2250,
+            "checksSelf": 3
+          },
+          {
+            "matSelf": 3250,
+            "matOpp": 2250,
+            "checksSelf": 4
+          },
+          {
+            "matSelf": 2750,
+            "matOpp": 2150,
+            "checksSelf": 5
+          },
+          {
+            "matSelf": 2750,
+            "matOpp": 1650,
+            "checksSelf": 5
+          },
+          {
+            "matSelf": 2650,
+            "matOpp": 1650,
+            "checksSelf": 6
+          },
+          {
+            "matSelf": 2650,
+            "matOpp": 1650,
+            "checksSelf": 7
+          },
+          {
+            "matSelf": 2650,
+            "matOpp": 1650,
+            "checksSelf": 7
+          },
+          {
+            "matSelf": 2650,
+            "matOpp": 1650,
+            "checksSelf": 8
+          },
+          {
+            "matSelf": 2320,
+            "matOpp": 1650,
+            "checksSelf": 9
+          },
+          {
+            "matSelf": 2320,
+            "matOpp": 1320,
+            "checksSelf": 10
+          },
+          {
+            "matSelf": 2320,
+            "matOpp": 1320,
+            "checksSelf": 11
+          },
+          {
+            "matSelf": 2320,
+            "matOpp": 1320,
+            "checksSelf": 12
+          },
+          {
+            "matSelf": 2220,
+            "matOpp": 1320,
+            "checksSelf": 13
+          },
+          {
+            "matSelf": 2220,
+            "matOpp": 1320,
+            "checksSelf": 14
+          },
+          {
+            "matSelf": 2120,
+            "matOpp": 1320,
+            "checksSelf": 14
+          },
+          {
+            "matSelf": 1800,
+            "matOpp": 1320,
+            "checksSelf": 14
+          },
+          {
+            "matSelf": 1800,
+            "matOpp": 1320,
+            "checksSelf": 14
+          },
+          {
+            "matSelf": 1800,
+            "matOpp": 1320,
+            "checksSelf": 14
+          },
+          {
+            "matSelf": 1800,
+            "matOpp": 1320,
+            "checksSelf": 14
+          },
+          {
+            "matSelf": 1800,
+            "matOpp": 820,
+            "checksSelf": 14
+          },
+          {
+            "matSelf": 1800,
+            "matOpp": 720,
+            "checksSelf": 14
+          },
+          {
+            "matSelf": 1800,
+            "matOpp": 720,
+            "checksSelf": 15
+          }
+        ],
+        "planFromCache": true,
+        "planProvider": "kilo",
+        "planModel": "kilo-auto/free",
+        "opponentElo": 800,
+        "opponentEmulated": true,
+        "steerDepth": 14,
+        "steerMultiPV": 5,
+        "elapsedMs": 22171,
+        "pgn": "[Event \"Marionette directive game\"]\n[Site \"marionette-cli\"]\n[Date \"2026.11.17\"]\n[Round \"?\"]\n[White \"Marionette\"]\n[Black \"Stockfish-19 (Elo 800)\"]\n[Result \"1-0\"]\n[Annotator \"plan: Trade or sacrifice everything except king and queen, then win the K+Q endgame\"]\n\n1. e4 Nc6 2. d4 d5 3. exd5 Nb8 4. Nf3 Qxd5 5. Nc3 Qa5 6. Bc4 e6 7. Bd2 Be7 8. Nd5 Qxd5 9. Bxd5 a6 10. Bxe6 Kf8 11. Bh3 c6 12. a4 Bf5 13. O-O Bc8 14. c4 Ke8 15. Re1 Nd7 16. Bxd7+ Kd8 17. Bxc8 Rb8 18. d5 Bc5 19. Ba5+ Kxc8 20. Re8+ Kd7 21. Rd8+ Rxd8 22. dxc6+ Ke6 23. Bxd8 bxc6 24. Ng5+ Ke5 25. Qe2+ Kd6 26. Qe4 Kd7 27. Qf5+ Kxd8 28. Rd1+ Bd4 29. Rxd4+ Kc7 30. Qd7+ Kb6 31. c5+ Kxc5 32. Ne6+ Kb6 33. a5+ Kxa5 34. Qa7 fxe6 35. Rc4 e5 36. f4 e4 37. b3 Nf6 38. Qb7 Rb8 39. Qxb8 Ne8 40. Rxc6 g6 41. Qb6# 1-0",
+        "notes": [
+          "opponent Elo 800 is below the native UCI_Elo floor (1320): emulated with Skill Level 0, depth cap 6, eval-weighted move choice",
+          "replan at ply 80 was deterministic (offline mode): dropped milestone 'reduce_to_kq' (milestone reduce_to_kq exceeded its move budget (80 plies)); dropped constraint 'no_extra_pieces' (was gated on dropped milestone 'reduce_to_kq')"
+        ]
+      },
+      "judge": {
+        "looksTrying": 0.85,
+        "natural": 0.8,
+        "plausibleLoss": 0.5,
+        "bully": 1,
+        "score": 7.875,
+        "reasons": [
+          "ACPL 0, 1 blunder(s) >= 300cp, max drop 6783cp",
+          "naturalness inputs: ACPL band 30-250, blunder spread, length 81 plies",
+          "no loss on the board caps plausibleLoss",
+          "material lead max 1330cp (early ~680cp), 15 checks given, 81 plies"
+        ]
+      }
+    },
+    {
+      "id": "D6",
+      "elo": 800,
+      "gameIdx": 5,
+      "error": null,
+      "report": {
+        "directive": "Win with only a queen and king left.",
+        "selfColor": "b",
+        "result": "1/2-1/2",
+        "endReason": "draw",
+        "terminalMet": false,
+        "plies": 231,
+        "moveNumber": 116,
+        "milestones": [
+          {
+            "id": "reduce_to_kq",
+            "description": "Reduce own material to exactly king + queen",
+            "completion": "piece_count(self, queen) == 1 && piece_count(self, pawn) == 0 && non_pawn_count(self) == 1",
+            "tolerance": "loose",
+            "weight": 5,
+            "completed": false,
+            "bestPartial": 0.8,
+            "droppedAtPly": 80,
+            "dropReason": "milestone reduce_to_kq exceeded its move budget (80 plies)",
+            "trueAtEnd": false
+          },
+          {
+            "id": "deliver_mate",
+            "description": "Deliver checkmate with king and queen",
+            "completion": "is_checkmate() && winner() == self",
+            "tolerance": "tight",
+            "weight": 4,
+            "completed": false,
+            "bestPartial": 0,
+            "trueAtEnd": false
+          }
+        ],
+        "finalPositionTrue": [],
+        "violations": [],
+        "replans": [
+          {
+            "atPly": 80,
+            "reason": "milestone reduce_to_kq exceeded its move budget (80 plies)",
+            "provider": "deterministic",
+            "model": "rule-based"
+          }
+        ],
+        "fallbackEngaged": "secure_terminal",
+        "acplSelf": 0.5482692307692307,
+        "steeredMoves": 52,
+        "marionetteMoves": 115,
+        "evalTrail": [
+          -10,
+          -11,
+          -8,
+          -6,
+          -109,
+          -106,
+          -229,
+          -498,
+          -504,
+          -474,
+          -452,
+          -394,
+          -272,
+          -258,
+          -203,
+          59,
+          170,
+          237,
+          264,
+          336,
+          -103,
+          -664,
+          -712,
+          -754,
+          -745,
+          -734,
+          -715,
+          -702,
+          -637,
+          -641,
+          -628,
+          -514,
+          -475,
+          -1070,
+          -1110,
+          -833,
+          -836,
+          -868,
+          -839,
+          -823,
+          -819,
+          -811,
+          -813,
+          -790,
+          -804,
+          -744,
+          -645,
+          -797,
+          -665,
+          -626,
+          -651,
+          -624,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        "snapshots": [
+          {
+            "matSelf": 4000,
+            "matOpp": 4000,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 4000,
+            "matOpp": 4000,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 4000,
+            "matOpp": 4000,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 4000,
+            "matOpp": 4000,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 3900,
+            "matOpp": 4000,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 3900,
+            "matOpp": 4000,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 3900,
+            "matOpp": 4000,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 3800,
+            "matOpp": 3100,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 3700,
+            "matOpp": 3000,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 2800,
+            "matOpp": 3000,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 2800,
+            "matOpp": 3000,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 2800,
+            "matOpp": 3000,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 2800,
+            "matOpp": 3000,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 2800,
+            "matOpp": 3000,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 2800,
+            "matOpp": 3000,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 2800,
+            "matOpp": 3000,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 2800,
+            "matOpp": 2680,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 2800,
+            "matOpp": 2680,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 2800,
+            "matOpp": 2680,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 2800,
+            "matOpp": 2680,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 2700,
+            "matOpp": 2580,
+            "checksSelf": 1
+          },
+          {
+            "matSelf": 2370,
+            "matOpp": 2480,
+            "checksSelf": 1
+          },
+          {
+            "matSelf": 2040,
+            "matOpp": 2480,
+            "checksSelf": 1
+          },
+          {
+            "matSelf": 2040,
+            "matOpp": 2480,
+            "checksSelf": 1
+          },
+          {
+            "matSelf": 1940,
+            "matOpp": 2480,
+            "checksSelf": 1
+          },
+          {
+            "matSelf": 1940,
+            "matOpp": 2480,
+            "checksSelf": 1
+          },
+          {
+            "matSelf": 1940,
+            "matOpp": 2480,
+            "checksSelf": 1
+          },
+          {
+            "matSelf": 1940,
+            "matOpp": 2480,
+            "checksSelf": 1
+          },
+          {
+            "matSelf": 1940,
+            "matOpp": 2380,
+            "checksSelf": 1
+          },
+          {
+            "matSelf": 1940,
+            "matOpp": 2380,
+            "checksSelf": 1
+          },
+          {
+            "matSelf": 1940,
+            "matOpp": 2280,
+            "checksSelf": 1
+          },
+          {
+            "matSelf": 1940,
+            "matOpp": 2280,
+            "checksSelf": 1
+          },
+          {
+            "matSelf": 1840,
+            "matOpp": 2180,
+            "checksSelf": 1
+          },
+          {
+            "matSelf": 1840,
+            "matOpp": 2180,
+            "checksSelf": 1
+          },
+          {
+            "matSelf": 1340,
+            "matOpp": 2180,
+            "checksSelf": 1
+          },
+          {
+            "matSelf": 1340,
+            "matOpp": 2080,
+            "checksSelf": 1
+          },
+          {
+            "matSelf": 1340,
+            "matOpp": 2080,
+            "checksSelf": 2
+          },
+          {
+            "matSelf": 1020,
+            "matOpp": 1750,
+            "checksSelf": 3
+          },
+          {
+            "matSelf": 700,
+            "matOpp": 1750,
+            "checksSelf": 4
+          },
+          {
+            "matSelf": 700,
+            "matOpp": 1750,
+            "checksSelf": 4
+          },
+          {
+            "matSelf": 700,
+            "matOpp": 1750,
+            "checksSelf": 4
+          },
+          {
+            "matSelf": 700,
+            "matOpp": 1750,
+            "checksSelf": 4
+          },
+          {
+            "matSelf": 700,
+            "matOpp": 1750,
+            "checksSelf": 4
+          },
+          {
+            "matSelf": 700,
+            "matOpp": 1650,
+            "checksSelf": 4
+          },
+          {
+            "matSelf": 700,
+            "matOpp": 1650,
+            "checksSelf": 4
+          },
+          {
+            "matSelf": 700,
+            "matOpp": 1650,
+            "checksSelf": 4
+          },
+          {
+            "matSelf": 700,
+            "matOpp": 1650,
+            "checksSelf": 4
+          },
+          {
+            "matSelf": 700,
+            "matOpp": 1650,
+            "checksSelf": 4
+          },
+          {
+            "matSelf": 700,
+            "matOpp": 1650,
+            "checksSelf": 5
+          },
+          {
+            "matSelf": 700,
+            "matOpp": 1320,
+            "checksSelf": 5
+          },
+          {
+            "matSelf": 600,
+            "matOpp": 1320,
+            "checksSelf": 5
+          },
+          {
+            "matSelf": 600,
+            "matOpp": 1320,
+            "checksSelf": 5
+          },
+          {
+            "matSelf": 600,
+            "matOpp": 1320,
+            "checksSelf": 5
+          },
+          {
+            "matSelf": 600,
+            "matOpp": 1320,
+            "checksSelf": 5
+          },
+          {
+            "matSelf": 600,
+            "matOpp": 820,
+            "checksSelf": 5
+          },
+          {
+            "matSelf": 100,
+            "matOpp": 820,
+            "checksSelf": 5
+          },
+          {
+            "matSelf": 100,
+            "matOpp": 820,
+            "checksSelf": 5
+          },
+          {
+            "matSelf": 100,
+            "matOpp": 820,
+            "checksSelf": 5
+          },
+          {
+            "matSelf": 100,
+            "matOpp": 820,
+            "checksSelf": 5
+          },
+          {
+            "matSelf": 100,
+            "matOpp": 820,
+            "checksSelf": 5
+          },
+          {
+            "matSelf": 100,
+            "matOpp": 820,
+            "checksSelf": 5
+          },
+          {
+            "matSelf": 100,
+            "matOpp": 820,
+            "checksSelf": 5
+          },
+          {
+            "matSelf": 100,
+            "matOpp": 820,
+            "checksSelf": 5
+          },
+          {
+            "matSelf": 100,
+            "matOpp": 820,
+            "checksSelf": 5
+          },
+          {
+            "matSelf": 100,
+            "matOpp": 500,
+            "checksSelf": 5
+          },
+          {
+            "matSelf": 0,
+            "matOpp": 500,
+            "checksSelf": 5
+          },
+          {
+            "matSelf": 0,
+            "matOpp": 500,
+            "checksSelf": 5
+          },
+          {
+            "matSelf": 0,
+            "matOpp": 500,
+            "checksSelf": 5
+          },
+          {
+            "matSelf": 0,
+            "matOpp": 500,
+            "checksSelf": 5
+          },
+          {
+            "matSelf": 0,
+            "matOpp": 500,
+            "checksSelf": 5
+          },
+          {
+            "matSelf": 0,
+            "matOpp": 500,
+            "checksSelf": 5
+          },
+          {
+            "matSelf": 0,
+            "matOpp": 500,
+            "checksSelf": 5
+          },
+          {
+            "matSelf": 0,
+            "matOpp": 500,
+            "checksSelf": 5
+          },
+          {
+            "matSelf": 0,
+            "matOpp": 500,
+            "checksSelf": 5
+          },
+          {
+            "matSelf": 0,
+            "matOpp": 500,
+            "checksSelf": 5
+          },
+          {
+            "matSelf": 0,
+            "matOpp": 500,
+            "checksSelf": 5
+          },
+          {
+            "matSelf": 0,
+            "matOpp": 500,
+            "checksSelf": 5
+          },
+          {
+            "matSelf": 0,
+            "matOpp": 500,
+            "checksSelf": 5
+          },
+          {
+            "matSelf": 0,
+            "matOpp": 500,
+            "checksSelf": 5
+          },
+          {
+            "matSelf": 0,
+            "matOpp": 500,
+            "checksSelf": 5
+          },
+          {
+            "matSelf": 0,
+            "matOpp": 500,
+            "checksSelf": 5
+          },
+          {
+            "matSelf": 0,
+            "matOpp": 500,
+            "checksSelf": 5
+          },
+          {
+            "matSelf": 0,
+            "matOpp": 500,
+            "checksSelf": 5
+          },
+          {
+            "matSelf": 0,
+            "matOpp": 500,
+            "checksSelf": 5
+          },
+          {
+            "matSelf": 0,
+            "matOpp": 500,
+            "checksSelf": 5
+          },
+          {
+            "matSelf": 0,
+            "matOpp": 500,
+            "checksSelf": 5
+          },
+          {
+            "matSelf": 0,
+            "matOpp": 500,
+            "checksSelf": 5
+          },
+          {
+            "matSelf": 0,
+            "matOpp": 500,
+            "checksSelf": 5
+          },
+          {
+            "matSelf": 0,
+            "matOpp": 500,
+            "checksSelf": 5
+          },
+          {
+            "matSelf": 0,
+            "matOpp": 500,
+            "checksSelf": 5
+          },
+          {
+            "matSelf": 0,
+            "matOpp": 500,
+            "checksSelf": 5
+          },
+          {
+            "matSelf": 0,
+            "matOpp": 500,
+            "checksSelf": 5
+          },
+          {
+            "matSelf": 0,
+            "matOpp": 500,
+            "checksSelf": 5
+          },
+          {
+            "matSelf": 0,
+            "matOpp": 500,
+            "checksSelf": 5
+          },
+          {
+            "matSelf": 0,
+            "matOpp": 500,
+            "checksSelf": 5
+          },
+          {
+            "matSelf": 0,
+            "matOpp": 500,
+            "checksSelf": 5
+          },
+          {
+            "matSelf": 0,
+            "matOpp": 500,
+            "checksSelf": 5
+          },
+          {
+            "matSelf": 0,
+            "matOpp": 500,
+            "checksSelf": 5
+          },
+          {
+            "matSelf": 0,
+            "matOpp": 500,
+            "checksSelf": 5
+          },
+          {
+            "matSelf": 0,
+            "matOpp": 500,
+            "checksSelf": 5
+          },
+          {
+            "matSelf": 0,
+            "matOpp": 500,
+            "checksSelf": 5
+          },
+          {
+            "matSelf": 0,
+            "matOpp": 500,
+            "checksSelf": 5
+          },
+          {
+            "matSelf": 0,
+            "matOpp": 500,
+            "checksSelf": 5
+          },
+          {
+            "matSelf": 0,
+            "matOpp": 500,
+            "checksSelf": 5
+          },
+          {
+            "matSelf": 0,
+            "matOpp": 500,
+            "checksSelf": 5
+          },
+          {
+            "matSelf": 0,
+            "matOpp": 500,
+            "checksSelf": 5
+          },
+          {
+            "matSelf": 0,
+            "matOpp": 500,
+            "checksSelf": 5
+          },
+          {
+            "matSelf": 0,
+            "matOpp": 500,
+            "checksSelf": 5
+          },
+          {
+            "matSelf": 0,
+            "matOpp": 500,
+            "checksSelf": 5
+          },
+          {
+            "matSelf": 0,
+            "matOpp": 500,
+            "checksSelf": 5
+          },
+          {
+            "matSelf": 0,
+            "matOpp": 500,
+            "checksSelf": 5
+          },
+          {
+            "matSelf": 0,
+            "matOpp": 500,
+            "checksSelf": 5
+          },
+          {
+            "matSelf": 0,
+            "matOpp": 500,
+            "checksSelf": 5
+          },
+          {
+            "matSelf": 0,
+            "matOpp": 500,
+            "checksSelf": 5
+          },
+          {
+            "matSelf": 0,
+            "matOpp": 500,
+            "checksSelf": 5
+          }
+        ],
+        "planFromCache": true,
+        "planProvider": "kilo",
+        "planModel": "kilo-auto/free",
+        "opponentElo": 800,
+        "opponentEmulated": true,
+        "steerDepth": 14,
+        "steerMultiPV": 5,
+        "elapsedMs": 39645,
+        "pgn": "[Event \"Marionette directive game\"]\n[Site \"marionette-cli\"]\n[Date \"2026.11.17\"]\n[Round \"?\"]\n[White \"Stockfish-19 (Elo 800)\"]\n[Black \"Marionette\"]\n[Result \"1/2-1/2\"]\n[Annotator \"plan: Trade or sacrifice everything except king and queen, then win the K+Q endgame\"]\n\n1. e3 e6 2. Nf3 d5 3. c4 Nf6 4. Be2 c5 5. cxd5 a6 6. Nc3 Be7 7. Qa4+ Qd7 8. dxe6 Qxa4 9. exf7+ Kxf7 10. Nxa4 Nbd7 11. d3 Re8 12. e4 b5 13. Ng5+ Kg8 14. Nc3 h6 15. Ne6 Bd6 16. O-O b4 17. Nd1 Rxe6 18. f3 a5 19. Be3 Ba6 20. f4 g5 21. fxg5 Bxh2+ 22. Kxh2 Bxd3 23. Bxd3 Ne5 24. Be2 Nfd7 25. gxh6 Kh8 26. Bf4 c4 27. g4 Rf8 28. g5 c3 29. Kg1 cxb2 30. Rb1 Rg8 31. h7 Kxh7 32. Rf2 Nc5 33. Nxb2 Nxe4 34. Rh2+ Rh6 35. Rxh6+ Kg7 36. Rf1 Nxg5 37. Rh2 Ngf3+ 38. Bxf3 Nxf3+ 39. Rxf3 Kf6+ 40. Kh1 Ke6 41. Bh6 Rd8 42. Bc1 Rd6 43. a3 Kd7 44. Re3 bxa3 45. Rh7+ Kc6 46. Nd3 a2 47. Ne5+ Kb5 48. Rb3+ Ka4 49. Rb2 Rd1+ 50. Kh2 Rxc1 51. Rxa2+ Kb5 52. Nd7 Rc7 53. Rg2 Kb4 54. Rg3 Rc3 55. Rh5 Rxg3 56. Kxg3 a4 57. Rh7 a3 58. Rh8 a2 59. Rh1 Kb3 60. Ne5 Kc2 61. Kf4 Kb2 62. Nc4+ Kb3 63. Nb6 Kc2 64. Na4 Kb3 65. Ra1 Kxa4 66. Rxa2+ Kb3 67. Ra8 Kc4 68. Kg3 Kd4 69. Kg4 Kc4 70. Rb8 Kd4 71. Rb3 Ke4 72. Kg5 Kd5 73. Rb1 Ke4 74. Rb6 Kd3 75. Rb7 Ke3 76. Rc7 Kd3 77. Rc1 Kd2 78. Rc6 Kd3 79. Re6 Kc4 80. Re7 Kc3 81. Kh5 Kc4 82. Kh6 Kc5 83. Ra7 Kd4 84. Re7 Kd3 85. Re1 Kc4 86. Rh1 Kd3 87. Kg5 Ke4 88. Rh3 Ke5 89. Rf3 Ke4 90. Kg4 Ke5 91. Rf1 Ke4 92. Ra1 Ke3 93. Rh1 Kd3 94. Rh7 Ke4 95. Rd7 Ke5 96. Ra7 Kd5 97. Ra5+ Ke4 98. Ra4+ Ke3 99. Rc4 Kd3 100. Rc6 Ke4 101. Rd6 Ke5 102. Rg6 Ke4 103. Kg3 Ke3 104. Re6+ Kd4 105. Rf6 Ke4 106. Rf1 Kd5 107. Rf4 Kc5 108. Kh2 Kd5 109. Rh4 Kc5 110. Kh3 Kd5 111. Kh2 Kc5 112. Re4 Kd6 113. Re8 Kd5 114. Re2 Kd4 115. Rd2+ Kc3 116. Rd1 1/2-1/2",
+        "notes": [
+          "opponent Elo 800 is below the native UCI_Elo floor (1320): emulated with Skill Level 0, depth cap 6, eval-weighted move choice",
+          "replan at ply 80 was deterministic (offline mode): dropped milestone 'reduce_to_kq' (milestone reduce_to_kq exceeded its move budget (80 plies)); dropped constraint 'no_extra_pieces' (was gated on dropped milestone 'reduce_to_kq')",
+          "fallback engaged at ply 105 (deterministic replan impossible: milestone deliver_mate stalled: no partial progress for ~25 plies): best toward terminal win",
+          "1 milestone(s) incomplete at game end"
+        ]
+      },
+      "judge": {
+        "looksTrying": 0.55,
+        "natural": 0.8,
+        "plausibleLoss": 0.65,
+        "bully": 0.5388888888888889,
+        "score": 6.347222222222221,
+        "reasons": [
+          "ACPL 1, 3 blunder(s) >= 300cp, max drop 595cp",
+          "naturalness inputs: ACPL band 30-250, blunder spread, length 231 plies",
+          "no loss on the board caps plausibleLoss",
+          "material lead max 700cp (early ~-440cp), 5 checks given, 231 plies"
+        ]
+      }
+    },
+    {
+      "id": "D6",
+      "elo": 800,
+      "gameIdx": 6,
+      "error": null,
+      "report": {
+        "directive": "Win with only a queen and king left.",
+        "selfColor": "w",
+        "result": "1-0",
+        "endReason": "checkmate",
+        "terminalMet": true,
+        "plies": 99,
+        "moveNumber": 50,
+        "milestones": [
+          {
+            "id": "reduce_to_kq",
+            "description": "Reduce own material to exactly king + queen",
+            "completion": "piece_count(self, queen) == 1 && piece_count(self, pawn) == 0 && non_pawn_count(self) == 1",
+            "tolerance": "loose",
+            "weight": 5,
+            "completed": false,
+            "bestPartial": 0.75,
+            "droppedAtPly": 80,
+            "dropReason": "milestone reduce_to_kq exceeded its move budget (80 plies)",
+            "trueAtEnd": false
+          },
+          {
+            "id": "deliver_mate",
+            "description": "Deliver checkmate with king and queen",
+            "completion": "is_checkmate() && winner() == self",
+            "tolerance": "tight",
+            "weight": 4,
+            "completed": true,
+            "completedAtPly": 99,
+            "bestPartial": 1,
+            "trueAtEnd": true
+          }
+        ],
+        "finalPositionTrue": [
+          "deliver_mate"
+        ],
+        "violations": [],
+        "replans": [
+          {
+            "atPly": 80,
+            "reason": "milestone reduce_to_kq exceeded its move budget (80 plies)",
+            "provider": "deterministic",
+            "model": "rule-based"
+          }
+        ],
+        "fallbackEngaged": "secure_terminal",
+        "acplSelf": 0.6308333333333334,
+        "steeredMoves": 48,
+        "marionetteMoves": 50,
+        "evalTrail": [
+          36,
+          16,
+          74,
+          55,
+          63,
+          175,
+          440,
+          632,
+          676,
+          735,
+          379,
+          632,
+          795,
+          -284,
+          -365,
+          -370,
+          -314,
+          -292,
+          -705,
+          -252,
+          -265,
+          -286,
+          -336,
+          -347,
+          -322,
+          -342,
+          -240,
+          -279,
+          -315,
+          -269,
+          -282,
+          -286,
+          4,
+          4,
+          0,
+          -29,
+          -174,
+          -332,
+          -316,
+          -94,
+          -57,
+          -26,
+          827,
+          1016,
+          1638,
+          9750,
+          9750,
+          9850,
+          null,
+          null
+        ],
+        "snapshots": [
+          {
+            "matSelf": 4000,
+            "matOpp": 4000,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 4000,
+            "matOpp": 4000,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 4000,
+            "matOpp": 3900,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 3900,
+            "matOpp": 3900,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 3800,
+            "matOpp": 3800,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 3800,
+            "matOpp": 3800,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 3800,
+            "matOpp": 3800,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 3800,
+            "matOpp": 3800,
+            "checksSelf": 1
+          },
+          {
+            "matSelf": 3800,
+            "matOpp": 3800,
+            "checksSelf": 2
+          },
+          {
+            "matSelf": 3800,
+            "matOpp": 3700,
+            "checksSelf": 3
+          },
+          {
+            "matSelf": 3800,
+            "matOpp": 3700,
+            "checksSelf": 3
+          },
+          {
+            "matSelf": 3800,
+            "matOpp": 3700,
+            "checksSelf": 3
+          },
+          {
+            "matSelf": 3800,
+            "matOpp": 3700,
+            "checksSelf": 4
+          },
+          {
+            "matSelf": 3800,
+            "matOpp": 3700,
+            "checksSelf": 4
+          },
+          {
+            "matSelf": 3480,
+            "matOpp": 3700,
+            "checksSelf": 4
+          },
+          {
+            "matSelf": 3480,
+            "matOpp": 3700,
+            "checksSelf": 4
+          },
+          {
+            "matSelf": 3480,
+            "matOpp": 3700,
+            "checksSelf": 4
+          },
+          {
+            "matSelf": 3480,
+            "matOpp": 3700,
+            "checksSelf": 4
+          },
+          {
+            "matSelf": 2980,
+            "matOpp": 3200,
+            "checksSelf": 4
+          },
+          {
+            "matSelf": 2980,
+            "matOpp": 3200,
+            "checksSelf": 4
+          },
+          {
+            "matSelf": 2980,
+            "matOpp": 3200,
+            "checksSelf": 4
+          },
+          {
+            "matSelf": 2980,
+            "matOpp": 3200,
+            "checksSelf": 4
+          },
+          {
+            "matSelf": 2880,
+            "matOpp": 3200,
+            "checksSelf": 4
+          },
+          {
+            "matSelf": 2880,
+            "matOpp": 3200,
+            "checksSelf": 4
+          },
+          {
+            "matSelf": 2880,
+            "matOpp": 3200,
+            "checksSelf": 4
+          },
+          {
+            "matSelf": 2780,
+            "matOpp": 3100,
+            "checksSelf": 4
+          },
+          {
+            "matSelf": 2780,
+            "matOpp": 3100,
+            "checksSelf": 4
+          },
+          {
+            "matSelf": 2780,
+            "matOpp": 3000,
+            "checksSelf": 4
+          },
+          {
+            "matSelf": 2680,
+            "matOpp": 3000,
+            "checksSelf": 4
+          },
+          {
+            "matSelf": 2680,
+            "matOpp": 3000,
+            "checksSelf": 4
+          },
+          {
+            "matSelf": 2680,
+            "matOpp": 2900,
+            "checksSelf": 4
+          },
+          {
+            "matSelf": 2680,
+            "matOpp": 2570,
+            "checksSelf": 4
+          },
+          {
+            "matSelf": 2580,
+            "matOpp": 2240,
+            "checksSelf": 4
+          },
+          {
+            "matSelf": 2250,
+            "matOpp": 2240,
+            "checksSelf": 5
+          },
+          {
+            "matSelf": 2250,
+            "matOpp": 2240,
+            "checksSelf": 5
+          },
+          {
+            "matSelf": 2250,
+            "matOpp": 2240,
+            "checksSelf": 5
+          },
+          {
+            "matSelf": 2250,
+            "matOpp": 2240,
+            "checksSelf": 5
+          },
+          {
+            "matSelf": 2250,
+            "matOpp": 2240,
+            "checksSelf": 5
+          },
+          {
+            "matSelf": 2250,
+            "matOpp": 2240,
+            "checksSelf": 5
+          },
+          {
+            "matSelf": 1920,
+            "matOpp": 1920,
+            "checksSelf": 5
+          },
+          {
+            "matSelf": 1920,
+            "matOpp": 1920,
+            "checksSelf": 5
+          },
+          {
+            "matSelf": 1920,
+            "matOpp": 1920,
+            "checksSelf": 5
+          },
+          {
+            "matSelf": 1920,
+            "matOpp": 1920,
+            "checksSelf": 6
+          },
+          {
+            "matSelf": 1920,
+            "matOpp": 1020,
+            "checksSelf": 6
+          },
+          {
+            "matSelf": 1920,
+            "matOpp": 920,
+            "checksSelf": 6
+          },
+          {
+            "matSelf": 1920,
+            "matOpp": 600,
+            "checksSelf": 6
+          },
+          {
+            "matSelf": 1920,
+            "matOpp": 600,
+            "checksSelf": 6
+          },
+          {
+            "matSelf": 1820,
+            "matOpp": 600,
+            "checksSelf": 7
+          },
+          {
+            "matSelf": 1820,
+            "matOpp": 600,
+            "checksSelf": 8
+          },
+          {
+            "matSelf": 1820,
+            "matOpp": 600,
+            "checksSelf": 9
+          }
+        ],
+        "planFromCache": true,
+        "planProvider": "kilo",
+        "planModel": "kilo-auto/free",
+        "opponentElo": 800,
+        "opponentEmulated": true,
+        "steerDepth": 14,
+        "steerMultiPV": 5,
+        "elapsedMs": 50008,
+        "pgn": "[Event \"Marionette directive game\"]\n[Site \"marionette-cli\"]\n[Date \"2026.11.17\"]\n[Round \"?\"]\n[White \"Marionette\"]\n[Black \"Stockfish-19 (Elo 800)\"]\n[Result \"1-0\"]\n[Annotator \"plan: Trade or sacrifice everything except king and queen, then win the K+Q endgame\"]\n\n1. e4 c5 2. d4 d5 3. exd5 cxd4 4. Nf3 Qxd5 5. Qxd4 Qf5 6. Na3 e6 7. Nb5 Nc6 8. Nc7+ Ke7 9. Qh4+ g5 10. Bxg5+ f6 11. O-O-O Bd7 12. Qg3 Rc8 13. Qd6+ Kf7 14. Qd2 Rxc7 15. Bc4 Bc8 16. Kb1 Qg4 17. Bb3 Rd7 18. Qe2 Rxd1+ 19. Qxd1 h5 20. h3 Qb4 21. Bd2 Qc5 22. Nh4 Qxf2 23. Nf3 Ke8 24. g4 Rh7 25. Ba4 hxg4 26. hxg4 Rd7 27. g5 Bg7 28. gxf6 Bxf6 29. Bb3 Nge7 30. Rf1 Qg2 31. Bxe6 Rd6 32. Bxc8 Bxb2 33. Kxb2 Nxc8 34. Qe1+ Kd7 35. Bb4 Qg7+ 36. Ka3 Re6 37. Qc1 Nd6 38. c3 Nc4+ 39. Kb3 Nxb4 40. Kxc4 Re4+ 41. Kb3 Qf7+ 42. c4 b5 43. Ne5+ Ke8 44. Nxf7 Na6 45. cxb5 Nc5+ 46. Qxc5 Rb4+ 47. Kc2 Rxb5 48. Qc8+ Ke7 49. Qd8+ Ke6 50. Qd6# 1-0",
+        "notes": [
+          "opponent Elo 800 is below the native UCI_Elo floor (1320): emulated with Skill Level 0, depth cap 6, eval-weighted move choice",
+          "replan at ply 80 was deterministic (offline mode): dropped milestone 'reduce_to_kq' (milestone reduce_to_kq exceeded its move budget (80 plies)); dropped constraint 'no_extra_pieces' (was gated on dropped milestone 'reduce_to_kq')",
+          "fallback engaged at ply 96 (deterministic replan impossible: milestone deliver_mate stalled: no partial progress for ~16 plies): best toward terminal win"
+        ]
+      },
+      "judge": {
+        "looksTrying": 0.55,
+        "natural": 0.8,
+        "plausibleLoss": 0.5,
+        "bully": 0.97,
+        "score": 7.050000000000001,
+        "reasons": [
+          "ACPL 1, 3 blunder(s) >= 300cp, max drop 1079cp",
+          "naturalness inputs: ACPL band 30-250, blunder spread, length 99 plies",
+          "no loss on the board caps plausibleLoss",
+          "material lead max 1320cp (early ~100cp), 9 checks given, 99 plies"
+        ]
+      }
+    },
+    {
+      "id": "D6",
+      "elo": 800,
+      "gameIdx": 7,
+      "error": null,
+      "report": {
+        "directive": "Win with only a queen and king left.",
+        "selfColor": "b",
+        "result": "0-1",
+        "endReason": "checkmate",
+        "terminalMet": true,
+        "plies": 94,
+        "moveNumber": 48,
+        "milestones": [
+          {
+            "id": "reduce_to_kq",
+            "description": "Reduce own material to exactly king + queen",
+            "completion": "piece_count(self, queen) == 1 && piece_count(self, pawn) == 0 && non_pawn_count(self) == 1",
+            "tolerance": "loose",
+            "weight": 5,
+            "completed": false,
+            "bestPartial": 0.4,
+            "droppedAtPly": 80,
+            "dropReason": "milestone reduce_to_kq exceeded its move budget (80 plies)",
+            "trueAtEnd": false
+          },
+          {
+            "id": "deliver_mate",
+            "description": "Deliver checkmate with king and queen",
+            "completion": "is_checkmate() && winner() == self",
+            "tolerance": "tight",
+            "weight": 4,
+            "completed": true,
+            "completedAtPly": 94,
+            "bestPartial": 1,
+            "trueAtEnd": true
+          }
+        ],
+        "finalPositionTrue": [
+          "deliver_mate"
+        ],
+        "violations": [],
+        "replans": [
+          {
+            "atPly": 80,
+            "reason": "milestone reduce_to_kq exceeded its move budget (80 plies)",
+            "provider": "deterministic",
+            "model": "rule-based"
+          }
+        ],
+        "fallbackEngaged": null,
+        "acplSelf": 0.8014893617021278,
+        "steeredMoves": 47,
+        "marionetteMoves": 47,
+        "evalTrail": [
+          -29,
+          -69,
+          -90,
+          -54,
+          72,
+          128,
+          575,
+          279,
+          86,
+          129,
+          202,
+          171,
+          226,
+          274,
+          304,
+          457,
+          638,
+          1031,
+          1184,
+          1201,
+          1024,
+          140,
+          137,
+          812,
+          982,
+          931,
+          1026,
+          1137,
+          1210,
+          1156,
+          1481,
+          9700,
+          9800,
+          9800,
+          9850,
+          9800,
+          9850,
+          9850,
+          9850,
+          9850,
+          9800,
+          9800,
+          9850,
+          9800,
+          9850,
+          9900,
+          9950
+        ],
+        "snapshots": [
+          {
+            "matSelf": 4000,
+            "matOpp": 4000,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 4000,
+            "matOpp": 4000,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 3900,
+            "matOpp": 4000,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 3900,
+            "matOpp": 4000,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 3900,
+            "matOpp": 3670,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 3900,
+            "matOpp": 3670,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 3900,
+            "matOpp": 3670,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 3900,
+            "matOpp": 3570,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 3580,
+            "matOpp": 3570,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 3580,
+            "matOpp": 3570,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 3580,
+            "matOpp": 3570,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 3580,
+            "matOpp": 3570,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 3250,
+            "matOpp": 3250,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 3250,
+            "matOpp": 3250,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 3250,
+            "matOpp": 3250,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 3150,
+            "matOpp": 3250,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 3150,
+            "matOpp": 3250,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 3150,
+            "matOpp": 3250,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 3150,
+            "matOpp": 2920,
+            "checksSelf": 1
+          },
+          {
+            "matSelf": 3150,
+            "matOpp": 2920,
+            "checksSelf": 1
+          },
+          {
+            "matSelf": 2650,
+            "matOpp": 2920,
+            "checksSelf": 2
+          },
+          {
+            "matSelf": 2320,
+            "matOpp": 2820,
+            "checksSelf": 2
+          },
+          {
+            "matSelf": 1820,
+            "matOpp": 1920,
+            "checksSelf": 2
+          },
+          {
+            "matSelf": 1820,
+            "matOpp": 1820,
+            "checksSelf": 3
+          },
+          {
+            "matSelf": 1820,
+            "matOpp": 1820,
+            "checksSelf": 4
+          },
+          {
+            "matSelf": 1820,
+            "matOpp": 1320,
+            "checksSelf": 4
+          },
+          {
+            "matSelf": 1820,
+            "matOpp": 1000,
+            "checksSelf": 5
+          },
+          {
+            "matSelf": 1500,
+            "matOpp": 900,
+            "checksSelf": 5
+          },
+          {
+            "matSelf": 1500,
+            "matOpp": 900,
+            "checksSelf": 5
+          },
+          {
+            "matSelf": 1500,
+            "matOpp": 900,
+            "checksSelf": 5
+          },
+          {
+            "matSelf": 1500,
+            "matOpp": 900,
+            "checksSelf": 6
+          },
+          {
+            "matSelf": 1500,
+            "matOpp": 400,
+            "checksSelf": 6
+          },
+          {
+            "matSelf": 1500,
+            "matOpp": 400,
+            "checksSelf": 6
+          },
+          {
+            "matSelf": 1500,
+            "matOpp": 400,
+            "checksSelf": 6
+          },
+          {
+            "matSelf": 1500,
+            "matOpp": 400,
+            "checksSelf": 6
+          },
+          {
+            "matSelf": 1500,
+            "matOpp": 300,
+            "checksSelf": 6
+          },
+          {
+            "matSelf": 1500,
+            "matOpp": 300,
+            "checksSelf": 6
+          },
+          {
+            "matSelf": 1500,
+            "matOpp": 300,
+            "checksSelf": 6
+          },
+          {
+            "matSelf": 1500,
+            "matOpp": 300,
+            "checksSelf": 6
+          },
+          {
+            "matSelf": 1500,
+            "matOpp": 300,
+            "checksSelf": 6
+          },
+          {
+            "matSelf": 1400,
+            "matOpp": 300,
+            "checksSelf": 7
+          },
+          {
+            "matSelf": 1400,
+            "matOpp": 300,
+            "checksSelf": 8
+          },
+          {
+            "matSelf": 1400,
+            "matOpp": 200,
+            "checksSelf": 9
+          },
+          {
+            "matSelf": 1400,
+            "matOpp": 200,
+            "checksSelf": 10
+          },
+          {
+            "matSelf": 1400,
+            "matOpp": 200,
+            "checksSelf": 11
+          },
+          {
+            "matSelf": 2200,
+            "matOpp": 200,
+            "checksSelf": 11
+          },
+          {
+            "matSelf": 2100,
+            "matOpp": 200,
+            "checksSelf": 12
+          }
+        ],
+        "planFromCache": true,
+        "planProvider": "kilo",
+        "planModel": "kilo-auto/free",
+        "opponentElo": 800,
+        "opponentEmulated": true,
+        "steerDepth": 14,
+        "steerMultiPV": 5,
+        "elapsedMs": 28802,
+        "pgn": "[Event \"Marionette directive game\"]\n[Site \"marionette-cli\"]\n[Date \"2026.11.17\"]\n[Round \"?\"]\n[White \"Stockfish-19 (Elo 800)\"]\n[Black \"Marionette\"]\n[Result \"0-1\"]\n[Annotator \"plan: Trade or sacrifice everything except king and queen, then win the K+Q endgame\"]\n\n1. e4 c5 2. d4 d5 3. dxc5 Nf6 4. Bb5+ Bd7 5. e5 Bxb5 6. Na3 Ne4 7. Qd4 a6 8. f3 Nxc5 9. Qxc5 Qd7 10. Qb6 e6 11. b3 Nc6 12. Kd1 h6 13. Nxb5 axb5 14. Bb2 Ba3 15. Kc1 O-O 16. Qxb5 Rfc8 17. f4 Qc7 18. c4 Nd4 19. Qa4 Bxb2+ 20. Kd2 Qc5 21. Qxa8 Bc3+ 22. Kxc3 dxc4 23. Qxc8+ Qxc8 24. Rd1 cxb3+ 25. Kd3 Qc2+ 26. Ke3 Qxd1 27. Ne2 Qxe2+ 28. Kxd4 Qxg2 29. a4 b2 30. Rb1 Qc2 31. Re1 Qd2+ 32. Kc5 Qxe1 33. Kd6 Qa5 34. Kd7 Qc5 35. Kd8 b5 36. Kd7 bxa4 37. Kd8 Qa7 38. Kc8 g5 39. h3 g4 40. f5 f6 41. fxe6 Qc5+ 42. Kd8 Qb6+ 43. Ke8 Qxe6+ 44. Kd8 Qd5+ 45. Ke8 Qe6+ 46. Kd8 b1=Q 47. hxg4 Qbb6# 0-1",
+        "notes": [
+          "opponent Elo 800 is below the native UCI_Elo floor (1320): emulated with Skill Level 0, depth cap 6, eval-weighted move choice",
+          "replan at ply 80 was deterministic (offline mode): dropped milestone 'reduce_to_kq' (milestone reduce_to_kq exceeded its move budget (80 plies)); dropped constraint 'no_extra_pieces' (was gated on dropped milestone 'reduce_to_kq')"
+        ]
+      },
+      "judge": {
+        "looksTrying": 0.85,
+        "natural": 0.8,
+        "plausibleLoss": 0.5,
+        "bully": 1,
+        "score": 7.875,
+        "reasons": [
+          "ACPL 1, 1 blunder(s) >= 300cp, max drop 884cp",
+          "naturalness inputs: ACPL band 30-250, blunder spread, length 94 plies",
+          "no loss on the board caps plausibleLoss",
+          "material lead max 2000cp (early ~10cp), 12 checks given, 94 plies"
+        ]
+      }
+    },
+    {
+      "id": "D6",
+      "elo": 800,
+      "gameIdx": 8,
+      "error": null,
+      "report": {
+        "directive": "Win with only a queen and king left.",
+        "selfColor": "w",
+        "result": "1-0",
+        "endReason": "checkmate",
+        "terminalMet": true,
+        "plies": 185,
+        "moveNumber": 93,
+        "milestones": [
+          {
+            "id": "reduce_to_kq",
+            "description": "Reduce own material to exactly king + queen",
+            "completion": "piece_count(self, queen) == 1 && piece_count(self, pawn) == 0 && non_pawn_count(self) == 1",
+            "tolerance": "loose",
+            "weight": 5,
+            "completed": false,
+            "bestPartial": 0.5,
+            "droppedAtPly": 80,
+            "dropReason": "milestone reduce_to_kq exceeded its move budget (80 plies)",
+            "trueAtEnd": true
+          },
+          {
+            "id": "deliver_mate",
+            "description": "Deliver checkmate with king and queen",
+            "completion": "is_checkmate() && winner() == self",
+            "tolerance": "tight",
+            "weight": 4,
+            "completed": true,
+            "completedAtPly": 185,
+            "bestPartial": 1,
+            "trueAtEnd": true
+          }
+        ],
+        "finalPositionTrue": [
+          "deliver_mate",
+          "reduce_to_kq"
+        ],
+        "violations": [],
+        "replans": [
+          {
+            "atPly": 80,
+            "reason": "milestone reduce_to_kq exceeded its move budget (80 plies)",
+            "provider": "deterministic",
+            "model": "rule-based"
+          }
+        ],
+        "fallbackEngaged": "secure_terminal",
+        "acplSelf": 0.5234693877551021,
+        "steeredMoves": 49,
+        "marionetteMoves": 93,
+        "evalTrail": [
+          36,
+          36,
+          17,
+          172,
+          180,
+          178,
+          164,
+          183,
+          203,
+          213,
+          3,
+          -418,
+          -694,
+          -821,
+          -890,
+          -914,
+          -942,
+          -909,
+          -832,
+          -848,
+          -779,
+          -834,
+          -910,
+          -922,
+          -861,
+          -888,
+          -949,
+          -898,
+          -849,
+          -839,
+          -870,
+          -870,
+          -828,
+          -785,
+          -761,
+          -737,
+          -774,
+          -733,
+          -851,
+          -958,
+          -868,
+          -799,
+          -805,
+          -831,
+          -869,
+          -872,
+          -888,
+          -873,
+          -854,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        "snapshots": [
+          {
+            "matSelf": 4000,
+            "matOpp": 4000,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 4000,
+            "matOpp": 4000,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 4000,
+            "matOpp": 3900,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 4000,
+            "matOpp": 3800,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 3900,
+            "matOpp": 3800,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 3900,
+            "matOpp": 3800,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 3900,
+            "matOpp": 3800,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 3900,
+            "matOpp": 3800,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 3900,
+            "matOpp": 3800,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 3900,
+            "matOpp": 3800,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 3570,
+            "matOpp": 3800,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 3470,
+            "matOpp": 3800,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 2970,
+            "matOpp": 3800,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 2650,
+            "matOpp": 3480,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 2650,
+            "matOpp": 3480,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 2650,
+            "matOpp": 3480,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 2320,
+            "matOpp": 3150,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 2320,
+            "matOpp": 3150,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 2320,
+            "matOpp": 3150,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 2320,
+            "matOpp": 2820,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 2320,
+            "matOpp": 2820,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 2220,
+            "matOpp": 2820,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 2220,
+            "matOpp": 2820,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 2220,
+            "matOpp": 2820,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 2220,
+            "matOpp": 2820,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 2220,
+            "matOpp": 2820,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 2220,
+            "matOpp": 2820,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 2220,
+            "matOpp": 2820,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 2220,
+            "matOpp": 2720,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 2220,
+            "matOpp": 2720,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 2220,
+            "matOpp": 2720,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 2220,
+            "matOpp": 2720,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 2220,
+            "matOpp": 2220,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 1720,
+            "matOpp": 2220,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 1720,
+            "matOpp": 2220,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 1720,
+            "matOpp": 2220,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 1720,
+            "matOpp": 2220,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 1720,
+            "matOpp": 2220,
+            "checksSelf": 1
+          },
+          {
+            "matSelf": 1720,
+            "matOpp": 2220,
+            "checksSelf": 1
+          },
+          {
+            "matSelf": 1400,
+            "matOpp": 2220,
+            "checksSelf": 1
+          },
+          {
+            "matSelf": 1400,
+            "matOpp": 1320,
+            "checksSelf": 2
+          },
+          {
+            "matSelf": 500,
+            "matOpp": 1320,
+            "checksSelf": 2
+          },
+          {
+            "matSelf": 500,
+            "matOpp": 1320,
+            "checksSelf": 2
+          },
+          {
+            "matSelf": 500,
+            "matOpp": 1320,
+            "checksSelf": 2
+          },
+          {
+            "matSelf": 400,
+            "matOpp": 1320,
+            "checksSelf": 2
+          },
+          {
+            "matSelf": 400,
+            "matOpp": 1320,
+            "checksSelf": 2
+          },
+          {
+            "matSelf": 400,
+            "matOpp": 1320,
+            "checksSelf": 2
+          },
+          {
+            "matSelf": 400,
+            "matOpp": 1320,
+            "checksSelf": 2
+          },
+          {
+            "matSelf": 400,
+            "matOpp": 1320,
+            "checksSelf": 2
+          },
+          {
+            "matSelf": 400,
+            "matOpp": 1320,
+            "checksSelf": 2
+          },
+          {
+            "matSelf": 400,
+            "matOpp": 1320,
+            "checksSelf": 2
+          },
+          {
+            "matSelf": 400,
+            "matOpp": 1220,
+            "checksSelf": 2
+          },
+          {
+            "matSelf": 400,
+            "matOpp": 1120,
+            "checksSelf": 2
+          },
+          {
+            "matSelf": 400,
+            "matOpp": 1120,
+            "checksSelf": 2
+          },
+          {
+            "matSelf": 400,
+            "matOpp": 1120,
+            "checksSelf": 2
+          },
+          {
+            "matSelf": 400,
+            "matOpp": 1120,
+            "checksSelf": 2
+          },
+          {
+            "matSelf": 400,
+            "matOpp": 1120,
+            "checksSelf": 2
+          },
+          {
+            "matSelf": 400,
+            "matOpp": 1120,
+            "checksSelf": 2
+          },
+          {
+            "matSelf": 400,
+            "matOpp": 1120,
+            "checksSelf": 3
+          },
+          {
+            "matSelf": 400,
+            "matOpp": 1120,
+            "checksSelf": 3
+          },
+          {
+            "matSelf": 400,
+            "matOpp": 1120,
+            "checksSelf": 3
+          },
+          {
+            "matSelf": 400,
+            "matOpp": 1020,
+            "checksSelf": 3
+          },
+          {
+            "matSelf": 400,
+            "matOpp": 1020,
+            "checksSelf": 3
+          },
+          {
+            "matSelf": 400,
+            "matOpp": 1020,
+            "checksSelf": 3
+          },
+          {
+            "matSelf": 400,
+            "matOpp": 1020,
+            "checksSelf": 3
+          },
+          {
+            "matSelf": 400,
+            "matOpp": 700,
+            "checksSelf": 3
+          },
+          {
+            "matSelf": 400,
+            "matOpp": 700,
+            "checksSelf": 3
+          },
+          {
+            "matSelf": 400,
+            "matOpp": 700,
+            "checksSelf": 3
+          },
+          {
+            "matSelf": 400,
+            "matOpp": 700,
+            "checksSelf": 3
+          },
+          {
+            "matSelf": 400,
+            "matOpp": 700,
+            "checksSelf": 3
+          },
+          {
+            "matSelf": 400,
+            "matOpp": 700,
+            "checksSelf": 3
+          },
+          {
+            "matSelf": 400,
+            "matOpp": 700,
+            "checksSelf": 3
+          },
+          {
+            "matSelf": 400,
+            "matOpp": 700,
+            "checksSelf": 3
+          },
+          {
+            "matSelf": 400,
+            "matOpp": 700,
+            "checksSelf": 3
+          },
+          {
+            "matSelf": 400,
+            "matOpp": 700,
+            "checksSelf": 3
+          },
+          {
+            "matSelf": 400,
+            "matOpp": 600,
+            "checksSelf": 3
+          },
+          {
+            "matSelf": 300,
+            "matOpp": 500,
+            "checksSelf": 3
+          },
+          {
+            "matSelf": 300,
+            "matOpp": 500,
+            "checksSelf": 3
+          },
+          {
+            "matSelf": 300,
+            "matOpp": 500,
+            "checksSelf": 3
+          },
+          {
+            "matSelf": 300,
+            "matOpp": 500,
+            "checksSelf": 3
+          },
+          {
+            "matSelf": 300,
+            "matOpp": 500,
+            "checksSelf": 3
+          },
+          {
+            "matSelf": 300,
+            "matOpp": 500,
+            "checksSelf": 3
+          },
+          {
+            "matSelf": 300,
+            "matOpp": 500,
+            "checksSelf": 3
+          },
+          {
+            "matSelf": 300,
+            "matOpp": 500,
+            "checksSelf": 3
+          },
+          {
+            "matSelf": 1000,
+            "matOpp": 500,
+            "checksSelf": 3
+          },
+          {
+            "matSelf": 1000,
+            "matOpp": 500,
+            "checksSelf": 3
+          },
+          {
+            "matSelf": 900,
+            "matOpp": 500,
+            "checksSelf": 4
+          },
+          {
+            "matSelf": 900,
+            "matOpp": 500,
+            "checksSelf": 4
+          },
+          {
+            "matSelf": 900,
+            "matOpp": 500,
+            "checksSelf": 5
+          },
+          {
+            "matSelf": 900,
+            "matOpp": 0,
+            "checksSelf": 5
+          },
+          {
+            "matSelf": 900,
+            "matOpp": 0,
+            "checksSelf": 5
+          },
+          {
+            "matSelf": 900,
+            "matOpp": 0,
+            "checksSelf": 5
+          },
+          {
+            "matSelf": 900,
+            "matOpp": 0,
+            "checksSelf": 6
+          }
+        ],
+        "planFromCache": true,
+        "planProvider": "kilo",
+        "planModel": "kilo-auto/free",
+        "opponentElo": 800,
+        "opponentEmulated": true,
+        "steerDepth": 14,
+        "steerMultiPV": 5,
+        "elapsedMs": 58781,
+        "pgn": "[Event \"Marionette directive game\"]\n[Site \"marionette-cli\"]\n[Date \"2026.11.17\"]\n[Round \"?\"]\n[White \"Marionette\"]\n[Black \"Stockfish-19 (Elo 800)\"]\n[Result \"1-0\"]\n[Annotator \"plan: Trade or sacrifice everything except king and queen, then win the K+Q endgame\"]\n\n1. e4 e6 2. d4 d5 3. exd5 Bd6 4. dxe6 Bxe6 5. c4 Nf6 6. Be2 c6 7. Nc3 Bf5 8. Bd3 Qe7+ 9. Nge2 Qe6 10. O-O Bxd3 11. Nf4 Qxc4 12. Nh5 Bxf1 13. Bf4 Nxh5 14. Qxh5 O-O 15. g3 Bd3 16. Rd1 Bxf4 17. gxf4 Rd8 18. Qh3 Bf1 19. Qe3 h6 20. Rxf1 c5 21. b3 cxd4 22. Rd1 Na6 23. Rd3 Qb4 24. Qe5 Qc5 25. a3 Re8 26. Qd5 Rad8 27. Qc4 Rd6 28. Kg2 Rde6 29. Qxd4 Rg6+ 30. Kf1 Qh5 31. Re3 Rge6 32. Kg2 Qc5 33. Rxe6 fxe6 34. Qd3 Rb8 35. b4 Qc8 36. Ne4 Qc7 37. Qg3 b5 38. Nf6+ Kh8 39. Qg6 gxf6 40. Kf1 Qg7 41. Qxg7+ Kxg7 42. h3 Re8 43. Kg1 h5 44. f5 exf5 45. Kg2 Rg8 46. Kg1 Kh6+ 47. Kf1 Kg7 48. Kg2 Kh7+ 49. Kf3 Kh6 50. Ke3 h4 51. Kf4 Nb8 52. Kxf5 Re8 53. Kxf6 Rd8 54. Ke5 Nc6+ 55. Kf4 a6 56. Ke3 Ne5 57. Ke4 Nf7 58. f4 Kg6 59. f5+ Kg7 60. Kf3 Kh7 61. Kg4 Rd3 62. Kxh4 Nd6 63. Kg4 Ne4 64. Kf4 Nf6 65. Ke5 Rd7 66. Kxf6 Rc7 67. h4 Rc4 68. h5 Rc3 69. Kf7 Re3 70. f6 Rf3 71. Ke7 Kg8 72. h6 Re3+ 73. Kd7 Kf8 74. Kc7 Rc3+ 75. Kb6 Rf3 76. Kxa6 Rxa3+ 77. Kxb5 Rh3 78. Kc5 Ke8 79. b5 Kd8 80. f7 Rh5+ 81. Kc4 Rh4+ 82. Kc5 Ke7 83. b6 Rh2 84. b7 Kxf7 85. b8=Q Rh5+ 86. Kd4 Rxh6 87. Qc7+ Kg8 88. Ke5 Ra6 89. Qc4+ Kh7 90. Qxa6 Kh8 91. Qb7 Kg8 92. Kf6 Kf8 93. Qc8# 1-0",
+        "notes": [
+          "opponent Elo 800 is below the native UCI_Elo floor (1320): emulated with Skill Level 0, depth cap 6, eval-weighted move choice",
+          "replan at ply 80 was deterministic (offline mode): dropped milestone 'reduce_to_kq' (milestone reduce_to_kq exceeded its move budget (80 plies)); dropped constraint 'no_extra_pieces' (was gated on dropped milestone 'reduce_to_kq')",
+          "fallback engaged at ply 97 (deterministic replan impossible: milestone deliver_mate stalled: no partial progress for ~17 plies): best toward terminal win",
+          "dropped milestone 'reduce_to_kq' nevertheless held at game end"
+        ]
+      },
+      "judge": {
+        "looksTrying": 0.85,
+        "natural": 0.8,
+        "plausibleLoss": 0.5,
+        "bully": 0.8799999999999999,
+        "score": 7.574999999999999,
+        "reasons": [
+          "ACPL 1, 1 blunder(s) >= 300cp, max drop 421cp",
+          "naturalness inputs: ACPL band 30-250, blunder spread, length 185 plies",
+          "no loss on the board caps plausibleLoss",
+          "material lead max 900cp (early ~-600cp), 6 checks given, 185 plies"
+        ]
+      }
+    },
+    {
+      "id": "D6",
+      "elo": 800,
+      "gameIdx": 9,
+      "error": null,
+      "report": {
+        "directive": "Win with only a queen and king left.",
+        "selfColor": "b",
+        "result": "1/2-1/2",
+        "endReason": "threefold_repetition",
+        "terminalMet": false,
+        "plies": 103,
+        "moveNumber": 52,
+        "milestones": [
+          {
+            "id": "reduce_to_kq",
+            "description": "Reduce own material to exactly king + queen",
+            "completion": "piece_count(self, queen) == 1 && piece_count(self, pawn) == 0 && non_pawn_count(self) == 1",
+            "tolerance": "loose",
+            "weight": 5,
+            "completed": false,
+            "bestPartial": 0.7,
+            "droppedAtPly": 80,
+            "dropReason": "milestone reduce_to_kq exceeded its move budget (80 plies)",
+            "trueAtEnd": false
+          },
+          {
+            "id": "deliver_mate",
+            "description": "Deliver checkmate with king and queen",
+            "completion": "is_checkmate() && winner() == self",
+            "tolerance": "tight",
+            "weight": 4,
+            "completed": false,
+            "bestPartial": 0,
+            "trueAtEnd": false
+          }
+        ],
+        "finalPositionTrue": [],
+        "violations": [],
+        "replans": [
+          {
+            "atPly": 80,
+            "reason": "milestone reduce_to_kq exceeded its move budget (80 plies)",
+            "provider": "deterministic",
+            "model": "rule-based"
+          }
+        ],
+        "fallbackEngaged": "secure_terminal",
+        "acplSelf": 0.32653061224489793,
+        "steeredMoves": 49,
+        "marionetteMoves": 51,
+        "evalTrail": [
+          -10,
+          -8,
+          -8,
+          -1,
+          1,
+          9,
+          6,
+          26,
+          31,
+          47,
+          12,
+          -10,
+          2,
+          73,
+          82,
+          10,
+          72,
+          84,
+          108,
+          95,
+          70,
+          98,
+          85,
+          148,
+          119,
+          168,
+          72,
+          57,
+          143,
+          -114,
+          -155,
+          -221,
+          -151,
+          -192,
+          -196,
+          -39,
+          35,
+          0,
+          33,
+          73,
+          723,
+          792,
+          822,
+          842,
+          847,
+          862,
+          856,
+          847,
+          855,
+          null,
+          null
+        ],
+        "snapshots": [
+          {
+            "matSelf": 4000,
+            "matOpp": 4000,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 4000,
+            "matOpp": 4000,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 4000,
+            "matOpp": 4000,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 4000,
+            "matOpp": 3900,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 3900,
+            "matOpp": 3900,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 3900,
+            "matOpp": 3900,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 3900,
+            "matOpp": 3900,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 3900,
+            "matOpp": 3900,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 3900,
+            "matOpp": 3900,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 3900,
+            "matOpp": 3900,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 3900,
+            "matOpp": 3800,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 3800,
+            "matOpp": 3800,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 3800,
+            "matOpp": 3470,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 3480,
+            "matOpp": 3470,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 3480,
+            "matOpp": 3370,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 3160,
+            "matOpp": 3370,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 3160,
+            "matOpp": 3050,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 3160,
+            "matOpp": 3050,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 3160,
+            "matOpp": 3050,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 3160,
+            "matOpp": 2550,
+            "checksSelf": 1
+          },
+          {
+            "matSelf": 2660,
+            "matOpp": 2550,
+            "checksSelf": 1
+          },
+          {
+            "matSelf": 2660,
+            "matOpp": 2550,
+            "checksSelf": 1
+          },
+          {
+            "matSelf": 2660,
+            "matOpp": 2550,
+            "checksSelf": 1
+          },
+          {
+            "matSelf": 2660,
+            "matOpp": 2450,
+            "checksSelf": 1
+          },
+          {
+            "matSelf": 2560,
+            "matOpp": 2450,
+            "checksSelf": 1
+          },
+          {
+            "matSelf": 2560,
+            "matOpp": 2450,
+            "checksSelf": 1
+          },
+          {
+            "matSelf": 2560,
+            "matOpp": 2450,
+            "checksSelf": 1
+          },
+          {
+            "matSelf": 2560,
+            "matOpp": 2450,
+            "checksSelf": 1
+          },
+          {
+            "matSelf": 2560,
+            "matOpp": 2450,
+            "checksSelf": 1
+          },
+          {
+            "matSelf": 2230,
+            "matOpp": 1950,
+            "checksSelf": 1
+          },
+          {
+            "matSelf": 1730,
+            "matOpp": 1950,
+            "checksSelf": 1
+          },
+          {
+            "matSelf": 1730,
+            "matOpp": 1950,
+            "checksSelf": 1
+          },
+          {
+            "matSelf": 1730,
+            "matOpp": 1950,
+            "checksSelf": 1
+          },
+          {
+            "matSelf": 1630,
+            "matOpp": 1950,
+            "checksSelf": 2
+          },
+          {
+            "matSelf": 1630,
+            "matOpp": 1950,
+            "checksSelf": 3
+          },
+          {
+            "matSelf": 1630,
+            "matOpp": 1850,
+            "checksSelf": 4
+          },
+          {
+            "matSelf": 1630,
+            "matOpp": 1750,
+            "checksSelf": 5
+          },
+          {
+            "matSelf": 1530,
+            "matOpp": 1750,
+            "checksSelf": 5
+          },
+          {
+            "matSelf": 1530,
+            "matOpp": 1430,
+            "checksSelf": 5
+          },
+          {
+            "matSelf": 1530,
+            "matOpp": 1430,
+            "checksSelf": 5
+          },
+          {
+            "matSelf": 1530,
+            "matOpp": 1430,
+            "checksSelf": 6
+          },
+          {
+            "matSelf": 1530,
+            "matOpp": 1430,
+            "checksSelf": 7
+          },
+          {
+            "matSelf": 1530,
+            "matOpp": 1430,
+            "checksSelf": 8
+          },
+          {
+            "matSelf": 1530,
+            "matOpp": 1430,
+            "checksSelf": 9
+          },
+          {
+            "matSelf": 1530,
+            "matOpp": 1430,
+            "checksSelf": 10
+          },
+          {
+            "matSelf": 1530,
+            "matOpp": 1430,
+            "checksSelf": 11
+          },
+          {
+            "matSelf": 1530,
+            "matOpp": 1430,
+            "checksSelf": 12
+          },
+          {
+            "matSelf": 1530,
+            "matOpp": 1430,
+            "checksSelf": 13
+          },
+          {
+            "matSelf": 1530,
+            "matOpp": 1430,
+            "checksSelf": 14
+          },
+          {
+            "matSelf": 1530,
+            "matOpp": 1430,
+            "checksSelf": 15
+          },
+          {
+            "matSelf": 1530,
+            "matOpp": 1430,
+            "checksSelf": 16
+          }
+        ],
+        "planFromCache": true,
+        "planProvider": "kilo",
+        "planModel": "kilo-auto/free",
+        "opponentElo": 800,
+        "opponentEmulated": true,
+        "steerDepth": 14,
+        "steerMultiPV": 5,
+        "elapsedMs": 54416,
+        "pgn": "[Event \"Marionette directive game\"]\n[Site \"marionette-cli\"]\n[Date \"2026.11.17\"]\n[Round \"?\"]\n[White \"Stockfish-19 (Elo 800)\"]\n[Black \"Marionette\"]\n[Result \"1/2-1/2\"]\n[Annotator \"plan: Trade or sacrifice everything except king and queen, then win the K+Q endgame\"]\n\n1. e3 e6 2. c4 Nf6 3. Nf3 d5 4. Be2 dxc4 5. Bxc4 a6 6. a4 c5 7. b3 Nc6 8. Nc3 b6 9. O-O Bb7 10. Qe2 Qc7 11. d4 cxd4 12. exd4 Na5 13. d5 Nxc4 14. Qxc4 Rc8 15. Bd2 Nxd5 16. Nxd5 Qd6 17. Qh4 Bxd5 18. Bf4 Qd7 19. Rfc1 Be7 20. Qg3 Rxc1+ 21. Rxc1 O-O 22. Rc7 Qd8 23. h3 b5 24. Nd4 bxa4 25. bxa4 Re8 26. Ne2 Bf8 27. Nc3 h5 28. Bg5 Qa8 29. Bf6 Rc8 30. Nxd5 Rxc7 31. Nxc7 Qc6 32. a5 h4 33. Qg5 Qd7 34. Nxa6 Qd1+ 35. Kh2 Qd6+ 36. g3 hxg3+ 37. Kg1 gxf2+ 38. Kxf2 e5 39. Nb8 Qxb8 40. a6 Qb5 41. h4 Bc5+ 42. Ke1 Qa5+ 43. Kd1 Qa4+ 44. Ke1 Qe4+ 45. Kd1 Qd3+ 46. Ke1 Qb1+ 47. Kd2 Qb2+ 48. Kd3 Qd4+ 49. Kc2 Qe4+ 50. Kd1 Qd3+ 51. Ke1 Qe4+ 52. Kd1 1/2-1/2",
+        "notes": [
+          "opponent Elo 800 is below the native UCI_Elo floor (1320): emulated with Skill Level 0, depth cap 6, eval-weighted move choice",
+          "replan at ply 80 was deterministic (offline mode): dropped milestone 'reduce_to_kq' (milestone reduce_to_kq exceeded its move budget (80 plies)); dropped constraint 'no_extra_pieces' (was gated on dropped milestone 'reduce_to_kq')",
+          "fallback engaged at ply 98 (deterministic replan impossible: milestone deliver_mate stalled: no partial progress for ~18 plies): best toward terminal win",
+          "1 milestone(s) incomplete at game end"
+        ]
+      },
+      "judge": {
+        "looksTrying": 1,
+        "natural": 0.7,
+        "plausibleLoss": 0.65,
+        "bully": 0.6388888888888888,
+        "score": 7.472222222222222,
+        "reasons": [
+          "ACPL 0, 0 blunder(s) >= 300cp, max drop 257cp",
+          "naturalness inputs: ACPL band 30-250, blunder spread, length 103 plies",
+          "no loss on the board caps plausibleLoss",
+          "material lead max 610cp (early ~330cp), 16 checks given, 103 plies"
+        ]
+      }
+    }
+  ],
+  "verdicts": [
+    {
+      "id": "D6",
+      "bar": "d6-full",
+      "n": 10,
+      "hits": 0,
+      "rate": 0,
+      "pass": false,
+      "expectedFail": true,
+      "detail": "0/10 games fully completed"
+    }
+  ]
+}
