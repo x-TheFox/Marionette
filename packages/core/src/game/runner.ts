@@ -325,12 +325,8 @@ export async function runDirectiveGame(opts: RunnerOptions): Promise<GameReport>
       const incomplete = compiled.milestones.length - tracker.activeIndex()!;
       notes.push(`${incomplete} milestone(s) incomplete at game end`);
     }
-    // Constraints without afterMilestone are enforced at game end only.
-    for (const c of compiled.constraints) {
-      if (c.spec.afterMilestone == null && evalPredicate(c.violation, finalCtx)) {
-        notes.push(`game-end constraint '${c.spec.id}' violated: ${c.spec.description}`);
-      }
-    }
+    // Un-gated constraints are enforced from the first move (and on this final
+    // pass) by the tracker; nothing extra to check here.
     emit({ kind: 'end', result, reason: endReason });
 
     const pgn = writePgn(game, opts, result, compiled);

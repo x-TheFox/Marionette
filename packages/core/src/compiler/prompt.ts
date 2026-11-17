@@ -23,7 +23,7 @@ PLAN SCHEMA:
 
 SEMANTICS:
 - milestones are ORDERED: m1 must complete before m2 counts. Each completion predicate becomes TRUE at a specific game moment.
-- hardConstraints are VIOLATION conditions: the predicate must stay FALSE once enforced (enforced after its afterMilestone completes, and always at game end). Omit afterMilestone to enforce only at game end.
+- hardConstraints are VIOLATION conditions: the predicate must stay FALSE while enforced. They are HARD FILTERS: any move that would make the predicate TRUE is forbidden. Enforced from the first move when afterMilestone is omitted; from the moment afterMilestone completes otherwise. Use un-gated constraints for things that must NEVER happen (never capture, never promote to a queen, never reach a draw). Do NOT use un-gated constraints for conditions that already hold at the start (they would be violated immediately).
 - terminal.kind: "win" = Marionette must win; "lose" = Marionette must lose; "draw" = any draw; "pattern" = a predicate describing the exact final outcome (e.g. checkmate delivered by a specific piece).
 - terminal.priority: "milestones_first" = finish milestones even at some eval cost; "terminal_first" = secure the result first.
 - tolerance: "loose" when large eval sacrifices are the POINT of the milestone (giving material away, underpromoting); "tight" when winning chances must be protected; "medium" otherwise.
@@ -61,6 +61,7 @@ Examples of valid predicates:
   captured_value(opp) >= 1500 && checks_count(self) >= 8
 
 RULES:
+0. The directive is spoken by the HUMAN USER to Marionette. "me/my/I" refers to the HUMAN (= opp in predicates); "you/your" refers to MARIONETTE (= self). Example: "Force me into winning" means the HUMAN (opp) must win; "give up your pieces" means MARIONETTE (self) sheds pieces.
 1. Every predicate must be a boolean expression using ONLY the functions above. No invented functions, no arithmetic like "+ 1".
 2. The plan must be color-agnostic: use self/opp, never hardcode white/black unless the directive itself names a color.
 3. Prefer state predicates (piece counts, material, eval) over event predicates; they are easier to satisfy and verify.

@@ -27,7 +27,7 @@ export const HardConstraintSchema = z.object({
   description: z.string().min(1),
   /** Violation condition: must stay FALSE while enforced. */
   predicate: z.string().min(1),
-  /** Constraint is enforced once this milestone completes (and at game end). */
+  /** Constraint is enforced once this milestone completes. Omit to enforce from the first move. */
   afterMilestone: z.string().optional(),
 });
 
@@ -60,7 +60,24 @@ export interface CompiledPlan {
   schemaVersion: string;
 }
 
-export const PLAN_SCHEMA_VERSION = '1';
+/**
+ * Constraints currently in force: un-gated ones are enforced from the first
+ * move; gated ones from the moment their afterMilestone completes. Violation
+ * conditions that already hold in the current position are reported here as
+ * enforced-but-already-violated (they cannot be un-violated by move choice,
+ * so the steering layer must not filter on them — that would exclude every
+ * candidate). The tracker records them honestly instead.
+ */
+export function constraintsInForce(
+  compiled: CompiledPlan,
+  completedMilestoneIds: ReadonlySet<string>,
+): { spec: HardConstraint; violation: CompiledPredicate }[] {
+  return compiled.constraints.filter(
+    (c) => c.spec.afterMilestone == null || completedMilestoneIds.has(c.spec.afterMilestone),
+  );
+}
+
+export const PLAN_SCHEMA_VERSION = '2';
 
 export class PlanValidationError extends Error {
   constructor(message: string) {

@@ -2,7 +2,7 @@ import { Chess } from 'chess.js';
 import type { UciEngine, Analysis, PvLine } from '@marionette/uci';
 import { buildContext, evalPredicate, predicatePartial } from '../dsl/index.js';
 import type { GameContext, Side } from '../dsl/types.js';
-import type { CompiledPlan } from '../plan/schema.js';
+import { constraintsInForce, type CompiledPlan } from '../plan/schema.js';
 import { scoreCandidate, lambdaFor } from './scorer.js';
 import { motivatedCandidates, type Candidate } from './candidates.js';
 import type { PlanTracker } from '../game/tracker.js';
@@ -184,12 +184,17 @@ export async function steerMove(opts: SteerOptions): Promise<SteerDecision> {
 
   const bestEvalSelf = Math.max(...evaluated.map((e) => e.evalSelfCp));
 
-  // 4. Enforced constraints (hard filter).
+  // 4. Enforced constraints (hard filter, never a score term). Un-gated
+  // constraints are in force from the first move; gated ones once their
+  // afterMilestone completed. Constraints whose violation condition ALREADY
+  // holds in the current position are skipped for filtering — they cannot be
+  // un-violated by move choice and the tracker has recorded them; filtering
+  // would exclude every candidate and stall the game.
   const completedIds = new Set(
     compiled.milestones.filter((_, i) => tracker.states[i]!.completed).map((m) => m.spec.id),
   );
-  const enforced = compiled.constraints.filter(
-    (c) => c.spec.afterMilestone != null && completedIds.has(c.spec.afterMilestone),
+  const enforced = constraintsInForce(compiled, completedIds).filter(
+    (c) => !evalPredicate(c.violation, ctxNow),
   );
 
   // 5. Score with PV lookahead.

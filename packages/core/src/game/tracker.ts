@@ -1,4 +1,5 @@
 import type { CompiledPlan } from '../plan/schema.js';
+import { constraintsInForce } from '../plan/schema.js';
 import { evalPredicate, predicatePartial } from '../dsl/index.js';
 import type { GameContext, Side } from '../dsl/types.js';
 import type { ProgressReport } from '../compiler/prompt.js';
@@ -121,13 +122,13 @@ export class PlanTracker {
       }
     }
 
-    // Constraints enforced after their afterMilestone completes.
+    // Constraints in force: un-gated from the first move, gated ones once
+    // their afterMilestone completed. Recorded once, on the first ply where
+    // the violation condition holds.
     const completedIds = new Set(
       this.plan.milestones.filter((_, i) => this.states[i]!.completed).map((m) => m.spec.id),
     );
-    for (const c of this.plan.constraints) {
-      const enforced = c.spec.afterMilestone == null ? false : completedIds.has(c.spec.afterMilestone);
-      if (!enforced) continue;
+    for (const c of constraintsInForce(this.plan, completedIds)) {
       if (this._violations.some((v) => v.id === c.spec.id)) continue;
       if (evalPredicate(c.violation, ctx)) {
         const v: ConstraintViolation = {
