@@ -88,8 +88,8 @@ export async function compileDirectivePlan(opts: CompileOptions): Promise<Compil
 
   if (opts.fromCacheOnly) {
     throw new PlanCacheMissError(
-      `no cached plan for directive "${opts.directive}" (schema v${PLAN_SCHEMA_VERSION}, model ${model}); ` +
-        `run once without --offline (or scripts/compile-plans.ts) to populate the cache`,
+      `no cached plan for directive "${opts.directive}" (schema v${PLAN_SCHEMA_VERSION}); ` +
+        `run the harness with --prepare (or one online game) to populate the cache`,
       opts.directive,
       cachePath,
     );

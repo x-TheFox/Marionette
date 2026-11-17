@@ -34,3 +34,6 @@ vendor/stockfish/extract/
 
 # --- local caches (LLM plan cache etc.) ---
 .cache/
+
+# --- benchmark output: raw per-game artifacts stay local; only bench/summary/ tables are committed ---
+bench/raw/

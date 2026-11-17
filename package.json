@@ -12,7 +12,8 @@
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "test": "vitest run",
     "test:watch": "vitest",
-    "cli": "tsx apps/cli/src/main.ts"
+    "cli": "tsx apps/cli/src/main.ts",
+    "harness": "tsx apps/harness/src/main.ts"
   },
   "devDependencies": {
     "@types/node": "^24.0.0",
