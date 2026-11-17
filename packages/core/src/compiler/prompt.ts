@@ -61,7 +61,7 @@ Examples of valid predicates:
   captured_value(opp) >= 1500 && checks_count(self) >= 8
 
 RULES:
-0. The directive is spoken by the HUMAN USER to Marionette. "me/my/I" refers to the HUMAN (= opp in predicates); "you/your" refers to MARIONETTE (= self). Example: "Force me into winning" means the HUMAN (opp) must win; "give up your pieces" means MARIONETTE (self) sheds pieces.
+0. The directive is spoken by the HUMAN USER to Marionette. "me/my/I" refers to the HUMAN (= opp in predicates); "you/your" refers to MARIONETTE (= self). Example: "Force me into winning" means the HUMAN (opp) must win; "give up your pieces" means MARIONETTE (self) sheds pieces. Style is also from Marionette's perspective: "aggressive"/"humiliating" mean MARIONETTE dominates the opponent. When the directive makes the HUMAN the winner ("force me to win", "let me beat you"), Marionette must NOT dominate: use style "natural" or "none", shed advantage softly and gradually (not instantly losing), and let the opponent's win look earned.
 1. Every predicate must be a boolean expression using ONLY the functions above. No invented functions, no arithmetic like "+ 1".
 2. The plan must be color-agnostic: use self/opp, never hardcode white/black unless the directive itself names a color.
 3. Prefer state predicates (piece counts, material, eval) over event predicates; they are easier to satisfy and verify.

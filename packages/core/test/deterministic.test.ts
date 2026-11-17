@@ -66,6 +66,22 @@ describe('deterministicReplan', () => {
     });
     expect(deterministicReplan(single, progress('reduce_to_kq'), 'stalled')).toBeNull();
   });
+
+  it('stall guard: a nearly-done milestone is NOT dropped for a mere stall', () => {
+    const compiled = compilePlan(D6_LIKE);
+    const nearly: ProgressReport = {
+      fen: '4k3/8/8/8/8/8/8/4KQ2 w - - 0 40',
+      moveNumber: 40,
+      completed: [],
+      active: { id: 'reduce_to_kq', description: 'x', partialCredit: 0.78 },
+    };
+    expect(deterministicReplan(compiled, nearly, 'milestone reduce_to_kq stalled: no partial progress for ~16 plies')).toBeNull();
+    // Far from done -> a stall still drops it.
+    const far: ProgressReport = { ...nearly, active: { id: 'reduce_to_kq', description: 'x', partialCredit: 0.3 } };
+    expect(deterministicReplan(compiled, far, 'milestone reduce_to_kq stalled: no partial progress for ~16 plies')).not.toBeNull();
+    // Hard triggers (budget) drop regardless of partial credit.
+    expect(deterministicReplan(compiled, nearly, 'milestone reduce_to_kq exceeded its move budget (80 plies)')).not.toBeNull();
+  });
 });
 
 describe('report milestones survive replans (dropped work stays visible)', () => {

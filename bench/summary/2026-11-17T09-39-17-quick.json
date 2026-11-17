@@ -1,0 +1,1502 @@
+{
+  "stamp": "2026-11-17T09-39-17",
+  "sweep": "quick",
+  "gamesPerCell": 1,
+  "offline": true,
+  "elos": [
+    800,
+    1200,
+    1600,
+    2000
+  ],
+  "outcomes": [
+    {
+      "id": "D4",
+      "elo": 800,
+      "gameIdx": 0,
+      "error": null,
+      "report": {
+        "directive": "Force me into winning.",
+        "selfColor": "w",
+        "result": "1/2-1/2",
+        "endReason": "threefold_repetition",
+        "terminalMet": false,
+        "plies": 99,
+        "moveNumber": 50,
+        "milestones": [
+          {
+            "id": "shed_material",
+            "description": "Let the opponent capture enough of Marionette's material to fall clearly behind",
+            "completion": "captured_value(self) >= 1000",
+            "tolerance": "loose",
+            "weight": 3,
+            "completed": true,
+            "completedAtPly": 38,
+            "bestPartial": 1
+          },
+          {
+            "id": "be_checkmated",
+            "description": "Allow the opponent to deliver checkmate so the human wins decisively",
+            "completion": "is_checkmate() && winner() == opp",
+            "tolerance": "tight",
+            "weight": 5,
+            "completed": false,
+            "bestPartial": 0,
+            "droppedAtPly": 38,
+            "dropReason": "milestone be_checkmated stalled: no partial progress for ~38 plies"
+          }
+        ],
+        "violations": [
+          {
+            "id": "never_draw",
+            "description": "The game must stay decisive and never end in a draw before the loss",
+            "atPly": 99
+          }
+        ],
+        "replans": [
+          {
+            "atPly": 38,
+            "reason": "milestone be_checkmated stalled: no partial progress for ~38 plies",
+            "provider": "deterministic",
+            "model": "rule-based"
+          }
+        ],
+        "fallbackEngaged": null,
+        "acplSelf": 0.2298,
+        "steeredMoves": 50,
+        "marionetteMoves": 50,
+        "evalTrail": [
+          36,
+          31,
+          16,
+          86,
+          162,
+          189,
+          61,
+          130,
+          197,
+          132,
+          351,
+          296,
+          -148,
+          75,
+          127,
+          172,
+          -66,
+          -70,
+          2,
+          2,
+          0,
+          0,
+          19,
+          36,
+          349,
+          535,
+          662,
+          870,
+          1121,
+          1919,
+          9750,
+          9800,
+          9850,
+          9900,
+          9900,
+          9900,
+          9850,
+          9900,
+          9900,
+          9900,
+          9900,
+          9900,
+          9900,
+          9900,
+          9900,
+          9900,
+          9900,
+          9900,
+          9900,
+          9900
+        ],
+        "snapshots": [
+          {
+            "matSelf": 4000,
+            "matOpp": 4000,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 4000,
+            "matOpp": 4000,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 4000,
+            "matOpp": 4000,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 4000,
+            "matOpp": 3900,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 4000,
+            "matOpp": 3800,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 3900,
+            "matOpp": 3800,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 3900,
+            "matOpp": 3800,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 3900,
+            "matOpp": 3800,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 3900,
+            "matOpp": 3800,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 3900,
+            "matOpp": 3800,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 3900,
+            "matOpp": 3700,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 3800,
+            "matOpp": 3700,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 3480,
+            "matOpp": 3380,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 3150,
+            "matOpp": 2880,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 3150,
+            "matOpp": 2880,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 3150,
+            "matOpp": 2880,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 3050,
+            "matOpp": 2560,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 3050,
+            "matOpp": 2560,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 3050,
+            "matOpp": 2560,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 2550,
+            "matOpp": 2560,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 2550,
+            "matOpp": 2060,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 2050,
+            "matOpp": 2060,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 2050,
+            "matOpp": 2060,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 2050,
+            "matOpp": 2060,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 2050,
+            "matOpp": 2060,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 2050,
+            "matOpp": 2060,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 2050,
+            "matOpp": 1960,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 2050,
+            "matOpp": 1960,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 1950,
+            "matOpp": 1060,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 1950,
+            "matOpp": 730,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 1630,
+            "matOpp": 400,
+            "checksSelf": 1
+          },
+          {
+            "matSelf": 1630,
+            "matOpp": 300,
+            "checksSelf": 2
+          },
+          {
+            "matSelf": 1630,
+            "matOpp": 300,
+            "checksSelf": 3
+          },
+          {
+            "matSelf": 1630,
+            "matOpp": 300,
+            "checksSelf": 3
+          },
+          {
+            "matSelf": 1630,
+            "matOpp": 300,
+            "checksSelf": 4
+          },
+          {
+            "matSelf": 1630,
+            "matOpp": 300,
+            "checksSelf": 5
+          },
+          {
+            "matSelf": 1530,
+            "matOpp": 300,
+            "checksSelf": 6
+          },
+          {
+            "matSelf": 1530,
+            "matOpp": 300,
+            "checksSelf": 7
+          },
+          {
+            "matSelf": 1530,
+            "matOpp": 200,
+            "checksSelf": 7
+          },
+          {
+            "matSelf": 1530,
+            "matOpp": 200,
+            "checksSelf": 7
+          },
+          {
+            "matSelf": 1530,
+            "matOpp": 200,
+            "checksSelf": 8
+          },
+          {
+            "matSelf": 1530,
+            "matOpp": 200,
+            "checksSelf": 8
+          },
+          {
+            "matSelf": 1530,
+            "matOpp": 200,
+            "checksSelf": 9
+          },
+          {
+            "matSelf": 1530,
+            "matOpp": 200,
+            "checksSelf": 9
+          },
+          {
+            "matSelf": 1530,
+            "matOpp": 200,
+            "checksSelf": 9
+          },
+          {
+            "matSelf": 1530,
+            "matOpp": 200,
+            "checksSelf": 9
+          },
+          {
+            "matSelf": 1530,
+            "matOpp": 200,
+            "checksSelf": 10
+          },
+          {
+            "matSelf": 1530,
+            "matOpp": 200,
+            "checksSelf": 10
+          },
+          {
+            "matSelf": 1530,
+            "matOpp": 200,
+            "checksSelf": 11
+          },
+          {
+            "matSelf": 1530,
+            "matOpp": 200,
+            "checksSelf": 11
+          }
+        ],
+        "planFromCache": true,
+        "planProvider": "kilo",
+        "planModel": "kilo-auto/free",
+        "opponentElo": 800,
+        "opponentEmulated": true,
+        "steerDepth": 14,
+        "steerMultiPV": 5,
+        "elapsedMs": 23624,
+        "pgn": "[Event \"Marionette directive game\"]\n[Site \"marionette-cli\"]\n[Date \"2026.11.17\"]\n[Round \"?\"]\n[White \"Marionette\"]\n[Black \"Stockfish-19 (Elo 800)\"]\n[Result \"1/2-1/2\"]\n[Annotator \"plan: Marionette (white) plays to lose so the human (black) wins: shed material to fal\"]\n\n1. e4 e6 2. Nc3 c5 3. d4 Be7 4. dxc5 b6 5. cxb6 axb6 6. Nb5 Nf6 7. Nf3 O-O 8. e5 Nd5 9. c4 Nb4 10. Bf4 f5 11. exf6 Rxf6 12. Be5 Rxf3 13. Bxb8 Rxb8 14. gxf3 Qf8 15. a3 Qf6 16. Qd2 Qxf3 17. axb4 Qe4+ 18. Kd1 Qf3+ 19. Kc2 Qxh1 20. Qf4 Ra8 21. Rxa8 Qxa8 22. Kb3 Ba6 23. Nc3 Bc8 24. Be2 Qb7 25. Bf3 Qa6 26. Qb8 d5 27. Nxd5 Bd8 28. b5 Qxb5+ 29. cxb5 g6 30. Qxc8 exd5 31. Qxd8+ Kf7 32. Bxd5+ Kg7 33. Qe7+ Kh6 34. h4 g5 35. Qf6+ Kh5 36. Bf3+ Kxh4 37. Qd4+ Kh3 38. Qg4+ Kh2 39. Qxg5 h5 40. Be4 Kh3 41. Qg2+ Kh4 42. Qg6 Kh3 43. Qg2+ Kh4 44. Qg6 Kh3 45. Bd5 Kh4 46. Bh1 Kh3 47. Qg2+ Kh4 48. Qg6 Kh3 49. Qg2+ Kh4 50. Qg6 1/2-1/2",
+        "notes": [
+          "opponent Elo 800 is below the native UCI_Elo floor (1320): emulated with Skill Level 0, depth cap 6, eval-weighted move choice",
+          "replan at ply 38 was deterministic (offline mode): dropped milestone 'be_checkmated' (milestone be_checkmated stalled: no partial progress for ~38 plies)",
+          "hard constraint 'never_draw' violated at ply 99"
+        ]
+      },
+      "judge": {
+        "looksTrying": 0.85,
+        "natural": 0.8,
+        "plausibleLoss": 0.65,
+        "bully": 0.8,
+        "score": 7.749999999999999,
+        "reasons": [
+          "ACPL 0, 1 blunder(s) >= 300cp, max drop 444cp",
+          "naturalness inputs: ACPL band 30-250, blunder spread, length 99 plies",
+          "no loss on the board caps plausibleLoss",
+          "material lead max 1330cp (early ~100cp), 11 checks given, 99 plies"
+        ]
+      }
+    },
+    {
+      "id": "D4",
+      "elo": 1200,
+      "gameIdx": 0,
+      "error": null,
+      "report": {
+        "directive": "Force me into winning.",
+        "selfColor": "w",
+        "result": "0-1",
+        "endReason": "checkmate",
+        "terminalMet": true,
+        "plies": 100,
+        "moveNumber": 51,
+        "milestones": [
+          {
+            "id": "shed_material",
+            "description": "Let the opponent capture enough of Marionette's material to fall clearly behind",
+            "completion": "captured_value(self) >= 1000",
+            "tolerance": "loose",
+            "weight": 3,
+            "completed": true,
+            "completedAtPly": 16,
+            "bestPartial": 1
+          },
+          {
+            "id": "be_checkmated",
+            "description": "Allow the opponent to deliver checkmate so the human wins decisively",
+            "completion": "is_checkmate() && winner() == opp",
+            "tolerance": "tight",
+            "weight": 5,
+            "completed": true,
+            "completedAtPly": 100,
+            "bestPartial": 1,
+            "droppedAtPly": 16,
+            "dropReason": "milestone be_checkmated stalled: no partial progress for ~16 plies"
+          }
+        ],
+        "violations": [],
+        "replans": [
+          {
+            "atPly": 16,
+            "reason": "milestone be_checkmated stalled: no partial progress for ~16 plies",
+            "provider": "deterministic",
+            "model": "rule-based"
+          }
+        ],
+        "fallbackEngaged": null,
+        "acplSelf": 0.24040000000000006,
+        "steeredMoves": 50,
+        "marionetteMoves": 50,
+        "evalTrail": [
+          36,
+          0,
+          -15,
+          -12,
+          9,
+          -962,
+          -1070,
+          -1002,
+          -1000,
+          -1041,
+          -989,
+          -943,
+          -898,
+          -878,
+          -886,
+          -880,
+          -846,
+          -768,
+          -789,
+          -751,
+          -696,
+          -712,
+          -659,
+          -627,
+          -695,
+          -742,
+          -692,
+          -680,
+          -689,
+          -690,
+          -640,
+          -686,
+          -647,
+          -715,
+          -754,
+          -838,
+          -825,
+          -1119,
+          -1227,
+          -1583,
+          -1601,
+          -1727,
+          -9750,
+          -9650,
+          -9800,
+          -9750,
+          -9800,
+          -9800,
+          -9900,
+          -9950
+        ],
+        "snapshots": [
+          {
+            "matSelf": 4000,
+            "matOpp": 4000,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 4000,
+            "matOpp": 4000,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 3900,
+            "matOpp": 3900,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 3900,
+            "matOpp": 3900,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 3900,
+            "matOpp": 3900,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 3570,
+            "matOpp": 3900,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 2670,
+            "matOpp": 3570,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 2670,
+            "matOpp": 3570,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 2670,
+            "matOpp": 3570,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 2670,
+            "matOpp": 3470,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 2670,
+            "matOpp": 3470,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 2670,
+            "matOpp": 3370,
+            "checksSelf": 1
+          },
+          {
+            "matSelf": 2670,
+            "matOpp": 3040,
+            "checksSelf": 1
+          },
+          {
+            "matSelf": 2670,
+            "matOpp": 3040,
+            "checksSelf": 1
+          },
+          {
+            "matSelf": 2670,
+            "matOpp": 3040,
+            "checksSelf": 1
+          },
+          {
+            "matSelf": 2670,
+            "matOpp": 3040,
+            "checksSelf": 1
+          },
+          {
+            "matSelf": 2350,
+            "matOpp": 2940,
+            "checksSelf": 1
+          },
+          {
+            "matSelf": 2350,
+            "matOpp": 2940,
+            "checksSelf": 1
+          },
+          {
+            "matSelf": 2350,
+            "matOpp": 2940,
+            "checksSelf": 1
+          },
+          {
+            "matSelf": 2350,
+            "matOpp": 2940,
+            "checksSelf": 1
+          },
+          {
+            "matSelf": 2350,
+            "matOpp": 2940,
+            "checksSelf": 1
+          },
+          {
+            "matSelf": 2350,
+            "matOpp": 2840,
+            "checksSelf": 2
+          },
+          {
+            "matSelf": 2350,
+            "matOpp": 2840,
+            "checksSelf": 2
+          },
+          {
+            "matSelf": 2350,
+            "matOpp": 2840,
+            "checksSelf": 2
+          },
+          {
+            "matSelf": 2350,
+            "matOpp": 2740,
+            "checksSelf": 2
+          },
+          {
+            "matSelf": 2250,
+            "matOpp": 2420,
+            "checksSelf": 2
+          },
+          {
+            "matSelf": 2250,
+            "matOpp": 2420,
+            "checksSelf": 2
+          },
+          {
+            "matSelf": 1920,
+            "matOpp": 2420,
+            "checksSelf": 2
+          },
+          {
+            "matSelf": 1920,
+            "matOpp": 2420,
+            "checksSelf": 2
+          },
+          {
+            "matSelf": 1920,
+            "matOpp": 2420,
+            "checksSelf": 2
+          },
+          {
+            "matSelf": 1920,
+            "matOpp": 2420,
+            "checksSelf": 2
+          },
+          {
+            "matSelf": 1820,
+            "matOpp": 2420,
+            "checksSelf": 2
+          },
+          {
+            "matSelf": 1820,
+            "matOpp": 2420,
+            "checksSelf": 2
+          },
+          {
+            "matSelf": 1820,
+            "matOpp": 2420,
+            "checksSelf": 2
+          },
+          {
+            "matSelf": 1820,
+            "matOpp": 2420,
+            "checksSelf": 2
+          },
+          {
+            "matSelf": 1820,
+            "matOpp": 2100,
+            "checksSelf": 2
+          },
+          {
+            "matSelf": 1320,
+            "matOpp": 2100,
+            "checksSelf": 2
+          },
+          {
+            "matSelf": 1220,
+            "matOpp": 2100,
+            "checksSelf": 2
+          },
+          {
+            "matSelf": 1220,
+            "matOpp": 2100,
+            "checksSelf": 2
+          },
+          {
+            "matSelf": 1220,
+            "matOpp": 2100,
+            "checksSelf": 2
+          },
+          {
+            "matSelf": 1220,
+            "matOpp": 2100,
+            "checksSelf": 2
+          },
+          {
+            "matSelf": 720,
+            "matOpp": 1600,
+            "checksSelf": 2
+          },
+          {
+            "matSelf": 400,
+            "matOpp": 1600,
+            "checksSelf": 2
+          },
+          {
+            "matSelf": 400,
+            "matOpp": 1600,
+            "checksSelf": 2
+          },
+          {
+            "matSelf": 300,
+            "matOpp": 1600,
+            "checksSelf": 2
+          },
+          {
+            "matSelf": 300,
+            "matOpp": 1600,
+            "checksSelf": 2
+          },
+          {
+            "matSelf": 300,
+            "matOpp": 1600,
+            "checksSelf": 2
+          },
+          {
+            "matSelf": 300,
+            "matOpp": 1600,
+            "checksSelf": 2
+          },
+          {
+            "matSelf": 300,
+            "matOpp": 1600,
+            "checksSelf": 2
+          },
+          {
+            "matSelf": 300,
+            "matOpp": 1600,
+            "checksSelf": 2
+          }
+        ],
+        "planFromCache": true,
+        "planProvider": "kilo",
+        "planModel": "kilo-auto/free",
+        "opponentElo": 1200,
+        "opponentEmulated": true,
+        "steerDepth": 14,
+        "steerMultiPV": 5,
+        "elapsedMs": 62148,
+        "pgn": "[Event \"Marionette directive game\"]\n[Site \"marionette-cli\"]\n[Date \"2026.11.17\"]\n[Round \"?\"]\n[White \"Marionette\"]\n[Black \"Stockfish-19 (Elo 1200)\"]\n[Result \"0-1\"]\n[Annotator \"plan: Marionette (white) plays to lose so the human (black) wins: shed material to fal\"]\n\n1. e4 e5 2. d4 exd4 3. Qxd4 Nc6 4. Qe3 Bb4+ 5. Bd2 Bxd2+ 6. Ke2 Bxe3 7. Kxe3 Na5 8. Ne2 b5 9. Nd4 c5 10. Nxb5 d6 11. N1c3 Nh6 12. Nxd6+ Kf8 13. Nxc8 g5 14. h4 Ng4+ 15. Kf3 Ne5+ 16. Ke2 Qxc8 17. hxg5 Kg7 18. f3 Qb7 19. b3 Rag8 20. Nd5 Rb8 21. Rd1 h6 22. gxh6+ Kf8 23. Kf2 Qc6 24. g4 c4 25. bxc4 Naxc4 26. Bxc4 Qc5+ 27. Kg3 Nxc4 28. Rd3 Qd6+ 29. Nf4 Qe7 30. Rd4 Na3 31. Rd5 Nxc2 32. Rdh5 Qc7 33. Rc1 Rb4 34. a4 Rc4 35. g5 Rc6 36. Rxc2 Rxc2 37. g6 fxg6 38. Rh1 Kf7 39. Kg4 Qd7+ 40. Kg3 Qc7 41. Rh2 Rxh2 42. Kxh2 Qxf4+ 43. Kg1 Qe3+ 44. Kg2 Qxh6 45. Kg1 Qh1+ 46. Kf2 Rh2+ 47. Ke3 Rc2 48. f4 Qh3+ 49. Kd4 Qc3+ 50. Kd5 Qc5# 0-1",
+        "notes": [
+          "opponent Elo 1200 is below the native UCI_Elo floor (1320): emulated with Skill Level 8, depth cap 10, eval-weighted move choice",
+          "replan at ply 16 was deterministic (offline mode): dropped milestone 'be_checkmated' (milestone be_checkmated stalled: no partial progress for ~16 plies)",
+          "dropped milestone 'be_checkmated' nevertheless held at game end"
+        ]
+      },
+      "judge": {
+        "looksTrying": 0.55,
+        "natural": 0.8,
+        "plausibleLoss": 1,
+        "bully": 0.06,
+        "score": 6.025,
+        "reasons": [
+          "ACPL 0, 3 blunder(s) >= 300cp, max drop 8023cp",
+          "naturalness inputs: ACPL band 30-250, blunder spread, length 100 plies",
+          "material lead max 0cp (early ~-370cp), 2 checks given, 100 plies"
+        ]
+      }
+    },
+    {
+      "id": "D4",
+      "elo": 1600,
+      "gameIdx": 0,
+      "error": null,
+      "report": {
+        "directive": "Force me into winning.",
+        "selfColor": "w",
+        "result": "1/2-1/2",
+        "endReason": "threefold_repetition",
+        "terminalMet": false,
+        "plies": 70,
+        "moveNumber": 36,
+        "milestones": [
+          {
+            "id": "shed_material",
+            "description": "Let the opponent capture enough of Marionette's material to fall clearly behind",
+            "completion": "captured_value(self) >= 1000",
+            "tolerance": "loose",
+            "weight": 3,
+            "completed": true,
+            "completedAtPly": 24,
+            "bestPartial": 1
+          },
+          {
+            "id": "be_checkmated",
+            "description": "Allow the opponent to deliver checkmate so the human wins decisively",
+            "completion": "is_checkmate() && winner() == opp",
+            "tolerance": "tight",
+            "weight": 5,
+            "completed": false,
+            "bestPartial": 0,
+            "droppedAtPly": 24,
+            "dropReason": "milestone be_checkmated stalled: no partial progress for ~24 plies"
+          }
+        ],
+        "violations": [
+          {
+            "id": "never_draw",
+            "description": "The game must stay decisive and never end in a draw before the loss",
+            "atPly": 70
+          }
+        ],
+        "replans": [
+          {
+            "atPly": 24,
+            "reason": "milestone be_checkmated stalled: no partial progress for ~24 plies",
+            "provider": "deterministic",
+            "model": "rule-based"
+          }
+        ],
+        "fallbackEngaged": null,
+        "acplSelf": 0.43657142857142855,
+        "steeredMoves": 35,
+        "marionetteMoves": 35,
+        "evalTrail": [
+          36,
+          0,
+          36,
+          126,
+          292,
+          160,
+          140,
+          127,
+          117,
+          466,
+          282,
+          -41,
+          -43,
+          71,
+          341,
+          796,
+          764,
+          741,
+          749,
+          768,
+          736,
+          728,
+          829,
+          857,
+          1032,
+          1284,
+          1410,
+          9750,
+          9800,
+          9850,
+          9900,
+          9850,
+          9900,
+          9850,
+          9900
+        ],
+        "snapshots": [
+          {
+            "matSelf": 4000,
+            "matOpp": 4000,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 4000,
+            "matOpp": 4000,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 4000,
+            "matOpp": 3900,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 4000,
+            "matOpp": 3800,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 4000,
+            "matOpp": 3800,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 4000,
+            "matOpp": 3700,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 3900,
+            "matOpp": 3700,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 3900,
+            "matOpp": 3700,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 3900,
+            "matOpp": 3380,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 3900,
+            "matOpp": 3380,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 3900,
+            "matOpp": 3380,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 3900,
+            "matOpp": 2880,
+            "checksSelf": 1
+          },
+          {
+            "matSelf": 3000,
+            "matOpp": 2880,
+            "checksSelf": 1
+          },
+          {
+            "matSelf": 3000,
+            "matOpp": 2880,
+            "checksSelf": 1
+          },
+          {
+            "matSelf": 3000,
+            "matOpp": 2550,
+            "checksSelf": 1
+          },
+          {
+            "matSelf": 3000,
+            "matOpp": 2550,
+            "checksSelf": 1
+          },
+          {
+            "matSelf": 2670,
+            "matOpp": 1650,
+            "checksSelf": 2
+          },
+          {
+            "matSelf": 2170,
+            "matOpp": 1650,
+            "checksSelf": 2
+          },
+          {
+            "matSelf": 2170,
+            "matOpp": 1650,
+            "checksSelf": 2
+          },
+          {
+            "matSelf": 1840,
+            "matOpp": 1330,
+            "checksSelf": 2
+          },
+          {
+            "matSelf": 1840,
+            "matOpp": 1330,
+            "checksSelf": 2
+          },
+          {
+            "matSelf": 1840,
+            "matOpp": 1000,
+            "checksSelf": 2
+          },
+          {
+            "matSelf": 1840,
+            "matOpp": 900,
+            "checksSelf": 2
+          },
+          {
+            "matSelf": 1840,
+            "matOpp": 800,
+            "checksSelf": 3
+          },
+          {
+            "matSelf": 1840,
+            "matOpp": 800,
+            "checksSelf": 4
+          },
+          {
+            "matSelf": 1840,
+            "matOpp": 700,
+            "checksSelf": 4
+          },
+          {
+            "matSelf": 1840,
+            "matOpp": 700,
+            "checksSelf": 4
+          },
+          {
+            "matSelf": 1840,
+            "matOpp": 700,
+            "checksSelf": 5
+          },
+          {
+            "matSelf": 1840,
+            "matOpp": 200,
+            "checksSelf": 6
+          },
+          {
+            "matSelf": 1840,
+            "matOpp": 200,
+            "checksSelf": 7
+          },
+          {
+            "matSelf": 1840,
+            "matOpp": 200,
+            "checksSelf": 8
+          },
+          {
+            "matSelf": 1840,
+            "matOpp": 200,
+            "checksSelf": 9
+          },
+          {
+            "matSelf": 1840,
+            "matOpp": 200,
+            "checksSelf": 10
+          },
+          {
+            "matSelf": 1840,
+            "matOpp": 200,
+            "checksSelf": 10
+          },
+          {
+            "matSelf": 1840,
+            "matOpp": 200,
+            "checksSelf": 11
+          }
+        ],
+        "planFromCache": true,
+        "planProvider": "kilo",
+        "planModel": "kilo-auto/free",
+        "opponentElo": 1600,
+        "opponentEmulated": false,
+        "steerDepth": 14,
+        "steerMultiPV": 5,
+        "elapsedMs": 57601,
+        "pgn": "[Event \"Marionette directive game\"]\n[Site \"marionette-cli\"]\n[Date \"2026.11.17\"]\n[Round \"?\"]\n[White \"Marionette\"]\n[Black \"Stockfish-19 (Elo 1600)\"]\n[Result \"1/2-1/2\"]\n[Annotator \"plan: Marionette (white) plays to lose so the human (black) wins: shed material to fal\"]\n\n1. e4 e5 2. d4 d6 3. dxe5 Nd7 4. exd6 Nc5 5. e5 a6 6. dxc7 Qxc7 7. Be3 Na4 8. b3 Nc3 9. Nxc3 Bb4 10. Ne2 Bf5 11. f4 Rd8 12. Qxd8+ Qxd8 13. a3 Ba5 14. b4 Ne7 15. bxa5 Nd5 16. O-O-O Nxe3 17. Rxd8+ Kxd8 18. Nd4 Bd7 19. Kd2 Nxf1+ 20. Rxf1 Bc6 21. Ke3 Kc7 22. Nxc6 g5 23. fxg5 Re8 24. Rxf7+ Kc8 25. Ne7+ Kb8 26. Rxh7 Rf8 27. Ncd5 Rf5 28. Rh8+ Rf8 29. Rxf8+ Ka7 30. Nc8+ Ka8 31. Ncb6+ Ka7 32. Nc8+ Ka8 33. Ncb6+ Ka7 34. Rf1 Kb8 35. Rf8+ Ka7 1/2-1/2",
+        "notes": [
+          "replan at ply 24 was deterministic (offline mode): dropped milestone 'be_checkmated' (milestone be_checkmated stalled: no partial progress for ~24 plies)",
+          "hard constraint 'never_draw' violated at ply 70"
+        ]
+      },
+      "judge": {
+        "looksTrying": 0.85,
+        "natural": 0.8,
+        "plausibleLoss": 0.65,
+        "bully": 0.8,
+        "score": 7.749999999999999,
+        "reasons": [
+          "ACPL 0, 1 blunder(s) >= 300cp, max drop 323cp",
+          "naturalness inputs: ACPL band 30-250, blunder spread, length 70 plies",
+          "no loss on the board caps plausibleLoss",
+          "material lead max 1640cp (early ~520cp), 11 checks given, 70 plies"
+        ]
+      }
+    },
+    {
+      "id": "D4",
+      "elo": 2000,
+      "gameIdx": 0,
+      "error": null,
+      "report": {
+        "directive": "Force me into winning.",
+        "selfColor": "w",
+        "result": "1/2-1/2",
+        "endReason": "threefold_repetition",
+        "terminalMet": false,
+        "plies": 104,
+        "moveNumber": 53,
+        "milestones": [
+          {
+            "id": "shed_material",
+            "description": "Let the opponent capture enough of Marionette's material to fall clearly behind",
+            "completion": "captured_value(self) >= 1000",
+            "tolerance": "loose",
+            "weight": 3,
+            "completed": true,
+            "completedAtPly": 22,
+            "bestPartial": 1
+          },
+          {
+            "id": "be_checkmated",
+            "description": "Allow the opponent to deliver checkmate so the human wins decisively",
+            "completion": "is_checkmate() && winner() == opp",
+            "tolerance": "tight",
+            "weight": 5,
+            "completed": false,
+            "bestPartial": 0,
+            "droppedAtPly": 22,
+            "dropReason": "milestone be_checkmated stalled: no partial progress for ~22 plies"
+          }
+        ],
+        "violations": [
+          {
+            "id": "never_draw",
+            "description": "The game must stay decisive and never end in a draw before the loss",
+            "atPly": 104
+          }
+        ],
+        "replans": [
+          {
+            "atPly": 22,
+            "reason": "milestone be_checkmated stalled: no partial progress for ~22 plies",
+            "provider": "deterministic",
+            "model": "rule-based"
+          }
+        ],
+        "fallbackEngaged": null,
+        "acplSelf": 0.17076923076923076,
+        "steeredMoves": 52,
+        "marionetteMoves": 52,
+        "evalTrail": [
+          36,
+          0,
+          -15,
+          108,
+          170,
+          222,
+          229,
+          263,
+          78,
+          -12,
+          -225,
+          -28,
+          -5,
+          0,
+          1,
+          27,
+          76,
+          81,
+          150,
+          163,
+          272,
+          294,
+          318,
+          347,
+          347,
+          343,
+          410,
+          444,
+          434,
+          409,
+          477,
+          446,
+          455,
+          468,
+          535,
+          569,
+          619,
+          628,
+          672,
+          756,
+          763,
+          850,
+          1336,
+          9650,
+          9650,
+          9800,
+          9800,
+          9850,
+          9800,
+          9850,
+          9800,
+          9850
+        ],
+        "snapshots": [
+          {
+            "matSelf": 4000,
+            "matOpp": 4000,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 4000,
+            "matOpp": 4000,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 3900,
+            "matOpp": 3900,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 3900,
+            "matOpp": 3900,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 3900,
+            "matOpp": 3900,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 3900,
+            "matOpp": 3900,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 3900,
+            "matOpp": 3900,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 3900,
+            "matOpp": 3900,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 3900,
+            "matOpp": 3580,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 3570,
+            "matOpp": 3580,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 3250,
+            "matOpp": 3250,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 2350,
+            "matOpp": 2350,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 2350,
+            "matOpp": 2350,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 2350,
+            "matOpp": 2350,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 2350,
+            "matOpp": 2250,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 2350,
+            "matOpp": 2150,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 2350,
+            "matOpp": 2150,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 2350,
+            "matOpp": 2150,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 2350,
+            "matOpp": 2150,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 2250,
+            "matOpp": 2150,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 2250,
+            "matOpp": 2150,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 2250,
+            "matOpp": 2150,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 2250,
+            "matOpp": 2150,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 2250,
+            "matOpp": 2150,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 2250,
+            "matOpp": 2150,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 2250,
+            "matOpp": 2150,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 2250,
+            "matOpp": 2050,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 2250,
+            "matOpp": 2050,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 2250,
+            "matOpp": 2050,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 2250,
+            "matOpp": 2050,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 2250,
+            "matOpp": 2050,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 1930,
+            "matOpp": 1730,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 1430,
+            "matOpp": 1230,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 1430,
+            "matOpp": 1230,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 1430,
+            "matOpp": 1130,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 1430,
+            "matOpp": 1030,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 1430,
+            "matOpp": 930,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 1330,
+            "matOpp": 930,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 1330,
+            "matOpp": 930,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 1330,
+            "matOpp": 930,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 1330,
+            "matOpp": 930,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 1330,
+            "matOpp": 600,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 1230,
+            "matOpp": 100,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 1130,
+            "matOpp": 100,
+            "checksSelf": 0
+          },
+          {
+            "matSelf": 1130,
+            "matOpp": 100,
+            "checksSelf": 1
+          },
+          {
+            "matSelf": 1130,
+            "matOpp": 100,
+            "checksSelf": 1
+          },
+          {
+            "matSelf": 1130,
+            "matOpp": 0,
+            "checksSelf": 1
+          },
+          {
+            "matSelf": 1130,
+            "matOpp": 0,
+            "checksSelf": 1
+          },
+          {
+            "matSelf": 1130,
+            "matOpp": 0,
+            "checksSelf": 2
+          },
+          {
+            "matSelf": 1130,
+            "matOpp": 0,
+            "checksSelf": 2
+          },
+          {
+            "matSelf": 1130,
+            "matOpp": 0,
+            "checksSelf": 3
+          },
+          {
+            "matSelf": 1130,
+            "matOpp": 0,
+            "checksSelf": 3
+          }
+        ],
+        "planFromCache": true,
+        "planProvider": "kilo",
+        "planModel": "kilo-auto/free",
+        "opponentElo": 2000,
+        "opponentEmulated": false,
+        "steerDepth": 14,
+        "steerMultiPV": 5,
+        "elapsedMs": 59352,
+        "pgn": "[Event \"Marionette directive game\"]\n[Site \"marionette-cli\"]\n[Date \"2026.11.17\"]\n[Round \"?\"]\n[White \"Marionette\"]\n[Black \"Stockfish-19 (Elo 2000)\"]\n[Result \"1/2-1/2\"]\n[Annotator \"plan: Marionette (white) plays to lose so the human (black) wins: shed material to fal\"]\n\n1. e4 e5 2. d4 exd4 3. Qxd4 h5 4. Nc3 Nf6 5. Bg5 Be7 6. O-O-O Nc6 7. Qd2 O-O 8. f4 Bb4 9. Bxf6 Qxf6 10. Qe3 Bxc3 11. Qxc3 Qxc3 12. bxc3 g6 13. e5 Rd8 14. Nf3 d6 15. exd6 Be6 16. dxc7 Rdc8 17. Ng5 Bf5 18. Bd3 Bg4 19. Rd2 Rxc7 20. h3 Bc8 21. g4 h4 22. Bc4 Re7 23. Bb3 a5 24. Rd6 Kg7 25. a4 f6 26. Nf3 Bd7 27. Nxh4 Rf8 28. Kb2 Be8 29. Nf3 Re4 30. f5 Rf4 31. Nd4 Nxd4 32. Rxd4 Rxd4 33. cxd4 Bc6 34. d5 Be8 35. fxg6 f5 36. gxf5 b5 37. axb5 Bxb5 38. c4 Be8 39. Bc2 Rf6 40. c5 a4 41. Re1 Bf7 42. gxf7 Rxf5 43. Bxf5 Kxf7 44. Re6 Kg7 45. Rg6+ Kf8 46. Ka3 Ke8 47. Kxa4 Kd8 48. d6 Ke8 49. Rg8+ Kf7 50. Rg6 Ke8 51. Rg8+ Kf7 52. Rg6 Ke8 1/2-1/2",
+        "notes": [
+          "replan at ply 22 was deterministic (offline mode): dropped milestone 'be_checkmated' (milestone be_checkmated stalled: no partial progress for ~22 plies)",
+          "hard constraint 'never_draw' violated at ply 104"
+        ]
+      },
+      "judge": {
+        "looksTrying": 1,
+        "natural": 0.7,
+        "plausibleLoss": 0.65,
+        "bully": 0.59,
+        "score": 7.35,
+        "reasons": [
+          "ACPL 0, 0 blunder(s) >= 300cp, max drop 213cp",
+          "naturalness inputs: ACPL band 30-250, blunder spread, length 104 plies",
+          "no loss on the board caps plausibleLoss",
+          "material lead max 1130cp (early ~0cp), 3 checks given, 104 plies"
+        ]
+      }
+    }
+  ],
+  "verdicts": [
+    {
+      "id": "D4",
+      "bar": "d4-oppwin",
+      "n": 4,
+      "hits": 1,
+      "rate": 0.25,
+      "pass": false,
+      "expectedFail": false,
+      "detail": "1/4 losses (opponent wins)"
+    },
+    {
+      "id": "D4",
+      "bar": "d4-natural",
+      "n": 4,
+      "hits": 4,
+      "rate": 1,
+      "pass": true,
+      "expectedFail": false,
+      "detail": "4/4 games judged natural (axis >= 0.7)"
+    }
+  ]
+}

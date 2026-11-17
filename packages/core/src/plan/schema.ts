@@ -77,7 +77,7 @@ export function constraintsInForce(
   );
 }
 
-export const PLAN_SCHEMA_VERSION = '2';
+export const PLAN_SCHEMA_VERSION = '3';
 
 export class PlanValidationError extends Error {
   constructor(message: string) {

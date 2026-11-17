@@ -247,6 +247,16 @@ export async function runDirectiveGame(opts: RunnerOptions): Promise<GameReport>
 
       const turn = game.turn() as Side;
       if (turn === self) {
+        // All milestones resolved (completed or dropped) but the game goes on:
+        // the plan's remaining business is the TERMINAL. Engage the fallback
+        // ladder — its secure_terminal entry drives best/lose play toward the
+        // declared result. Without this, a dropped mate milestone left the
+        // scorer with zero progress weight and style bonuses farmed perpetual
+        // checks into threefold draws (D4 lesson).
+        if (tracker.activeIndex() == null && state.fallback == null) {
+          engageFallback('all milestones resolved; securing the terminal', ply);
+        }
+
         // --- Marionette's move --------------------------------------------
         let uci: string;
         let san: string;

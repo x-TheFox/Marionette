@@ -237,9 +237,11 @@ export async function steerMove(opts: SteerOptions): Promise<SteerDecision> {
     // Terminal: does this candidate end the game the directive wants?
     // The big terminal bonus is only granted when the plan says terminal-first
     // or no milestones remain — otherwise a normal win would dwarf directive
-    // progress (D6 lesson). Conversely, ending the game prematurely (mate,
-    // stalemate, draw) while milestones remain incomplete is a directive
-    // FAILURE: the remaining milestones can never complete → hard penalty.
+    // progress (D6 lesson). Conversely, ANY candidate that ends the game
+    // without a legitimate ending (terminal achieved while eligible, or the
+    // active milestone completing — e.g. the final mate milestone) is a
+    // directive FAILURE: draws, stalemates and wrong-color mates close the
+    // game while the directive is still open.
     const terminal = compiled.plan.terminal;
     const terminalEligible = terminal.priority === 'terminal_first' || activeIdx == null;
     const terminalNow =
@@ -247,10 +249,8 @@ export async function steerMove(opts: SteerOptions): Promise<SteerDecision> {
       (terminal.kind === 'pattern' && compiled.terminalPattern != null && evalPredicate(compiled.terminalPattern, e.ctxAfter)) ||
       (terminal.kind === 'draw' && e.ctxAfter.draw);
     const achievesTerminal = terminalEligible && terminalNow;
-    // Premature end: game over while milestones remain AND this candidate
-    // doesn't complete the active milestone (completing the final mate
-    // milestone is legitimate). Applies to early mates, stalemates and draws.
-    const prematureEnd = !terminalEligible && e.ctxAfter.over && activeIdx != null && !completes;
+    const legitEnd = achievesTerminal || (activeIdx != null && completes);
+    const prematureEnd = e.ctxAfter.over && !legitEnd;
 
     const parts = scoreCandidate(
       {
@@ -288,7 +288,63 @@ export async function steerMove(opts: SteerOptions): Promise<SteerDecision> {
     }
   }
   if (bestIdx < 0) {
-    // Everything excluded (should be rare): least-bad = engine top line.
+    // Everything excluded: hard constraints must not be violated voluntarily.
+    // Before falling back to the engine top line (which violates by
+    // construction), search the FULL legal move list for the best move that
+    // keeps every enforced constraint false and does not end the game.
+    // (D4 lesson: a dominated position where all MultiPV lines mate.)
+    const excludedUcis = new Set(scored.map((s) => s.uci));
+    let rescue: { uci: string; san: string; evalSelfCp: number; evalWhiteCp: number; mateWhite: number | null } | null = null;
+    for (const [uciStr, mv] of verboseMoves) {
+      if (excludedUcis.has(uciStr)) continue;
+      const probe = new Chess(fen);
+      try {
+        probe.move({ from: mv.from, to: mv.to, promotion: mv.promotion });
+      } catch {
+        continue;
+      }
+      if (probe.isGameOver()) continue; // do not volunteer ANY game end here
+      const fenAfter = probe.fen();
+      const sub = await engine.analyse(fenAfter, { depth: Math.min(motivatedDepth, 10), multiPV: 1 });
+      const l = sub.lines[0];
+      const evalWhiteCp = whiteFromStm(l?.cpSTM ?? null, l?.mateSTM ?? null, fenAfter);
+      const mateWhite = l?.mateSTM != null ? (fenAfter.split(' ')[1] === 'b' ? -l.mateSTM : l.mateSTM) : null;
+      const ctxAfter = buildContext(
+        probe,
+        self,
+        { evalWhiteCp, mateWhite },
+        [...checkFlags, probe.inCheck()],
+      );
+      if (enforced.some((c) => evalPredicate(c.violation, ctxAfter))) continue;
+      const evalSelfCp = self === 'w' ? evalWhiteCp : -evalWhiteCp;
+      if (rescue == null || evalSelfCp > rescue.evalSelfCp) {
+        rescue = { uci: uciStr, san: mv.san, evalSelfCp, evalWhiteCp, mateWhite };
+      }
+    }
+    if (rescue != null) {
+      scored.push({
+        uci: rescue.uci,
+        san: rescue.san,
+        source: 'engine',
+        motive: 'constraint rescue (all candidates excluded)',
+        evalSelfCp: rescue.evalSelfCp,
+        deltaProgress: 0,
+        completes: false,
+        parts: { progress: 0, evalCost: 0, bonus: 0, total: rescue.evalSelfCp / 100 },
+      });
+      return {
+        uci: rescue.uci,
+        san: rescue.san,
+        activeMilestoneId: active?.spec.id ?? null,
+        lambda,
+        evalWhiteCp: rescue.evalWhiteCp,
+        mateWhite: rescue.mateWhite,
+        candidates: scored,
+        fallback,
+      };
+    }
+    // No legal move preserves the constraints (truly forced): least-bad =
+    // engine top line; the tracker records the violation honestly.
     const engIdx = scored.findIndex((s) => s.source === 'engine');
     bestIdx = engIdx >= 0 ? engIdx : 0;
   }
