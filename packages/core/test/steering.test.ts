@@ -363,7 +363,7 @@ describe('D6 steering iteration: lambda shedding exemption', () => {
     });
     const behind = ctx(['e4', 'e5'], 'w', -600);
     const λ = lambdaFor({ milestone: compiled.milestones[0]!, plan: compiled }, behind);
-    expect(λ).toBeCloseTo(0.6, 5); // medium tolerance, NOT the 1.2 behind-raise
+    expect(λ).toBeCloseTo(0.12, 5); // shedding caps lambda at loose, NOT the 1.2 behind-raise
   });
 
   it('a non-shedding milestone still raises lambda when behind (protect the terminal)', () => {
@@ -371,5 +371,22 @@ describe('D6 steering iteration: lambda shedding exemption', () => {
     const behind = ctx(['e4', 'e5'], 'w', -600);
     const λ = lambdaFor({ milestone: compiled.milestones[0]!, plan: compiled }, behind);
     expect(λ).toBeGreaterThanOrEqual(1.2);
+  });
+});
+
+describe('D6 steering iteration: shedding lambda cap', () => {
+  it('a shedding milestone never pays more than loose lambda regardless of declared tolerance', () => {
+    const compiled = plan({
+      summary: 'reduce to K+Q',
+      style: 'none',
+      terminal: { kind: 'win', priority: 'milestones_first' },
+      hardConstraints: [],
+      milestones: [
+        { id: 'reduce', description: 'K+Q only', completion: 'piece_count(self, queen) == 1 && piece_count(self, pawn) == 0 && non_pawn_count(self) == 1', tolerance: 'tight', weight: 5 },
+      ],
+      fallback: ['secure_terminal', 'play_best'],
+    });
+    const λ = lambdaFor({ milestone: compiled.milestones[0]!, plan: compiled }, ctx(['e4', 'e5'], 'w'));
+    expect(λ).toBeCloseTo(0.12, 5);
   });
 });

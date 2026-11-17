@@ -167,6 +167,12 @@ export function lambdaFor(sc: Pick<ScoreContext, 'milestone' | 'plan'>, ctxNow: 
   const winningTarget = t.kind === 'win' || (t.kind === 'pattern' && t.priority === 'terminal_first');
   const selfEval = ctxNow.evalWhiteCp == null ? 0 : (ctxNow.self === 'w' ? ctxNow.evalWhiteCp : -ctxNow.evalWhiteCp);
   const shedding = isSheddingMilestone(sc.milestone ?? null, ctxNow);
+  // A shedding milestone's eval damage IS its progress: cap its lambda at the
+  // loose level no matter what tolerance the plan declared (the D6 plan left
+  // reduce_to_kq at the 'medium' default and every offer priced out at
+  // lambda 0.6 - shedding crawled and blew the 80-ply move budget one capture
+  // short of K+Q).
+  if (shedding) λ = Math.min(λ, LAMBDA_BY_TOLERANCE.loose);
   if (winningTarget && selfEval < -150 && !shedding) λ = Math.max(λ, 1.2); // behind: stop the bleeding
   if (t.kind === 'lose' || t.kind === 'draw') λ = Math.min(λ, 0.6); // losing/drawing terminal: eval damage is not the enemy
   if (t.priority === 'terminal_first') λ *= 1.6;
