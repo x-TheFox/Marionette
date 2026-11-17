@@ -1,0 +1,59 @@
+{
+  "directive": "Win by giving up every piece except pawns, promote all of them to knights, then checkmate with a knight.",
+  "schemaVersion": "3",
+  "model": "kilo-auto/free",
+  "provider": "kilo",
+  "compiledAt": "2026-11-17T10:08:48.010Z",
+  "plan": {
+    "summary": "Sacrifice all non-pawn pieces while preserving all pawns, then promote every pawn to a knight, and finally deliver checkmate with a knight.",
+    "style": "humiliating",
+    "terminal": {
+      "kind": "win",
+      "priority": "milestones_first"
+    },
+    "hardConstraints": [
+      {
+        "id": "promote_only_knights",
+        "description": "Never promote a pawn to any piece other than a knight.",
+        "predicate": "last_move_was_promotion() && last_move_piece() != 'knight'"
+      },
+      {
+        "id": "protect_pawns_before_promotion",
+        "description": "Do not lose any pawn before the first promotion to a knight.",
+        "predicate": "piece_count(self, pawn) < 8 && promoted_count(self, knight) == 0"
+      }
+    ],
+    "milestones": [
+      {
+        "id": "reduce_to_pawns",
+        "description": "Eliminate all non-pawn pieces while keeping all eight pawns.",
+        "completion": "non_pawn_count(self) == 0 && piece_count(self, pawn) == 8",
+        "infeasible": "piece_count(self, pawn) < 8",
+        "tolerance": "medium",
+        "weight": 5,
+        "moveBudget": 60
+      },
+      {
+        "id": "promote_all_pawns_to_knights",
+        "description": "Promote all pawns to knights.",
+        "completion": "promoted_count(self, knight) == 8",
+        "infeasible": "piece_count(self, pawn) == 0 && promoted_count(self, knight) < 8",
+        "tolerance": "loose",
+        "weight": 5,
+        "moveBudget": 100
+      },
+      {
+        "id": "checkmate_with_knight",
+        "description": "Deliver checkmate using a knight.",
+        "completion": "is_checkmate() && mated_by(self, knight)",
+        "tolerance": "tight",
+        "weight": 4
+      }
+    ],
+    "fallback": [
+      "complete_remaining_milestones",
+      "secure_terminal",
+      "play_best"
+    ]
+  }
+}

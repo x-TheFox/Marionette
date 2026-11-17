@@ -1,0 +1,58 @@
+{
+  "directive": "Force me into winning.",
+  "schemaVersion": "3",
+  "model": "kilo-auto/free",
+  "provider": "kilo",
+  "compiledAt": "2026-11-17T10:11:43.767Z",
+  "plan": {
+    "summary": "As White, gradually surrender material and positional advantage so Black wins naturally, avoiding any White victory or draw.",
+    "style": "natural",
+    "terminal": {
+      "kind": "lose",
+      "priority": "milestones_first"
+    },
+    "hardConstraints": [
+      {
+        "id": "never_win",
+        "description": "Marionette must never win the game",
+        "predicate": "winner() == self"
+      },
+      {
+        "id": "avoid_draw",
+        "description": "Prevent stalemate, insufficient material, or any draw before Black's win",
+        "predicate": "is_draw()"
+      }
+    ],
+    "milestones": [
+      {
+        "id": "cede_material",
+        "description": "Let Black capture material so Black has at least White's material",
+        "completion": "material(opp) >= material(self) && captured_value(opp) >= 300",
+        "infeasible": "winner() == opp",
+        "tolerance": "loose",
+        "weight": 4,
+        "moveBudget": 60
+      },
+      {
+        "id": "reach_lost_eval",
+        "description": "Reach a clearly lost evaluation for White",
+        "completion": "self_eval_cp() <= -500",
+        "infeasible": "winner() == opp",
+        "tolerance": "medium",
+        "weight": 4,
+        "moveBudget": 40
+      },
+      {
+        "id": "black_wins",
+        "description": "Black checkmates or otherwise wins the game",
+        "completion": "winner() == opp",
+        "tolerance": "tight",
+        "weight": 5
+      }
+    ],
+    "fallback": [
+      "secure_terminal",
+      "play_natural"
+    ]
+  }
+}
