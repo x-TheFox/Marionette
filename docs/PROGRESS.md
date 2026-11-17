@@ -93,3 +93,59 @@ Phase 2 steering iteration continues toward D1/D6; bars stay frozen.
 - **Features:** ideation proposal beyond the original list posted in
   `docs/FEATURE-PROPOSAL.md` (F1..F8, ranked by impact/effort) — awaiting
   user selection.
+
+## Phase 2 steering iteration #2 — D1/D6 deep dive (2026-11-17)
+
+Eight steering-layer fixes, each traced to reproduced positions; success bars
+stay frozen, D6 stays expectedFail (0% < 40%).
+
+**Ordered-column semantics (clarification):** D1/D4/D6 are milestones-first
+plans judged on ordered completion; D3 is terminal-first and judged on style
+bars only; D2/D5 are milestones-first but judged on result/style bars only —
+for those, Ordered is informational. Flag (D2): in the quick sweep only 3/12
+losses reached material(self)==0; the d2 bars pass by losing, often without
+executing the shed (one loss at shed partial 0.00 in 33 plies).
+
+**Fixes:**
+1. Guarded conjunct value — steering follows the MEAN of top-level conjunct
+   credits minus 0.5 per satisfied conjunct broken (exact-count guards).
+   Before: D6's queen (queen==1 at 1.0) was traded on move 12; D1's pawns
+   (pawn==8) fell by ply ~10 in 11/12 games — both invisible under min().
+2. Greedy-capture reply model (0.35) beside the PV reply (0.55) — offers now
+   score when the opponent CAN grab them, not only when depth-14 would.
+3. Promotion-chain marches — pawn pushes generated for promoted_count /
+   wantsMore atoms (promotions alone only appear on the final ply).
+4. Stall detection on the conjunct mean — mid-shed progress on a non-binding
+   conjunct no longer reads as a stall.
+5. Shedding λ cap (0.12) + behind-raise exemptions — eval damage IS the
+   progress for shedding milestones; the raise only applies to terminal
+   steering (terminal-first plans or no milestone left).
+6. Tri-state replan — a stall-protected milestone keeps steering instead of
+   falling to the fallback ladder (D6's ladder lacks complete_remaining and
+   engine-best play stalemated a K+Q endgame).
+7. Repetition-aware prematureEnd — the runner passes repeated position keys;
+   would-be threefolds are scored as premature ends.
+8. Budget+stall semantics and activation-anchored stall clock — the move
+   budget only forces a replan when progress also stopped (was: 10/10 D6
+   games dropped at ply 80 at partial 0.40-0.88); a just-activated milestone
+   no longer reads as stalled-since-ply-0.
+
+**Re-run (10 games/cell, 80 games, seeds 42+):**
+- D1 ordered-full: 0% at every ELO (bar ≥30% ≤1600: FAIL). reduce_to_pawns
+  avg partial 0.25 → 0.35; but the plan's own `piece_count(self,pawn) < 8`
+  infeasible predicate fired in 40/40 games (pawn lost at plies 5-85,
+  median ~19) — one opponent pawn capture ends the directive. No steering
+  fix can pass a predicate that declares the milestone dead.
+- D6 ordered-full: 0% at every ELO (bar ≥40% ≤1600: FAIL, expected).
+  reduce_to_kq avg partial 0.49 → 0.73; fates: 30/40 budget+stall drops at
+  plies 82-108, 6 survived to game end, 4 honest infeasibility. Closest
+  finals: K+Q+1P (x2), wrong singleton kept (2Q/1R/1B x5), stranded pawns
+  (x8); zero games ended exactly K+Q.
+
+**Remaining blockers are plan-level, not steering-level:** D1 needs
+survivorship semantics ("promote all SURVIVING pawns"), D6 needs a realistic
+budget (~140 plies) and possibly split shed milestones. Recommend a v3 plan
+recompile for D1/D6 with that guidance (one LLM call each), pending approval.
+Full D2-D5 refresh sweep recommended after any plan change (shared steering
+machinery changed this iteration: D2 shedding should improve under the λ cap
++ greedy model).
