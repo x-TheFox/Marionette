@@ -2,7 +2,7 @@ import { Chess } from 'chess.js';
 import { LlmChainError } from '@marionette/llm';
 import type { LlmChain } from '@marionette/llm';
 import { UciEngine, configureStrength, pickEmulatedMove, mulberry32 } from '@marionette/uci';
-import { buildContext, evalPredicate } from '../dsl/index.js';
+import { buildContext, evalPredicate, compilePredicate } from '../dsl/index.js';
 import type { GameContext, Side } from '../dsl/types.js';
 import { compileDirectivePlan } from '../compiler/compile.js';
 import type { CompiledPlan } from '../plan/schema.js';
@@ -372,6 +372,12 @@ export async function runDirectiveGame(opts: RunnerOptions): Promise<GameReport>
     const finalPly = game.history().length;
     tracker.update(ctxOf(), finalPly); // final predicate pass
     const finalCtx = ctxOf();
+    // Final-position sweep (reporting only): a milestone whose completion
+    // predicate holds in the final position is reported completed — even when
+    // the ordered progression never activated it (a mate can arrive before an
+    // earlier milestone finishes) and even for milestones a replan dropped.
+    // Steering stays strictly ordered; reports state facts.
+    finalPositionSweep(tracker, compiled, state.dropped, finalCtx, finalPly, notes);
     const terminal = terminalMet(compiled, finalCtx);
     const endReason = detectEnd(game, maxPlies);
     const result = resultOf(game, endReason);
@@ -559,6 +565,40 @@ export async function runDirectiveGame(opts: RunnerOptions): Promise<GameReport>
 
 // ---------------------------------------------------------------------------
 // pure helpers
+
+/**
+ * Final-position sweep (reporting only): mark every milestone whose completion
+ * predicate holds in the final position as completed — including ones the
+ * ordered progression never reached and ones a replan dropped. Returns notes.
+ * Steering logic is unaffected: ordering there stays strict.
+ */
+export function finalPositionSweep(
+  tracker: PlanTracker,
+  compiled: CompiledPlan,
+  dropped: DroppedMilestone[],
+  finalCtx: GameContext,
+  finalPly: number,
+  notes: string[],
+): void {
+  for (let i = 0; i < compiled.milestones.length; i++) {
+    const ms = compiled.milestones[i]!;
+    const st = tracker.states[i]!;
+    if (!st.completed && evalPredicate(ms.completion, finalCtx)) {
+      st.completed = true;
+      st.completedAtPly = finalPly;
+      st.bestPartial = 1;
+      notes.push(`milestone '${ms.spec.id}' held at game end (final-position sweep)`);
+    }
+  }
+  for (const d of dropped) {
+    if (!d.completed && evalPredicate(compilePredicate(d.completion), finalCtx)) {
+      d.completed = true;
+      d.completedAtPly = finalPly;
+      d.bestPartial = 1;
+      notes.push(`dropped milestone '${d.id}' nevertheless held at game end`);
+    }
+  }
+}
 
 /**
  * Report milestone list anchored to the ORIGINAL plan: dropped milestones stay
@@ -769,7 +809,10 @@ export function renderReport(r: GameReport): string {
     const box = m.completed ? 'x' : ' ';
     let detail: string;
     if (m.completed) {
-      detail = `completed at ply ${m.completedAtPly}`;
+      detail =
+        m.droppedAtPly != null
+          ? `completed at ply ${m.completedAtPly} (was dropped at ply ${m.droppedAtPly}; predicate held at game end)`
+          : `completed at ply ${m.completedAtPly}`;
     } else if (m.droppedAtPly != null) {
       detail = `DROPPED at ply ${m.droppedAtPly} (${m.dropReason ?? 'replan'}), partial ${Math.round(m.bestPartial * 100)}%`;
     } else {

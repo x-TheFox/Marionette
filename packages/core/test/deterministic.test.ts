@@ -1,9 +1,11 @@
 import { describe, it, expect } from 'vitest';
 import { compilePlan } from '../src/plan/schema.js';
 import { deterministicReplan } from '../src/game/deterministic.js';
-import { buildReportMilestones } from '../src/game/runner.js';
+import { buildReportMilestones, finalPositionSweep } from '../src/game/runner.js';
 import { PlanTracker } from '../src/game/tracker.js';
 import { heuristicJudge, blunderStats, JUDGE_THRESHOLDS } from '../src/game/judge.js';
+import { buildContext } from '../src/dsl/index.js';
+import { Chess } from 'chess.js';
 import type { GameReport } from '../src/game/runner.js';
 import type { ProgressReport } from '../src/compiler/prompt.js';
 
@@ -109,6 +111,61 @@ describe('report milestones survive replans (dropped work stays visible)', () =>
     const ms = buildReportMilestones(tracker, revisedPlan, original.milestones, []);
     const extra = ms.find((m) => m.id === 'extra_goal')!;
     expect(extra.addedByReplan).toBe(true);
+  });
+});
+
+describe('final-position sweep (reporting only)', () => {
+  it('marks a never-activated milestone completed when its predicate holds at game end', () => {
+    // D2 shape: shed (incomplete) -> mated. Mate arrived while shed was active,
+    // so get_checkmated never activated - but it DID hold at the end.
+    const compiled = compilePlan({
+      summary: 'shed and lose',
+      style: 'none',
+      terminal: { kind: 'lose', priority: 'milestones_first' },
+      hardConstraints: [],
+      milestones: [
+        { id: 'shed', description: 'shed all', completion: 'material(self) == 0', tolerance: 'loose', weight: 5 },
+        { id: 'mated', description: 'be mated', completion: 'is_checkmate() && winner() == opp', tolerance: 'tight', weight: 5 },
+      ],
+      fallback: ['secure_terminal'],
+    });
+    const tracker = new PlanTracker(compiled, 'w');
+    // Final position shape: white (self) is checkmated but still holds material
+    // (a normal opening position is fine - we override the terminal fields).
+    const mate = new Chess('rnbqkbnr/pppp1ppp/8/4p3/5PP1/8/PPPPP2P/RNBQKBNR w KQkq - 0 2');
+    const ctx = buildContext(mate, 'w', { evalWhiteCp: 0, mateWhite: null });
+    (ctx as { checkmate: boolean }).checkmate = true;
+    (ctx as { winner: string | null }).winner = 'b';
+    const notes: string[] = [];
+    finalPositionSweep(tracker, compiled, [], ctx, 44, notes);
+    expect(tracker.states[1]!.completed).toBe(true);
+    expect(tracker.states[1]!.completedAtPly).toBe(44);
+    expect(tracker.states[0]!.completed).toBe(false); // shed really didn't finish
+    expect(notes.some((n) => n.includes("'mated' held at game end"))).toBe(true);
+  });
+
+  it('marks a dropped milestone completed when its predicate holds at game end', () => {
+    const compiled = compilePlan(D6_LIKE);
+    const dropped = [
+      {
+        id: 'reduce_to_kq',
+        description: 'reduce to K+Q',
+        completion: 'piece_count(self, queen) == 1 && non_pawn_count(self) == 1',
+        tolerance: 'loose',
+        weight: 5,
+        completed: false,
+        bestPartial: 0.7,
+        droppedAtPly: 44,
+        reason: 'stalled',
+      },
+    ];
+    const bare = new Chess('4k3/8/8/8/8/8/8/3QK3 w - - 0 40'); // exactly K+Q for white
+    const ctx = buildContext(bare, 'w', { evalWhiteCp: 0, mateWhite: null });
+    const tracker = new PlanTracker(compiled, 'w');
+    const notes: string[] = [];
+    finalPositionSweep(tracker, compiled, dropped, ctx, 80, notes);
+    expect(dropped[0]!.completed).toBe(true);
+    expect(notes.some((n) => n.includes('nevertheless held at game end'))).toBe(true);
   });
 });
 
