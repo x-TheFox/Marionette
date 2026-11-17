@@ -22,7 +22,7 @@ export interface Candidate {
   motive: string;
 }
 
-const MAX_MOTIVATED = 4;
+const MAX_MOTIVATED = 5;
 
 interface VerboseMove {
   from: string;
@@ -173,9 +173,52 @@ export function motivatedCandidates(
       }
       case 'promoted_count':
       case 'piece_count': {
-        if (isSelfAtom && piece && piece !== 'pawn' && piece !== 'king') {
-          const letter = piece === 'knight' ? 'n' : piece === 'bishop' ? 'b' : piece === 'rook' ? 'r' : 'q';
-          for (const m of legal) if (m.promotion === letter) push(m, `${atom.fn}(self, ${piece}): ${m.san}`);
+        if (isSelfAtom && piece && piece !== 'king') {
+          if (piece === 'pawn') {
+            // pawn counts: shed toward a lower target via pawn trades AND
+            // pawn offers (a pawn attacked by anything sheds eventually —
+            // the binding-atom credit rises with every pawn lost).
+            const target = atom.target ?? 0;
+            const wantsFewer = atom.op != null && ['==', '<', '<='].includes(atom.op) && ctx.pieces[ctx.self].pawn > target;
+            if (wantsFewer) {
+              for (const m of legal) {
+                if (m.captured && m.piece === 'p') {
+                  push(m, `piece_count(self, pawn): trade ${m.san}`);
+                  continue;
+                }
+                if (!m.captured && m.piece === 'p' && m.promotion == null) {
+                  // Pawn offer: after the push some opponent capture takes the pawn.
+                  game.move({ from: m.from, to: m.to });
+                  const attacked = (game.moves({ verbose: true }) as VerboseMove[]).some(
+                    (r) => r.captured != null && r.to === m.to,
+                  );
+                  game.undo();
+                  if (attacked) push(m, `piece_count(self, pawn): offer ${m.san}`);
+                }
+              }
+            }
+          } else {
+            const letter = piece === 'knight' ? 'n' : piece === 'bishop' ? 'b' : piece === 'rook' ? 'r' : 'q';
+            const cur = ctx.pieces[ctx.self][piece];
+            const target = atom.target ?? 0;
+            const wantsMore = atom.op != null && ['>', '>='].includes(atom.op) && cur < target;
+            const wantsExactMore = atom.op === '==' && cur < target;
+            const wantsFewer = atom.op != null && ['<', '<=', '=='].includes(atom.op) && cur > target;
+            if (wantsMore || wantsExactMore) {
+              // Acquire: promote to this piece.
+              for (const m of legal) if (m.promotion === letter) push(m, `${atom.fn}(self, ${piece}): promote ${m.san}`);
+            } else if (wantsFewer) {
+              // Shed: trade down this piece type or offer it.
+              for (const m of legal) {
+                if (m.captured && m.piece === letter) push(m, `piece_count(self, ${piece}): trade ${m.san}`);
+              }
+              for (const m of legal) {
+                if (!m.captured && m.piece === letter && m.promotion == null && isHangingOffer(game, m, oppSide)) {
+                  push(m, `piece_count(self, ${piece}): offer ${m.san}`);
+                }
+              }
+            }
+          }
         }
         break;
       }

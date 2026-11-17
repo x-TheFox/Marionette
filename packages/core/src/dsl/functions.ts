@@ -355,44 +355,60 @@ export const MOTIVATABLE = new Set([
 
 /**
  * Partial credit (0..1) of a predicate on a context: how close the state is to
- * satisfying it. Boolean structure is flattened; the closest comparison atom
- * drives the score. Used by the steering layer as a progress gradient.
+ * satisfying it. Fuzzy semantics over the boolean structure: AND = min of
+ * conjuncts (all must hold), OR = max, NOT = 1−c. Transient boolean calls
+ * (is_check, last_move_*) are neutral 0.5 when false so they don't zero out
+ * progress driven by their siblings. Used by the steering layer as a progress
+ * gradient and by the tracker as milestone partial credit.
  */
 export function partialCredit(ast: Node, ctx: GameContext): number {
   if (evaluatePredicate(ast, ctx)) return 1;
-  let best = 0;
-  const visit = (n: Node): void => {
-    switch (n.k) {
-      case 'cmp': {
-        const credit = cmpCredit(n, ctx);
-        if (credit > best) best = credit;
-        break;
-      }
-      case 'and':
-      case 'or':
-        visit(n.l);
-        visit(n.r);
-        break;
-      case 'not':
-        visit(n.e);
-        break;
-      case 'call': {
-        if (FUNCTIONS[n.fn]?.ret === 'boolean') {
-          // boolean call standing alone: half credit when gradient-ish signals exist
-          if (n.fn === 'mated_by' || n.fn === 'is_checkmate') {
-            const c = evalNode(n, ctx);
-            if (c === true) best = Math.max(best, 1);
-            else if (ctx.lastMove?.wasCheck) best = Math.max(best, 0.5);
-          }
+  return Math.max(0, Math.min(1, fuzzyCredit(ast, ctx)));
+}
+
+const TRANSIENT_BOOLEANS = new Set([
+  'is_check',
+  'last_move_was_capture',
+  'last_move_was_check',
+  'last_move_was_promotion',
+]);
+
+function fuzzyCredit(n: Node, ctx: GameContext): number {
+  switch (n.k) {
+    case 'cmp':
+      return cmpCredit(n, ctx);
+    case 'and':
+      return Math.min(fuzzyCredit(n.l, ctx), fuzzyCredit(n.r, ctx));
+    case 'or':
+      return Math.max(fuzzyCredit(n.l, ctx), fuzzyCredit(n.r, ctx));
+    case 'not':
+      return 1 - fuzzyCredit(n.e, ctx);
+    case 'call': {
+      // Boolean call as a (sub)expression.
+      if (n.fn === 'is_checkmate' || n.fn === 'mated_by') {
+        try {
+          if (evalNode(n, ctx) === true) return 1;
+        } catch {
+          return 0;
         }
-        break;
+        return ctx.lastMove?.wasCheck ? 0.5 : 0;
       }
-      default:
-        break;
+      if (TRANSIENT_BOOLEANS.has(n.fn)) {
+        try {
+          return evalNode(n, ctx) === true ? 1 : 0.5;
+        } catch {
+          return 0.5;
+        }
+      }
+      try {
+        return evalNode(n, ctx) === true ? 1 : 0;
+      } catch {
+        return 0;
+      }
     }
-  };
-  visit(ast);
-  return Math.max(0, Math.min(1, best));
+    default:
+      return 0;
+  }
 }
 
 function cmpCredit(n: Extract<Node, { k: 'cmp' }>, ctx: GameContext): number {

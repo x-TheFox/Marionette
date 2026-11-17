@@ -1,0 +1,10 @@
+[Event "Marionette directive game"]
+[Site "marionette-cli"]
+[Date "2026.11.17"]
+[Round "?"]
+[White "Marionette"]
+[Black "Stockfish-19 (Elo 1600)"]
+[Result "1-0"]
+[Annotator "plan: Trade or sacrifice everything except king and queen, then win the K+Q endgame"]
+
+1. e4 c5 2. d4 d5 3. exd5 Qxd5 4. dxc5 Qe5+ 5. Qe2 Qxc5 6. Nc3 Bd7 7. Bf4 a6 8. Ne4 Qa5+ 9. Qd2 Qf5 10. Bd3 Qh5 11. Nf3 Nc6 12. O-O-O Qd5 13. Nc3 Qa5 14. Bxa6 Nf6 15. Bxb7 Nb4 16. Bxa8 g5 17. Be5 g4 18. Bxf6 Qa7 19. Bxh8 Bg7 20. Bxg7 f6 21. a3 g3 22. fxg3 Qxa8 23. Qxd7+ Kf7 24. Ne5+ fxe5 25. Rhf1+ Qf3 26. Rxf3+ Kxg7 27. Qxe7+ Kg6 28. Rd6+ Kh5 29. Qh4# 1-0

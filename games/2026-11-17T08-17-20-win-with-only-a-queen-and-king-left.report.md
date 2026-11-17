@@ -1,0 +1,38 @@
+# Marionette game report
+
+- **Directive:** "Win with only a queen and king left."
+- **Setup:** Marionette as White vs Stockfish 19 @ 1350 Elo (native UCI_Elo), steering depth 14, MultiPV 5
+- **Result:** 1/2-1/2 after 51 moves (threefold_repetition)
+- **Terminal condition:** NOT MET
+- **Plan:** from cache, 2 replan(s)
+- **Marionette ACPL:** 0.2 cp over 51 steered moves (51 total)
+
+## Milestones
+- [x] promote_to_queen (w=5, tol=medium) — completed at ply 55: Promote at least one pawn to a queen.
+  - predicate: `promoted_count(self, queen) >= 1`
+- [ ] reduce_to_kq (w=5, tol=loose) — incomplete, partial 70%: Reduce own material to exactly king and queen, with no pawns or other pieces.
+  - predicate: `piece_count(self, queen) == 1 && piece_count(self, pawn) == 0 && non_pawn_count(self) == 1`
+- [ ] deliver_mate (w=5, tol=tight) — incomplete, partial 0%: Deliver checkmate with the queen while only king and queen remain.
+  - predicate: `is_checkmate() && winner() == self && mated_by(self, queen)`
+
+## Replans
+- ply 26: milestone reduce_to_kq stalled: no partial progress for ~16 plies (kilo)
+- ply 42: milestone promote_to_queen stalled: no partial progress for ~16 plies (kilo)
+
+## Notes
+- 2 milestone(s) incomplete at game end
+- game-end constraint 'avoid_draw' violated: Do not allow the game to end in a draw, stalemate, or insufficient material.
+
+## PGN
+```
+[Event "Marionette directive game"]
+[Site "marionette-cli"]
+[Date "2026.11.17"]
+[Round "?"]
+[White "Marionette"]
+[Black "Stockfish-19 (Elo 1350)"]
+[Result "1/2-1/2"]
+[Annotator "plan: Revise the stalled promotion plan: force at least one pawn to promote, then elim"]
+
+1. e4 c5 2. d4 cxd4 3. Nf3 Nc6 4. Nxd4 e5 5. Nxc6 dxc6 6. Qxd8+ Kxd8 7. Nd2 Kc7 8. a4 Nh6 9. Bc4 Be7 10. O-O b6 11. h3 Rf8 12. a5 Rb8 13. f4 b5 14. Bd3 exf4 15. Nf3 Bd6 16. e5 Bc5+ 17. Kh2 Bf5 18. Bxf4 Rbd8 19. Ng5 Bxd3 20. e6+ Rd6 21. cxd3 Bb4 22. exf7 Kd7 23. Bxd6 Kxd6 24. Rf4 c5 25. a6 Kc6 26. Ne6 g5 27. Rff1 Ra8 28. f8=Q Ng4+ 29. hxg4 Rxf8 30. Nxf8 h5 31. Rf7 Kb6 32. Rb7+ Kc6 33. Ne6 c4 34. gxh5 c3 35. bxc3 Bxc3 36. Rb1 b4 37. R1xb4 Bxb4 38. Rxb4 Kd6 39. Nxg5 Kc5 40. Rb3 Kc6 41. Ne4 Kd7 42. h6 Ke6 43. h7 Ke5 44. h8=Q+ Kd5 45. Rb7 Kc6 46. Qf6+ Kd5 47. Nc3+ Kc5 48. Na4+ Kd5 49. Nc3+ Kc5 50. Na4+ Kd5 51. Nc3+ 1/2-1/2
+```

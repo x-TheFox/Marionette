@@ -78,7 +78,7 @@ export async function compileDirectivePlan(opts: CompileOptions): Promise<Compil
   const result = await opts.llm.chat({
     system: GOAL_COMPILER_SYSTEM,
     user,
-    maxTokens: opts.maxTokens ?? 8192,
+    maxTokens: opts.maxTokens ?? 16_384,
     temperature: 0.2,
     validate: (raw) => {
       try {

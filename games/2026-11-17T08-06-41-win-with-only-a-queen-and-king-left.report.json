@@ -1,0 +1,51 @@
+{
+  "directive": "Win with only a queen and king left.",
+  "selfColor": "w",
+  "result": "1-0",
+  "endReason": "checkmate",
+  "terminalMet": true,
+  "plies": 57,
+  "moveNumber": 29,
+  "milestones": [
+    {
+      "id": "reduce_to_kq",
+      "description": "Reduce own material to exactly king + queen",
+      "completion": "piece_count(self, queen) == 1 && piece_count(self, pawn) == 0 && non_pawn_count(self) == 1",
+      "tolerance": "loose",
+      "weight": 5,
+      "completed": false,
+      "bestPartial": 0.4
+    },
+    {
+      "id": "deliver_mate",
+      "description": "Deliver checkmate with king and queen",
+      "completion": "is_checkmate() && winner() == self",
+      "tolerance": "tight",
+      "weight": 4,
+      "completed": false,
+      "bestPartial": 0
+    }
+  ],
+  "violations": [],
+  "replans": [],
+  "fallbackEngaged": "secure_terminal",
+  "acplSelf": 0.35000000000000003,
+  "steeredMoves": 11,
+  "marionetteMoves": 29,
+  "planFromCache": true,
+  "planProvider": "kilo",
+  "planModel": "kilo-auto/free",
+  "opponentElo": 1600,
+  "opponentEmulated": false,
+  "steerDepth": 14,
+  "steerMultiPV": 5,
+  "elapsedMs": 174521,
+  "pgn": "[Event \"Marionette directive game\"]\n[Site \"marionette-cli\"]\n[Date \"2026.11.17\"]\n[Round \"?\"]\n[White \"Marionette\"]\n[Black \"Stockfish-19 (Elo 1600)\"]\n[Result \"1-0\"]\n[Annotator \"plan: Trade or sacrifice everything except king and queen, then win the K+Q endgame\"]\n\n1. e4 c5 2. d4 d5 3. exd5 Qxd5 4. dxc5 Qe5+ 5. Qe2 Qxc5 6. Nc3 Bd7 7. Bf4 a6 8. Ne4 Qa5+ 9. Qd2 Qf5 10. Bd3 Qh5 11. Nf3 Nc6 12. O-O-O Qd5 13. Nc3 Qa5 14. Bxa6 Nf6 15. Bxb7 Nb4 16. Bxa8 g5 17. Be5 g4 18. Bxf6 Qa7 19. Bxh8 Bg7 20. Bxg7 f6 21. a3 g3 22. fxg3 Qxa8 23. Qxd7+ Kf7 24. Ne5+ fxe5 25. Rhf1+ Qf3 26. Rxf3+ Kxg7 27. Qxe7+ Kg6 28. Rd6+ Kh5 29. Qh4# 1-0",
+  "notes": [
+    "replan failed at ply 22 (all LLM providers failed or were skipped); engaging fallback",
+    "fallback engaged at ply 22 (replan failed: milestone reduce_to_kq stalled: no partial progress for ~16 plies): best toward terminal win"
+  ],
+  "elapsedSeconds": 175,
+  "pgnPath": "/home/z/my-project/marionette/games/2026-11-17T08-06-41-win-with-only-a-queen-and-king-left.pgn",
+  "reportPath": "/home/z/my-project/marionette/games/2026-11-17T08-06-41-win-with-only-a-queen-and-king-left.report.md"
+}

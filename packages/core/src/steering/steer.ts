@@ -225,22 +225,34 @@ export async function steerMove(opts: SteerOptions): Promise<SteerDecision> {
       if (ctx2) {
         const afterReply = predicatePartial(active.completion, ctx2);
         // Blend: half the (possibly negative) reply-credit movement.
-        delta = delta + 0.5 * (afterReply - after);
+        delta = delta + 0.75 * (afterReply - after);
       }
     }
 
     // Terminal: does this candidate end the game the directive wants?
+    // The big terminal bonus is only granted when the plan says terminal-first
+    // or no milestones remain — otherwise a normal win would dwarf directive
+    // progress (D6 lesson). Conversely, ending the game prematurely (mate,
+    // stalemate, draw) while milestones remain incomplete is a directive
+    // FAILURE: the remaining milestones can never complete → hard penalty.
     const terminal = compiled.plan.terminal;
-    const achievesTerminal =
+    const terminalEligible = terminal.priority === 'terminal_first' || activeIdx == null;
+    const terminalNow =
       (terminal.kind === 'win' && e.ctxAfter.checkmate && e.ctxAfter.winner === self) ||
       (terminal.kind === 'pattern' && compiled.terminalPattern != null && evalPredicate(compiled.terminalPattern, e.ctxAfter)) ||
       (terminal.kind === 'draw' && e.ctxAfter.draw);
+    const achievesTerminal = terminalEligible && terminalNow;
+    // Premature end: game over while milestones remain AND this candidate
+    // doesn't complete the active milestone (completing the final mate
+    // milestone is legitimate). Applies to early mates, stalemates and draws.
+    const prematureEnd = !terminalEligible && e.ctxAfter.over && activeIdx != null && !completes;
 
     const parts = scoreCandidate(
       {
         deltaProgress: delta,
         completes,
         achievesTerminal,
+        prematureEnd,
         evalSelfCp: e.evalSelfCp,
         bestEvalSelfCp: bestEvalSelf,
       },

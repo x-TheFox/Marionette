@@ -3,7 +3,7 @@ import { Chess } from 'chess.js';
 import { compilePlan } from '../src/plan/schema.js';
 import { lambdaFor, scoreCandidate, progressWeight, completionBonus } from '../src/steering/scorer.js';
 import { motivatedCandidates } from '../src/steering/candidates.js';
-import { buildContext } from '../src/dsl/index.js';
+import { buildContext, predicatePartial, compilePredicate } from '../src/dsl/index.js';
 import type { GameContext } from '../src/dsl/types.js';
 
 function plan(raw: unknown) {
@@ -14,6 +14,10 @@ function ctx(moves: string[], self: 'w' | 'b', evalWhiteCp = 100): GameContext {
   const g = new Chess();
   for (const m of moves) g.move(m);
   return buildContext(g, self, { evalWhiteCp, mateWhite: null });
+}
+
+function fenCtx(fen: string, self: 'w' | 'b', evalWhiteCp = 0): GameContext {
+  return buildContext(new Chess(fen), self, { evalWhiteCp, mateWhite: null });
 }
 
 const WIN_PLAN = {
@@ -81,7 +85,6 @@ describe('scoring', () => {
       2.4,
     );
     expect(completing.total).toBeGreaterThan(losing.total);
-    // completion bonus (300+120) far exceeds λ·3 pawns (7.2)
     expect(completing.total - losing.total).toBeGreaterThan(400);
   });
 
@@ -121,14 +124,51 @@ describe('scoring', () => {
   });
 });
 
+describe('partial credit semantics (D6 regression)', () => {
+  const KQ_PREDICATE = 'piece_count(self, queen) == 1 && piece_count(self, pawn) == 0 && non_pawn_count(self) == 1';
+
+  it('AND predicates use min semantics: one satisfied atom cannot fake full credit', () => {
+    const p = compilePredicate(KQ_PREDICATE);
+    // Queen on board, but 8 pawns and 6 other pieces: old max-semantics gave 1.0.
+    const startCtx = ctx(['e4', 'e5', 'Qh5', 'b6'], 'w');
+    const credit = predicatePartial(p, startCtx);
+    expect(credit).toBeLessThan(0.5);
+    expect(credit).toBeGreaterThan(0);
+  });
+
+  it('partial credit rises as the position approaches the target state', () => {
+    const p = compilePredicate(KQ_PREDICATE);
+    // Heavy: queen + 6 pieces + 8 pawns; light: exactly K+Q. Min-driven credit rises.
+    const heavy = fenCtx('rnbqkbnr/pppppppp/8/8/8/5Q2/PPPPPPPP/RNB1KB1R w KQkq - 0 1', 'w');
+    const light = fenCtx('4k3/8/8/8/8/5Q2/8/4K3 w - - 0 1', 'w');
+    const cHeavy = predicatePartial(p, heavy);
+    const cLight = predicatePartial(p, light);
+    expect(cHeavy).toBeLessThan(cLight);
+    expect(cLight).toBe(1); // state fully satisfies the predicate
+  });
+
+  it('pawns-shed credit grows as pawn count drops', () => {
+    const p = compilePredicate('piece_count(self, pawn) == 0');
+    const eight = fenCtx('rnbqkbnr/pppppppp/8/8/8/5Q2/PPPPPPPP/RNB1KB1R w KQkq - 0 1', 'w');
+    const four = fenCtx('rnbqkbnr/pppppppp/8/8/8/5Q2/PP3PP1/RNB1KB1R w KQkq - 0 1', 'w');
+    const none = fenCtx('rnbqkbnr/pppppppp/8/8/8/5Q2/8/RNB1KB1R w KQkq - 0 1', 'w');
+    const c8 = predicatePartial(p, eight);
+    const c4 = predicatePartial(p, four);
+    const c0 = predicatePartial(p, none);
+    expect(c4).toBeGreaterThan(c8);
+    expect(c0).toBeGreaterThan(c4);
+  });
+});
+
 describe('motivated candidates', () => {
   it('finds captures for captured_value(opp) atoms', () => {
     const compiled = plan(WIN_PLAN);
     const g = new Chess('rnbqkbnr/pppp1ppp/8/4p3/2B1P3/8/PPPP1PPP/RNBQK1NR w KQkq - 0 1');
     const ctxNow = buildContext(g, 'w', { evalWhiteCp: 0, mateWhite: null });
     const cands = motivatedCandidates(compiled, ctxNow, 0, new Set());
-    // milestone 0 completion: captured_value(opp) >= 500 → our captures
-    expect(cands.some((c) => c.san === 'Bxf7+' || c.san === 'Bxg8' || c.motive.includes('captured_value(opp)'))).toBe(true);
+    expect(
+      cands.some((c) => c.san === 'Bxf7+' || c.san === 'Bxg8' || c.motive.includes('captured_value(opp)')),
+    ).toBe(true);
     expect(cands.every((c) => c.source === 'motivated')).toBe(true);
   });
 
@@ -150,7 +190,31 @@ describe('motivated candidates', () => {
     expect(cands.every((c) => c.motive.includes('captured_value(self)'))).toBe(true);
   });
 
-  it('deduplicates against engine lines and cap at 4', () => {
+  it('generates shed trades for piece_count(self, X) == smaller target (D6)', () => {
+    const compiled = plan({
+      summary: 'reduce to kq',
+      style: 'none',
+      terminal: { kind: 'win', priority: 'milestones_first' },
+      hardConstraints: [],
+      milestones: [
+        {
+          id: 'reduce',
+          description: 'reduce',
+          completion: 'piece_count(self, queen) == 1 && piece_count(self, pawn) == 0 && non_pawn_count(self) == 1',
+          tolerance: 'loose',
+          weight: 5,
+        },
+      ],
+      fallback: ['play_best'],
+    });
+    const g = new Chess('4k3/8/8/r7/8/8/8/R3K3 w - - 0 1'); // white Ra1, black Ra5 → Rxa5 trade
+    const ctxNow = buildContext(g, 'w', { evalWhiteCp: 0, mateWhite: null });
+    const cands = motivatedCandidates(compiled, ctxNow, 0, new Set());
+    // The non_pawn_count(self)==1 atom (2 > 1) generates the rook trade.
+    expect(cands.some((c) => c.motive.includes('trade') && c.uci === 'a1a5')).toBe(true);
+  });
+
+  it('deduplicates against engine lines and caps at 4', () => {
     const compiled = plan(WIN_PLAN);
     const g = new Chess('rnbqkbnr/pppp1ppp/8/4p3/2B1P3/8/PPPP1PPP/RNBQK1NR w KQkq - 0 1');
     const ctxNow = buildContext(g, 'w', { evalWhiteCp: 0, mateWhite: null });

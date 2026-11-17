@@ -1,0 +1,73 @@
+{
+  "directive": "Win with only a queen and king left.",
+  "selfColor": "w",
+  "result": "1-0",
+  "endReason": "checkmate",
+  "terminalMet": true,
+  "plies": 43,
+  "moveNumber": 22,
+  "milestones": [
+    {
+      "id": "queen_lost_acknowledged",
+      "description": "Acknowledge that the queen is no longer on the board",
+      "completion": "piece_count(self, queen) == 0 && move_number() >= 15",
+      "tolerance": "tight",
+      "weight": 1,
+      "completed": true,
+      "completedAtPly": 28,
+      "bestPartial": 1
+    },
+    {
+      "id": "reach_winning_endgame",
+      "description": "Simplify into an endgame where white has at least as much material as black",
+      "completion": "phase() == 'endgame' && material(self) >= material(opp)",
+      "tolerance": "medium",
+      "weight": 3,
+      "completed": false,
+      "bestPartial": 0
+    },
+    {
+      "id": "deliver_checkmate",
+      "description": "Deliver checkmate to win the game",
+      "completion": "is_checkmate() && winner() == self",
+      "tolerance": "tight",
+      "weight": 5,
+      "completed": false,
+      "bestPartial": 0
+    }
+  ],
+  "violations": [],
+  "replans": [
+    {
+      "atPly": 17,
+      "reason": "milestone reduce_to_kq stalled: no partial progress for ~16 plies",
+      "provider": "kilo",
+      "model": "kilo-auto/free"
+    },
+    {
+      "atPly": 28,
+      "reason": "milestone reduce_to_kq infeasible: piece_count(self, queen) == 0",
+      "provider": "kilo",
+      "model": "kilo-auto/free"
+    }
+  ],
+  "fallbackEngaged": null,
+  "acplSelf": 0.9259090909090909,
+  "steeredMoves": 22,
+  "marionetteMoves": 22,
+  "planFromCache": true,
+  "planProvider": "kilo",
+  "planModel": "kilo-auto/free",
+  "opponentElo": 1350,
+  "opponentEmulated": false,
+  "steerDepth": 14,
+  "steerMultiPV": 5,
+  "elapsedMs": 103985,
+  "pgn": "[Event \"Marionette directive game\"]\n[Site \"marionette-cli\"]\n[Date \"2026.11.17\"]\n[Round \"?\"]\n[White \"Marionette\"]\n[Black \"Stockfish-19 (Elo 1350)\"]\n[Result \"1-0\"]\n[Annotator \"plan: The queen has been lost, so the original 'win with only king and queen' directiv\"]\n\n1. e4 Nc6 2. d4 d5 3. exd5 Nb4 4. Nf3 Bg4 5. Be2 Bxf3 6. gxf3 Nf6 7. a3 Na6 8. Nc3 Nb8 9. Bf4 Nbd7 10. Qd3 Nb6 11. Be5 Nfxd5 12. Nxd5 Nxd5 13. Qb5+ Qd7 14. Qxd7+ Kxd7 15. O-O-O e6 16. c4 f6 17. cxd5 fxe5 18. dxe5 Ke7 19. f4 g6 20. dxe6 Bh6 21. Rd7+ Kxe6 22. Bg4# 1-0",
+  "notes": [
+    "hard constraint 'keep_queen' violated at ply 28"
+  ],
+  "elapsedSeconds": 104,
+  "pgnPath": "/home/z/my-project/marionette/games/2026-11-17T07-53-31-win-with-only-a-queen-and-king-left.pgn",
+  "reportPath": "/home/z/my-project/marionette/games/2026-11-17T07-53-31-win-with-only-a-queen-and-king-left.report.md"
+}

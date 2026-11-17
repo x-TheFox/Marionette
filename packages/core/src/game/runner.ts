@@ -1,4 +1,5 @@
 import { Chess } from 'chess.js';
+import { LlmChainError } from '@marionette/llm';
 import type { LlmChain } from '@marionette/llm';
 import { UciEngine, configureStrength, pickEmulatedMove, mulberry32 } from '@marionette/uci';
 import { buildContext, evalPredicate } from '../dsl/index.js';
@@ -71,6 +72,8 @@ export interface GameReport {
   replans: { atPly: number; reason: string; provider: string; model: string }[];
   fallbackEngaged: string | null;
   acplSelf: number | null;
+  /** Moves scored through the steering path (ACPL denominator). */
+  steeredMoves: number;
   marionetteMoves: number;
   planFromCache: boolean;
   planProvider: string;
@@ -360,6 +363,7 @@ export async function runDirectiveGame(opts: RunnerOptions): Promise<GameReport>
       replans: [...state.replans],
       fallbackEngaged: state.fallback?.action ?? null,
       acplSelf: state.acplN > 0 ? state.acplSum / state.acplN : null,
+      steeredMoves: state.acplN,
       marionetteMoves: state.marionetteMoves,
       planFromCache: state.compileFromCache,
       planProvider: state.compileProvider,
@@ -412,7 +416,15 @@ export async function runDirectiveGame(opts: RunnerOptions): Promise<GameReport>
       emit({ kind: 'info', message: `new plan: ${r.compiled.plan.summary}` });
       return true;
     } catch (e) {
-      notes.push(`replan failed at ply ${ply} (${e instanceof Error ? e.message : String(e)}); engaging fallback`);
+      const detail =
+        e instanceof LlmChainError
+          ? e.attempts
+              .map((a) => `${a.provider}: ${(a.error ?? a.skipped ?? 'unknown').slice(0, 140)}`)
+              .join(' | ')
+          : e instanceof Error
+            ? e.message
+            : String(e);
+      notes.push(`replan failed at ply ${ply}; engaging fallback [${detail}]`);
       engageFallback(`replan failed: ${reason}`, ply);
       return false;
     }
@@ -587,7 +599,10 @@ export function renderReport(r: GameReport): string {
     `- **Plan:** ${r.planFromCache ? 'from cache' : `compiled by ${r.planProvider} (${r.planModel})`}${r.replans.length > 0 ? `, ${r.replans.length} replan(s)` : ''}`,
   );
   if (r.fallbackEngaged) lines.push(`- **Fallback engaged:** ${r.fallbackEngaged}`);
-  if (r.acplSelf != null) lines.push(`- **Marionette ACPL:** ${r.acplSelf.toFixed(1)} cp over ${r.marionetteMoves} moves`);
+  if (r.acplSelf != null)
+    lines.push(
+      `- **Marionette ACPL:** ${r.acplSelf.toFixed(1)} cp over ${r.steeredMoves} steered moves (${r.marionetteMoves} total)`,
+    );
   lines.push('');
   lines.push('## Milestones');
   for (const m of r.milestones) {

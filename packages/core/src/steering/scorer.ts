@@ -60,6 +60,8 @@ export interface ScoreInput {
   completes: boolean;
   /** true when this candidate immediately achieves the terminal condition. */
   achievesTerminal: boolean;
+  /** Game would end while milestones remain incomplete (directive failure). */
+  prematureEnd?: boolean;
   /** Candidate's self-perspective eval, in cp. */
   evalSelfCp: number;
   /** Best eval among all candidates (self-perspective), in cp. */
@@ -126,6 +128,7 @@ export function scoreCandidate(input: ScoreInput, sc: ScoreContext, λ: number):
   const evalCost = -λ * evalLoss;
   let bonus = styleBonus(sc);
   if (input.achievesTerminal) bonus += 12_000;
+  if (input.prematureEnd) bonus -= 2_000;
   // Aggressive defense of the terminal: a forced mate against us when we must
   // win is catastrophic — engine evals already encode it, add a soft guard.
   if (sc.plan.plan.terminal.kind === 'win' && input.evalSelfCp <= -(10_000 - 200)) bonus -= 3_000;
