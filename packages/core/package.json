@@ -1,0 +1,14 @@
+{
+  "name": "@marionette/core",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "main": "src/index.ts",
+  "exports": { ".": "./src/index.ts" },
+  "dependencies": {
+    "@marionette/llm": "*",
+    "@marionette/uci": "*",
+    "chess.js": "^1.0.0",
+    "zod": "^3.24.0"
+  }
+}

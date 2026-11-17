@@ -1,5 +1,23 @@
 {
   "name": "marionette",
   "private": true,
-  "version": "0.0.0"
+  "version": "0.1.0",
+  "type": "module",
+  "description": "Goal-directed Stockfish: steers the engine to fulfil arbitrary natural-language chess directives.",
+  "workspaces": [
+    "packages/*",
+    "apps/*"
+  ],
+  "scripts": {
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "cli": "tsx apps/cli/src/main.ts"
+  },
+  "devDependencies": {
+    "@types/node": "^24.0.0",
+    "tsx": "^4.19.0",
+    "typescript": "^5.7.0",
+    "vitest": "^3.0.0"
+  }
 }
