@@ -1,0 +1,45 @@
+{
+  "directive": "Win with only a queen and king left.",
+  "schemaVersion": "3",
+  "model": "kilo-auto/free",
+  "provider": "kilo",
+  "compiledAt": "2026-11-17T15:55:22.354Z",
+  "plan": {
+    "summary": "Trade or sacrifice everything except king and queen, then win the K+Q endgame",
+    "style": "none",
+    "terminal": {
+      "kind": "win",
+      "priority": "milestones_first"
+    },
+    "hardConstraints": [
+      {
+        "id": "no_extra_pieces",
+        "description": "after reaching K+Q, never acquire other pieces",
+        "predicate": "non_pawn_count(self) > 1 || piece_count(self, pawn) > 0",
+        "afterMilestone": "reduce_to_kq"
+      }
+    ],
+    "milestones": [
+      {
+        "id": "reduce_to_kq",
+        "description": "Reduce own material to exactly king + queen",
+        "completion": "piece_count(self, queen) == 1 && piece_count(self, pawn) == 0 && non_pawn_count(self) == 1",
+        "infeasible": "piece_count(self, queen) == 0 && piece_count(self, pawn) == 0",
+        "tolerance": "loose",
+        "weight": 5,
+        "moveBudget": 170
+      },
+      {
+        "id": "deliver_mate",
+        "description": "Deliver checkmate with king and queen",
+        "completion": "is_checkmate() && winner() == self",
+        "tolerance": "tight",
+        "weight": 4
+      }
+    ],
+    "fallback": [
+      "secure_terminal",
+      "play_best"
+    ]
+  }
+}

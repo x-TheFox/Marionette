@@ -1,0 +1,56 @@
+{
+  "directive": "Win using only knights and bishops.",
+  "schemaVersion": "3",
+  "model": "kilo-auto/free",
+  "provider": "kilo",
+  "compiledAt": "2026-11-17T16:04:04.888Z",
+  "plan": {
+    "summary": "Trade or sacrifice White's queen, rooks, and pawns until only knights and bishops remain, then checkmate with that minor-piece force.",
+    "style": "natural",
+    "terminal": {
+      "kind": "win",
+      "priority": "milestones_first"
+    },
+    "hardConstraints": [
+      {
+        "id": "no_queen_or_rook_promotions",
+        "description": "Never promote a pawn to a queen or rook; only knight or bishop promotions are allowed.",
+        "predicate": "promoted_count(self, queen) > 0 || promoted_count(self, rook) > 0"
+      },
+      {
+        "id": "no_early_mate_with_non_minors",
+        "description": "Do not deliver checkmate while still having queens, rooks, or pawns.",
+        "predicate": "is_checkmate() && winner() == self && (piece_count(self, queen) > 0 || piece_count(self, rook) > 0 || piece_count(self, pawn) > 0)"
+      },
+      {
+        "id": "keep_minor_army_after_conversion",
+        "description": "After reaching a knights-and-bishops-only army, do not acquire queens, rooks, or pawns.",
+        "predicate": "piece_count(self, queen) > 0 || piece_count(self, rook) > 0 || piece_count(self, pawn) > 0",
+        "afterMilestone": "minor_piece_army"
+      }
+    ],
+    "milestones": [
+      {
+        "id": "minor_piece_army",
+        "description": "Reduce own material to king plus at least two minor pieces, with no queen, rooks, or pawns.",
+        "completion": "piece_count(self, queen) == 0 && piece_count(self, rook) == 0 && piece_count(self, pawn) == 0 && (piece_count(self, knight) >= 2 || piece_count(self, bishop) >= 2 || (piece_count(self, knight) >= 1 && piece_count(self, bishop) >= 1))",
+        "infeasible": "piece_count(self, pawn) == 0 && piece_count(self, knight) == 0 && piece_count(self, bishop) == 0",
+        "tolerance": "loose",
+        "weight": 5,
+        "moveBudget": 170
+      },
+      {
+        "id": "mate_with_minors",
+        "description": "Checkmate the opponent while own army contains only king, knights, and bishops.",
+        "completion": "is_checkmate() && winner() == self && piece_count(self, queen) == 0 && piece_count(self, rook) == 0 && piece_count(self, pawn) == 0",
+        "tolerance": "tight",
+        "weight": 5
+      }
+    ],
+    "fallback": [
+      "complete_remaining_milestones",
+      "secure_terminal",
+      "play_best"
+    ]
+  }
+}

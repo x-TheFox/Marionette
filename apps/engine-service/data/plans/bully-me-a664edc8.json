@@ -1,0 +1,65 @@
+{
+  "directive": "Bully me.",
+  "schemaVersion": "3",
+  "model": "kilo-auto/free",
+  "provider": "kilo",
+  "compiledAt": "2026-11-17T10:12:23.693Z",
+  "plan": {
+    "summary": "Dominate the opponent with an aggressive attack, win material, give checks, and finish with checkmate.",
+    "style": "humiliating",
+    "terminal": {
+      "kind": "win",
+      "priority": "milestones_first"
+    },
+    "hardConstraints": [
+      {
+        "id": "no_draw",
+        "description": "Never allow the game to become drawn",
+        "predicate": "is_draw()"
+      },
+      {
+        "id": "no_loss",
+        "description": "Never allow the opponent to win",
+        "predicate": "winner() == opp"
+      }
+    ],
+    "milestones": [
+      {
+        "id": "seize_initiative",
+        "description": "Build a clearly dominant position",
+        "completion": "self_eval_cp() >= 180",
+        "tolerance": "medium",
+        "weight": 3,
+        "moveBudget": 24
+      },
+      {
+        "id": "win_material",
+        "description": "Win material and stay ahead",
+        "completion": "captured_value(opp) >= 500 && material(self) > material(opp)",
+        "tolerance": "loose",
+        "weight": 4,
+        "moveBudget": 60
+      },
+      {
+        "id": "give_checks",
+        "description": "Pressure the opponent with multiple checks",
+        "completion": "checks_count(self) >= 2",
+        "tolerance": "medium",
+        "weight": 4,
+        "moveBudget": 40
+      },
+      {
+        "id": "deliver_mate",
+        "description": "Finish with checkmate",
+        "completion": "is_checkmate() && winner() == self",
+        "tolerance": "tight",
+        "weight": 5
+      }
+    ],
+    "fallback": [
+      "complete_remaining_milestones",
+      "secure_terminal",
+      "play_best"
+    ]
+  }
+}

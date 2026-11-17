@@ -1,0 +1,44 @@
+{
+  "directive": "Promote a pawn to a queen, then lose the game.",
+  "schemaVersion": "3",
+  "model": "kilo-auto/free",
+  "provider": "kilo",
+  "compiledAt": "2026-11-17T16:05:56.662Z",
+  "plan": {
+    "summary": "Promote at least one pawn to a queen, then lose the game without allowing a win or draw for Marionette.",
+    "style": "natural",
+    "terminal": {
+      "kind": "lose",
+      "priority": "milestones_first"
+    },
+    "hardConstraints": [
+      {
+        "id": "no_win_or_draw",
+        "description": "Marionette must not win or draw before the loss is completed.",
+        "predicate": "winner() == self || is_draw() || is_stalemate() || insufficient_material()"
+      }
+    ],
+    "milestones": [
+      {
+        "id": "promote_pawn_to_queen",
+        "description": "Promote at least one of Marionette's pawns to a queen.",
+        "completion": "promoted_count(self, queen) >= 1",
+        "infeasible": "piece_count(self, pawn) == 0 && promoted_count(self, queen) == 0",
+        "tolerance": "loose",
+        "weight": 5,
+        "moveBudget": 60
+      },
+      {
+        "id": "lose_game",
+        "description": "Lose the game after the promotion.",
+        "completion": "winner() == opp",
+        "tolerance": "loose",
+        "weight": 5
+      }
+    ],
+    "fallback": [
+      "secure_terminal",
+      "play_natural"
+    ]
+  }
+}

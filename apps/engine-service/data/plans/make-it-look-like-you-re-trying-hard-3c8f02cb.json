@@ -1,0 +1,50 @@
+{
+  "directive": "Make it look like you're trying hard.",
+  "schemaVersion": "3",
+  "model": "kilo-auto/free",
+  "provider": "kilo",
+  "compiledAt": "2026-11-17T10:11:07.753Z",
+  "plan": {
+    "summary": "Play actively and strongly to win the game, appearing to make a consistent effort through development, advantage building, and decisive action.",
+    "style": "looks_strong",
+    "terminal": {
+      "kind": "win",
+      "priority": "terminal_first"
+    },
+    "hardConstraints": [
+      {
+        "id": "avoid_blunders",
+        "description": "Never make moves that lead to a very bad position, to maintain the appearance of trying hard.",
+        "predicate": "self_eval_cp() < -200"
+      }
+    ],
+    "milestones": [
+      {
+        "id": "opening_advantage",
+        "description": "Achieve a clear advantage after the opening phase by developing pieces and controlling the center.",
+        "completion": "move_number() >= 10 && self_eval_cp() >= 150",
+        "tolerance": "medium",
+        "weight": 3,
+        "moveBudget": 20
+      },
+      {
+        "id": "middlegame_dominance",
+        "description": "Strengthen the position to a winning level in the middlegame with active piece play and threats.",
+        "completion": "move_number() >= 20 && self_eval_cp() >= 300",
+        "tolerance": "medium",
+        "weight": 4,
+        "moveBudget": 30
+      },
+      {
+        "id": "win_game",
+        "description": "Deliver checkmate or force a win to conclude the game successfully.",
+        "completion": "winner() == self",
+        "tolerance": "tight",
+        "weight": 5
+      }
+    ],
+    "fallback": [
+      "play_best"
+    ]
+  }
+}

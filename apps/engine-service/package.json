@@ -1,0 +1,15 @@
+{
+  "name": "marionette-engine-service",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "description": "Marionette engine service: streams puppeteer games from the offline monorepo runner and scores human challenge games (F7).",
+  "scripts": {
+    "dev": "bun --hot index.ts",
+    "start": "bun index.ts"
+  },
+  "dependencies": {
+    "chess.js": "^1.4.0",
+    "socket.io": "^4.8.4"
+  }
+}

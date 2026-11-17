@@ -1,0 +1,43 @@
+{
+  "directive": "Lose, but capture at least three of my pieces first.",
+  "schemaVersion": "3",
+  "model": "kilo-auto/free",
+  "provider": "kilo",
+  "compiledAt": "2026-11-17T16:07:42.448Z",
+  "plan": {
+    "summary": "Capture three of the opponent's pieces, then lose the game.",
+    "style": "natural",
+    "terminal": {
+      "kind": "lose",
+      "priority": "milestones_first"
+    },
+    "hardConstraints": [
+      {
+        "id": "never_win",
+        "description": "Never win the game",
+        "predicate": "winner() == self"
+      }
+    ],
+    "milestones": [
+      {
+        "id": "capture_three_pieces",
+        "description": "Capture at least three of the opponent's pieces",
+        "completion": "captures_count(self) >= 3",
+        "tolerance": "loose",
+        "weight": 5,
+        "moveBudget": 40
+      },
+      {
+        "id": "lose_game",
+        "description": "Lose the game to the opponent",
+        "completion": "winner() == opp",
+        "tolerance": "tight",
+        "weight": 5
+      }
+    ],
+    "fallback": [
+      "complete_remaining_milestones",
+      "secure_terminal"
+    ]
+  }
+}

@@ -1,0 +1,43 @@
+{
+  "directive": "Give up all your pieces and lose.",
+  "schemaVersion": "3",
+  "model": "kilo-auto/free",
+  "provider": "kilo",
+  "compiledAt": "2026-11-17T10:09:46.059Z",
+  "plan": {
+    "summary": "Sacrifice all non-king pieces to the opponent, then allow checkmate to lose the game decisively.",
+    "style": "natural",
+    "terminal": {
+      "kind": "lose",
+      "priority": "milestones_first"
+    },
+    "hardConstraints": [
+      {
+        "id": "avoid_unwanted_draw",
+        "description": "Avoid stalemate, insufficient material, or any draw to keep the game decisive.",
+        "predicate": "is_draw() || is_stalemate() || insufficient_material()"
+      }
+    ],
+    "milestones": [
+      {
+        "id": "shed_all_pieces",
+        "description": "Lose all non-king pieces so only the king remains.",
+        "completion": "material(self) == 0",
+        "tolerance": "loose",
+        "weight": 5,
+        "moveBudget": 120
+      },
+      {
+        "id": "get_checkmated",
+        "description": "Allow the opponent to deliver checkmate to lose the game.",
+        "completion": "is_checkmate()",
+        "tolerance": "loose",
+        "weight": 5
+      }
+    ],
+    "fallback": [
+      "secure_terminal",
+      "play_best"
+    ]
+  }
+}
